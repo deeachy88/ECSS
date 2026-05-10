@@ -263,9 +263,9 @@ def dashboard(request):
             ).count()
 
             expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-            ec_renewal_count = t_ec_application_t1.objects.filter(
+            ec_renewal_count = t_ec_t1.objects.filter(
                 ca_authority=ca_authority,
-                application_status='A',
+                status='A',
                 ec_expiry_date__lt=expiry_date_threshold
             ).count()
 
@@ -418,10 +418,10 @@ def dashboard(request):
             ).count()
             p_a_application_count = t_workflow_dtls.objects.filter(
                 assigned_role_id='3',
-                assigned_role_name='Reviewer',
                 ca_authority=1,
                 assigned_user_id__isnull=True,  # assigned_user_id is null
-                action_date__isnull=False  # action_date is not null
+                action_date__isnull=False,  # action_date is not null
+                application_status= 'P'
             ).count()
             ibls_application_count = t_workflow_dtls.objects.filter(application_status='P',
                                                                     assigned_role_id=request.session['role_id'],

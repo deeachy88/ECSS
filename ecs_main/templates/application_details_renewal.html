@@ -298,956 +298,977 @@
 {% endfor %}
 
 <div class="card-body" id="reviewer_details_accordian" style="display:none;">
-    <div class="alert alert-primary">Reviewer Details</div>
-        <form method="post" id="reviewer_form">
-            {% csrf_token %}
-            {% if additional_info or ai_attach %}
-            <div class="row additional_info" style="display: none;">
-                <div class="col-lg-12">
-                    {% if additional_info %}
-                        <label class="form-label fw-bold mb-3">Additional Information</label>
-                        {% for info in additional_info %}
-                            <div class="card mb-3 shadow-sm">
-                                <div class="card-header bg-light">
-                                    <h6 class="mb-0 text-dark">
-                                        <strong>Request #{{ forloop.counter }}</strong>
-                                        {% if info.additional_info_ca_date %}
-                                            <span class="text-muted float-end">Submitted: {{ info.additional_info_ca_date }}</span>
-                                        {% endif %}
-                                    </h6>
-                                </div>
-                                <div class="card-body">
-                                    <!-- Competent Authority Section -->
-                                    <div class="mb-4">
-                                        <div class="row g-2 mb-2">
-                                            <div class="col-lg-8">
-                                                <label class="form-label small fw-bold">Remarks from Competent Authority</label>
-                                                <textarea class="form-control form-control-sm" rows="2" readonly>{{ info.additional_info_ca }}</textarea>
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card mt-1">
+                <div class="card-body">
+                    <div class="alert alert-primary">Action Taken</div>
+                        <form method="post" id="reviewer_form">
+                            {% csrf_token %}
+                            {% if additional_info or ai_attach %}
+                            <div class="row additional_info" style="display: none;">
+                                <div class="col-lg-12">
+                                    {% if additional_info %}
+                                        <label class="form-label fw-bold mb-3">Additional Information</label>
+                                        {% for info in additional_info %}
+                                            <div class="card mb-3 shadow-sm">
+                                                <div class="card-header bg-light">
+                                                    <h6 class="mb-0 text-dark">
+                                                        <strong>Request #{{ forloop.counter }}</strong>
+                                                        {% if info.additional_info_ca_date %}
+                                                            <span class="text-muted float-end">Submitted: {{ info.additional_info_ca_date }}</span>
+                                                        {% endif %}
+                                                    </h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <!-- Competent Authority Section -->
+                                                    <div class="mb-4">
+                                                        <div class="row g-2 mb-2">
+                                                            <div class="col-lg-8">
+                                                                <label class="form-label small fw-bold">Remarks from Competent Authority</label>
+                                                                <textarea class="form-control form-control-sm" rows="2" readonly>{{ info.additional_info_ca }}</textarea>
+                                                            </div>
+                                                            <div class="col-lg-2">
+                                                                <label class="form-label small fw-bold">Remarks Date</label>
+                                                                <input class="form-control form-control-sm" type="text" value="{{ info.additional_info_ca_date }}" readonly>
+                                                            </div>
+                                                            <div class="col-lg-2">
+                                                                <label class="form-label small fw-bold">Due Date</label>
+                                                                <input class="form-control form-control-sm" type="text" value="{{ info.additional_info_due_date }}" readonly>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Proponent Response Section -->
+                                                    <div>
+                                                        <div class="row g-2">
+                                                            <div class="col-lg-8">
+                                                                <label class="form-label small fw-bold">Proponent Response</label>
+                                                                <textarea class="form-control form-control-sm" rows="2" readonly>{{ info.additional_info_proponent }}</textarea>
+                                                            </div>
+                                                            <div class="col-lg-2">
+                                                                <label class="form-label small fw-bold">Response Date</label>
+                                                                <input class="form-control form-control-sm" type="text" value="{{ info.additional_info_proponent_date }}" readonly>
+                                                            </div>
+                                                            <div class="col-lg-2"><!-- Spacer for alignment --></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="col-lg-2">
-                                                <label class="form-label small fw-bold">Remarks Date</label>
-                                                <input class="form-control form-control-sm" type="text" value="{{ info.additional_info_ca_date }}" readonly>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <label class="form-label small fw-bold">Due Date</label>
-                                                <input class="form-control form-control-sm" type="text" value="{{ info.additional_info_due_date }}" readonly>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Proponent Response Section -->
-                                    <div>
-                                        <div class="row g-2">
-                                            <div class="col-lg-8">
-                                                <label class="form-label small fw-bold">Proponent Response</label>
-                                                <textarea class="form-control form-control-sm" rows="2" readonly>{{ info.additional_info_proponent }}</textarea>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <label class="form-label small fw-bold">Response Date</label>
-                                                <input class="form-control form-control-sm" type="text" value="{{ info.additional_info_proponent_date }}" readonly>
-                                            </div>
-                                            <div class="col-lg-2"><!-- Spacer for alignment --></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-
-                    {% if ai_attach %}
-                        <table id="basic-datatable" class="table dt-responsive nowrap w-100">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">File</th>
-                                    <th scope="col">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for file_attach in ai_attach %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td><a href="{{ file_attach.file_path }}" target="_blank">{{ file_attach.attachment }}</a></td>
-                                        <!--
-                                        <td>
-                                            <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="delete_ai_attachment('{{ file_attach.file_id }}','{{ file_attach.application_no }}')">
-                                                <i class="uil-trash"></i>
-                                            </button>
-                                        </td>
-                                        -->
-                                        <td></td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    {% endif %}
-
-                </div>
-            </div>
-            {% endif %}
-            <!-- Add spacing after the above section -->
-            <div class="row mt-2 mb-2">
-                <div class="col-lg-12">
-                    <hr class="my-2">
-                </div>
-            </div>
-            <div class="row payment_info" style="display: none;">
-                <div class="col-lg-12">
-                    <div class="card border-0 shadow-sm">
-                        <label class="form-label fw-bold mb-3">Payment Information</label>
-                        <div class="card-body p-0">
-                            {% if payment_details %}
-                                <div class="table-responsive">
-                                    <table class="table table-sm mb-0">
-                                        <thead class="bg-light">
-                                            <tr>
-                                                <th scope="col" class="text-center border-0 py-2">#</th>
-                                                <th scope="col" class="border-0 py-2">Type</th>
-                                                <th scope="col" class="border-0 py-2 text-end">Amount</th>
-                                                <th scope="col" class="border-0 py-2">Receipt</th>
-                                                <th scope="col" class="border-0 py-2">Date</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for payment in payment_details %}
-                                            <tr class="border-bottom">
-                                                <td>{{ forloop.counter }}</td>
-                                                <td class="py-2">{{ payment.payment_type }}</td>
-                                                <td class="py-2 text-end fw-bold text-success">
-                                                    Nu. {{ payment.total_receipt_amount|floatformat:2 }}
-                                                </td>
-                                                <td class="py-2">
-                                                    <code class="bg-light text-dark px-2 py-1 rounded">{{ payment.receipt_no }}</code>
-                                                </td>
-                                                <td class="py-2 text-muted">{{ payment.receipt_date|date:"d/m/Y" }}</td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            {% else %}
-                                <div class="p-4 text-center text-muted">
-                                    <i class="fas fa-receipt fa-2x mb-2 opacity-50"></i>
-                                    <p class="mb-0">No Payment Details Available</p>
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <!-- Add spacing after the above section -->
-            <div class="row mt-2 mb-2">
-                <div class="col-lg-12">
-                    <hr class="my-2">
-                </div>
-            </div>
-
-            <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
-                <div class="col-lg-6 information_complete_div"  style="display: none;">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Is The Information Complete?</label>
-                        <div class="mt-2">
-                            <div class="form-check form-check-inline">
-                                <input type="radio" id="customRadio3" name="information" class="form-check-input"  value="Yes" onclick="check_information_radio(this.value)">
-                                <label class="form-check-label" for="customRadio3">Yes</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input type="radio" id="customRadio4" name="information" class="form-check-input"  value="No" onclick="check_information_radio(this.value)">
-                                <label class="form-check-label" for="customRadio4">No</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="informationErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                </div>
-                <div class="row additional_info_letter" style="display: none;">
-                    <div class="col-lg-12">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Additional Information Letter</label>
-                            <textarea class="form-control" id="additional_info_letter" name="additional_info_letter" rows="2"></textarea>
-                        </div>
-                    </div>
-                    <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                </div>
-                <div class="row additional_info_due_date" style="display: none;">
-                    <div class="col-lg-3">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Additional Information Due Date</label>
-                            <input type="date" name="due_date" class="form-control" id="due_date">
-                        </div>
-                    </div>
-                    <div id="due_dateErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                </div>
-                <div class="row additional_payment_info" style="display: none;">
-                    <div class="col-lg-6">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Is There Additional Payment?</label>
-                            <div class="mt-2">
-                                <div class="form-check form-check-inline">
-                                    <input type="radio" id="customRadio3" name="additional_payment" class="form-check-input"  value="Yes" onclick="check_eatc_additional_payment(this.value)">
-                                    <label class="form-check-label" for="customRadio3">Yes</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input type="radio" id="customRadio4" name="additional_payment" class="form-check-input"  value="No" onclick="check_eatc_additional_payment(this.value)">
-                                    <label class="form-check-label" for="customRadio4">No</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="additional_paymentErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                </div>
-                <div class="col-md-12 additional_payment_div" style="display: none;">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="col-lg-6">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Account Head</label>
-                                    <select class="form-select" name="account_head"  id="account_head">
-                                        <option value="">--SELECT--</option>
-                                        {% for payment_details in pay_details %}
-                                            <option value="{{ payment_details.account_head_code }}">{{ payment_details.account_head_name }}</option>
                                         {% endfor %}
-                                    </select>
+                                    {% endif %}
+
+                                    {% if ai_attach %}
+                                        <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">File</th>
+                                                    <th scope="col">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for file_attach in ai_attach %}
+                                                    <tr>
+                                                        <td>{{ forloop.counter }}</td>
+                                                        <td><a href="{{ file_attach.file_path }}" target="_blank">{{ file_attach.attachment }}</a></td>
+                                                        <!--
+                                                        <td>
+                                                            <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="delete_ai_attachment('{{ file_attach.file_id }}','{{ file_attach.application_no }}')">
+                                                                <i class="uil-trash"></i>
+                                                            </button>
+                                                        </td>
+                                                        -->
+                                                        <td></td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    {% endif %}
+
                                 </div>
                             </div>
-                            <div class="col-lg-6">
+                            {% endif %}
+                            <!-- Add spacing after the above section -->
+                            <div class="row mt-2 mb-2">
+                                <div class="col-lg-12">
+                                    <hr class="my-2">
+                                </div>
+                            </div>
+                            <div class="row payment_info" style="display: none;">
+                                <div class="col-lg-12">
+                                    <div class="card border-0 shadow-sm">
+                                        <label class="form-label fw-bold mb-3">Payment Information</label>
+                                        <div class="card-body p-0">
+                                            {% if payment_details %}
+                                                <div class="table-responsive">
+                                                    <table class="table table-sm mb-0">
+                                                        <thead class="bg-light">
+                                                            <tr>
+                                                                <th scope="col" class="text-center border-0 py-2">#</th>
+                                                                <th scope="col" class="border-0 py-2">Type</th>
+                                                                <th scope="col" class="border-0 py-2 text-end">Amount</th>
+                                                                <th scope="col" class="border-0 py-2">Receipt</th>
+                                                                <th scope="col" class="border-0 py-2">Date</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for payment in payment_details %}
+                                                            <tr class="border-bottom">
+                                                                <td>{{ forloop.counter }}</td>
+                                                                <td class="py-2">{{ payment.payment_type }}</td>
+                                                                <td class="py-2 text-end fw-bold text-success">
+                                                                    Nu. {{ payment.total_receipt_amount|floatformat:2 }}
+                                                                </td>
+                                                                <td class="py-2">
+                                                                    <code class="bg-light text-dark px-2 py-1 rounded">{{ payment.receipt_no }}</code>
+                                                                </td>
+                                                                <td class="py-2 text-muted">{{ payment.receipt_date|date:"d/m/Y" }}</td>
+                                                            </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            {% else %}
+                                                <div class="p-4 text-center text-muted">
+                                                    <i class="fas fa-receipt fa-2x mb-2 opacity-50"></i>
+                                                    <p class="mb-0">No Payment Details Available</p>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <!-- Add spacing after the above section -->
+                            <div class="row mt-2 mb-2">
+                                <div class="col-lg-12">
+                                    <hr class="my-2">
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+                                <div class="col-lg-6 information_complete_div"  style="display: none;">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Is The Information Complete?</label>
+                                        <div class="mt-2">
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio" id="customRadio3" name="information" class="form-check-input"  value="Yes" onclick="check_information_radio(this.value)">
+                                                <label class="form-check-label" for="customRadio3">Yes</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio" id="customRadio4" name="information" class="form-check-input"  value="No" onclick="check_information_radio(this.value)">
+                                                <label class="form-check-label" for="customRadio4">No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="informationErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                                <div class="row additional_info_letter" style="display: none;">
+                                    <div class="col-lg-12">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Additional Information Letter</label>
+                                            <textarea class="form-control" id="additional_info_letter" name="additional_info_letter" rows="2"></textarea>
+                                        </div>
+                                    </div>
+                                    <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                                <div class="row additional_info_due_date" style="display: none;">
+                                    <div class="col-lg-3">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Additional Information Due Date</label>
+                                            <input type="date" name="due_date" class="form-control" id="due_date">
+                                        </div>
+                                    </div>
+                                    <div id="due_dateErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                                <div class="row additional_payment_info" style="display: none;">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Is There Additional Payment?</label>
+                                            <div class="mt-2">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="customRadio3" name="additional_payment" class="form-check-input"  value="Yes" onclick="check_eatc_additional_payment(this.value)">
+                                                    <label class="form-check-label" for="customRadio3">Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="customRadio4" name="additional_payment" class="form-check-input"  value="No" onclick="check_eatc_additional_payment(this.value)">
+                                                    <label class="form-check-label" for="customRadio4">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="additional_paymentErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                                <div class="col-md-12 additional_payment_div" style="display: none;">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Account Head</label>
+                                                    <select class="form-select" name="account_head"  id="account_head">
+                                                        <option value="">--SELECT--</option>
+                                                        {% for payment_details in pay_details %}
+                                                            <option value="{{ payment_details.account_head_code }}">{{ payment_details.account_head_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Additional Payable Amount</label>
+                                                    <input type="number" name="additional_payment_amount" class="form-control" id="additional_payment_amount">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="additional_payment_amountErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                                <div class="row decision_info" style="display: none;">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Is Application Approved?</label>
+                                            <div class="mt-2">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="customRadio3" name="decision" class="form-check-input"  value="Yes" onclick="check_decision(this.value)">
+                                                    <label class="form-check-label" for="customRadio3">Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="customRadio4" name="decision" class="form-check-input"  value="No" onclick="check_decision(this.value)">
+                                                    <label class="form-check-label" for="customRadio4">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="decisionErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-md-8 reject_remarks_div" style="display: none;">
+                                        <div class="card border-0 shadow-sm">
+                                            <div class="card-body p-3">
+                                                <label class="form-label fw-bold">
+                                                    Remarks
+                                                </label>
+                                                <textarea name="reject_remarks"
+                                                         class="form-control form-control-sm"
+                                                         id="reject_remarks"
+                                                         rows="2"
+                                                         placeholder="Enter your remarks here..."></textarea>
+                                            </div>
+                                        </div>
+                                        <div id="reject_remarksErrorMsg" class="alert alert-danger alert-sm mt-2 py-2" style="display: none;"></div>
+                                    </div>
+
+                                    <div class="col-md-4 tat_div" style="display: none;">
+                                        <div class="card border-0 shadow-sm">
+                                            <div class="card-body p-3">
+                                                <label class="form-label fw-bold">
+                                                    TAT (Days)
+                                                </label>
+                                                <input type="number"
+                                                       name="tat_days"
+                                                       class="form-control form-control-sm"
+                                                       id="tat_days"
+                                                       placeholder="Enter days"
+                                                       min="0">
+                                            </div>
+                                        </div>
+                                        <div id="tat_remarksErrorMsg" class="alert alert-danger alert-sm mt-2 py-2" style="display: none;"></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 reject_attachment_div" style="display: none;">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="card-widgets">
+                                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#reject_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                            </div>
+                                            <h5 class="card-title mb-0">Attach Rejection Letter/Justification</h5>
+                                            <div id="cardCollpase7" class="collapse pt-3 show">
+                                                <div id="reviewer_reject_file_attachment">
+                                                    {% include 'reject_attachment_page.html' %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 eatc_attachment_div" style="display: none;">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="card-widgets">
+                                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#eatc_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                            </div>
+                                            <h5 class="card-title mb-0">Attach Committee And Field Verification Paper</h5>
+                                            <div id="cardCollpase7" class="collapse pt-3 show">
+                                                <div id="eatc_file_attachment">
+                                                    {% include 'eatc_attachment_page.html' %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row fines_penalty_div" style="display: none;">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Is There Fines And Penalties?</label>
+                                            <div class="mt-2">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="customRadio3" name="fines_penalty" class="form-check-input"  value="Yes" onclick="check_fines_and_penalty(this.value)">
+                                                    <label class="form-check-label" for="customRadio3">Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="customRadio4" name="fines_penalty" class="form-check-input"  value="No" onclick="check_fines_and_penalty(this.value)">
+                                                    <label class="form-check-label" for="customRadio4">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="fines_penaltiesErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                                <div class="row rev_resubmit_remarks_div" style="display: none;">
+                                    <div class="col-lg-12">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Report/Clarification</label>
+                                            {% for application_details in application_details %}
+                                                <textarea class="form-control" rows="2" readonly>{{application_details.resubmit_remarks}}</textarea>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row rectification_div" style="display: none;">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Is There Rectification/on hold/further studies/clarification?</label>
+                                            <div class="mt-2">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="customRadio3" name="rectification" class="form-check-input"  value="Yes" onclick="check_rectification(this.value)">
+                                                    <label class="form-check-label" for="customRadio3">Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="customRadio4" name="rectification" class="form-check-input"  value="No" onclick="check_rectification(this.value)">
+                                                    <label class="form-check-label" for="customRadio4">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="rectificationErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                                <div class="col-md-12 rev_lu_attachment_div" style="display: none;">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="card-widgets">
+                                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#rev_lu_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                            </div>
+                                            <h5 class="card-title mb-0">Legal Undertaking Attach</h5>
+                                            <div id="cardCollpase7" class="collapse pt-3 show">
+                                                <div id="rev_lu_file_attachment">
+                                                    {% include 'rev_lu_attachment_page.html' %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 draft_ec_div" style="display: none;">
+                                    <!--
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <table id="basic-datatable" class="table dt-responsive nowrap w-100" style="table-layout: fixed;">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col" style="width: 33.33%;">Commitee & Field Verification Paper</th>
+                                                        <th scope="col" style="width: 33.33%;">Draft Legal Undertaking</th>
+                                                        <th scope="col" style="width: 33.34%;">Legal Undertaking Attached</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            {% for rev_lu_attach in eatc_attach %}
+                                                                <a class="btn btn-primary btn-sm mb-1 d-block" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                                            {% endfor %}
+                                                        </td>
+                                                        <td>
+                                                            {% for rev_lu_attach in rev_lu_attach %}
+                                                                <a class="btn btn-primary btn-sm mb-1 d-block" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                                            {% endfor %}
+                                                        </td>
+                                                        <td>
+                                                            {% for rev_lu_attach in lu_attach %}
+                                                                <a class="btn btn-primary btn-sm mb-1 d-block" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                                            {% endfor %}
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    -->
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="card-widgets">
+                                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#draft_ec_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                            </div>
+                                            <h5 class="card-title mb-0">Draft EC</h5>
+                                            <div id="cardCollpase7" class="collapse pt-3 show">
+                                                <div id="reviewer_draft_ec_details">
+                                                    {% include 'ec_draft_details.html' %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="ecDraftErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                    <div class="row g-3 align-items-end">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">EC Expiry Date</label>
+                                            {% for application_details in application_details %}
+                                                <input type="date" name="ec_expiry_date_r" class="form-control" id="ec_expiry_date_r"
+                                                       value="{% if application_details.ec_expiry_date %}{{ application_details.ec_expiry_date|date:'Y-m-d' }}{% endif %}">
+                                            {% endfor %}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">TAT (Number of Days)</label>
+                                            {% for application_details in application_details %}
+                                                <input type="number" name="tat_ecr" class="form-control" id="tat_ecr"
+                                                       value="{{ application_details.tat }}" min="1">
+                                            {% endfor %}
+                                        </div>
+                                        <div id="tat_ecrErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alert alert-success border-0 rounded-0" role="alert" id="reviewer_application_successMsg" style="display:none">
+                                <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                            </div>
+                            <div class="alert alert-danger border-0 rounded-0" role="alert" id="reviewer_application_errorMsg" style="display:none">
+                                <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                            </div>
+                            <div class="row  mt-3 ec_draft_button" style="display: none;">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Additional Payable Amount</label>
-                                    <input type="number" name="additional_payment_amount" class="form-control" id="additional_payment_amount">
+                                    <a href="#" class="btn btn-success" onclick="forwardApplication('DEC')">
+                                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Verifier </a>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div id="additional_payment_amountErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                </div>
-                <div class="row decision_info" style="display: none;">
-                    <div class="col-lg-6">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Is Application Approved?</label>
-                            <div class="mt-2">
-                                <div class="form-check form-check-inline">
-                                    <input type="radio" id="customRadio3" name="decision" class="form-check-input"  value="Yes" onclick="check_decision(this.value)">
-                                    <label class="form-check-label" for="customRadio3">Yes</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input type="radio" id="customRadio4" name="decision" class="form-check-input"  value="No" onclick="check_decision(this.value)">
-                                    <label class="form-check-label" for="customRadio4">No</label>
+                            <div class="row  mt-3 AL_button" style="display: none;">
+                                <div class="mb-3">
+                                    <a href="#" class="btn btn-success" onclick="forwardApplication('AL')">
+                                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div id="decisionErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                </div>
-                <div class="row g-2">
-                    <div class="col-md-8 reject_remarks_div" style="display: none;">
-                        <div class="card border-0 shadow-sm">
-                            <div class="card-body p-3">
-                                <label class="form-label fw-bold">
-                                    Remarks
-                                </label>
-                                <textarea name="reject_remarks"
-                                         class="form-control form-control-sm"
-                                         id="reject_remarks"
-                                         rows="2"
-                                         placeholder="Enter your remarks here..."></textarea>
-                            </div>
-                        </div>
-                        <div id="reject_remarksErrorMsg" class="alert alert-danger alert-sm mt-2 py-2" style="display: none;"></div>
-                    </div>
-
-                    <div class="col-md-4 tat_div" style="display: none;">
-                        <div class="card border-0 shadow-sm">
-                            <div class="card-body p-3">
-                                <label class="form-label fw-bold">
-                                    TAT (Days)
-                                </label>
-                                <input type="number"
-                                       name="tat_days"
-                                       class="form-control form-control-sm"
-                                       id="tat_days"
-                                       placeholder="Enter days"
-                                       min="0">
-                            </div>
-                        </div>
-                        <div id="tat_remarksErrorMsg" class="alert alert-danger alert-sm mt-2 py-2" style="display: none;"></div>
-                    </div>
-                </div>
-
-                <div class="col-md-12 reject_attachment_div" style="display: none;">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="card-widgets">
-                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#reject_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                            </div>
-                            <h5 class="card-title mb-0">Attach Rejection Letter/Justification</h5>
-                            <div id="cardCollpase7" class="collapse pt-3 show">
-                                <div id="reviewer_reject_file_attachment">
-                                    {% include 'reject_attachment_page.html' %}
+                            <div class="row mt-3 additional_payment_button" style="display: none;">
+                                <div class="mb-3">
+                                    <a href="#" class="btn btn-success" onclick="forwardApplication('AP')">
+                                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12 eatc_attachment_div" style="display: none;">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="card-widgets">
-                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#eatc_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                            </div>
-                            <h5 class="card-title mb-0">Attach Committee And Field Verification Paper</h5>
-                            <div id="cardCollpase7" class="collapse pt-3 show">
-                                <div id="eatc_file_attachment">
-                                    {% include 'eatc_attachment_page.html' %}
+                            <div class="row mt-3 reject_button" style="display: none;">
+                                <div class="mb-3">
+                                    <a href="#" class="btn btn-success" onclick="forwardApplication('RRJ')">
+                                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row fines_penalty_div" style="display: none;">
-                    <div class="col-lg-6">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Is There Fines And Penalties?</label>
-                            <div class="mt-2">
-                                <div class="form-check form-check-inline">
-                                    <input type="radio" id="customRadio3" name="fines_penalty" class="form-check-input"  value="Yes" onclick="check_fines_and_penalty(this.value)">
-                                    <label class="form-check-label" for="customRadio3">Yes</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input type="radio" id="customRadio4" name="fines_penalty" class="form-check-input"  value="No" onclick="check_fines_and_penalty(this.value)">
-                                    <label class="form-check-label" for="customRadio4">No</label>
+                            <div class="row mt-3">
+                                <div id="luErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                <div class="mb-3"></div>
+                                    <div class="LU_button" style="display:none;">
+                                        <a href="#" class="btn btn-success" onclick="forwardApplication('LU')">
+                                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
+                                    </div>
+                            </div>
+                            <div class="row mt-3 rectification_button" style="display:none;">
+                                <div class="mb-3">
+                                    <a href="#" class="btn btn-success" onclick="forwardApplication('RS')">
+                                        <i class="uil uil-history-alt me-1"></i> Resubmit </a>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div id="fines_penaltiesErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                </div>
-                <div class="row rev_resubmit_remarks_div" style="display: none;">
-                    <div class="col-lg-12">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Report/Clarification</label>
-                            {% for application_details in application_details %}
-                                <textarea class="form-control" rows="2" readonly>{{application_details.resubmit_remarks}}</textarea>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-                <div class="row rectification_div" style="display: none;">
-                    <div class="col-lg-6">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Is There Rectification/on hold/further studies/clarification?</label>
-                            <div class="mt-2">
-                                <div class="form-check form-check-inline">
-                                    <input type="radio" id="customRadio3" name="rectification" class="form-check-input"  value="Yes" onclick="check_rectification(this.value)">
-                                    <label class="form-check-label" for="customRadio3">Yes</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input type="radio" id="customRadio4" name="rectification" class="form-check-input"  value="No" onclick="check_rectification(this.value)">
-                                    <label class="form-check-label" for="customRadio4">No</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="rectificationErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                </div>
-                <div class="col-md-12 rev_lu_attachment_div" style="display: none;">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="card-widgets">
-                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#rev_lu_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                            </div>
-                            <h5 class="card-title mb-0">Legal Undertaking Attach</h5>
-                            <div id="cardCollpase7" class="collapse pt-3 show">
-                                <div id="rev_lu_file_attachment">
-                                    {% include 'rev_lu_attachment_page.html' %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12 draft_ec_div" style="display: none;">
-                    <!--
-                    <div class="card">
-                        <div class="card-body">
-                            <table id="basic-datatable" class="table dt-responsive nowrap w-100" style="table-layout: fixed;">
-                                <thead>
-                                    <tr>
-                                        <th scope="col" style="width: 33.33%;">Commitee & Field Verification Paper</th>
-                                        <th scope="col" style="width: 33.33%;">Draft Legal Undertaking</th>
-                                        <th scope="col" style="width: 33.34%;">Legal Undertaking Attached</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            {% for rev_lu_attach in eatc_attach %}
-                                                <a class="btn btn-primary btn-sm mb-1 d-block" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
-                                            {% endfor %}
-                                        </td>
-                                        <td>
-                                            {% for rev_lu_attach in rev_lu_attach %}
-                                                <a class="btn btn-primary btn-sm mb-1 d-block" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
-                                            {% endfor %}
-                                        </td>
-                                        <td>
-                                            {% for rev_lu_attach in lu_attach %}
-                                                <a class="btn btn-primary btn-sm mb-1 d-block" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
-                                            {% endfor %}
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    -->
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="card-widgets">
-                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#draft_ec_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                            </div>
-                            <h5 class="card-title mb-0">Draft EC</h5>
-                            <div id="cardCollpase7" class="collapse pt-3 show">
-                                <div id="reviewer_draft_ec_details">
-                                    {% include 'ec_draft_details.html' %}
-                                </div>
-                            </div>
-                        </div>
-                        <div id="ecDraftErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                    </div>
-                    <div class="row g-3 align-items-end">
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">EC Expiry Date</label>
-                            {% for application_details in application_details %}
-                                <input type="date" name="ec_expiry_date_r" class="form-control" id="ec_expiry_date_r"
-                                       value="{% if application_details.ec_expiry_date %}{{ application_details.ec_expiry_date|date:'Y-m-d' }}{% endif %}">
-                            {% endfor %}
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">TAT (Number of Days)</label>
-                            {% for application_details in application_details %}
-                                <input type="number" name="tat_ecr" class="form-control" id="tat_ecr"
-                                       value="{{ application_details.tat }}" min="1">
-                            {% endfor %}
-                        </div>
-                        <div id="tat_ecrErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </form>
                     </div>
                 </div>
             </div>
-            <div class="alert alert-success border-0 rounded-0" role="alert" id="reviewer_application_successMsg" style="display:none">
-                <i class="uil-folder-heart me-1 h4 align-middle"></i>
-            </div>
-            <div class="alert alert-danger border-0 rounded-0" role="alert" id="reviewer_application_errorMsg" style="display:none">
-                <i class="uil-folder-heart me-1 h4 align-middle"></i>
-            </div>
-            <div class="row  mt-3 ec_draft_button" style="display: none;">
-                <div class="mb-3">
-                    <a href="#" class="btn btn-success" onclick="forwardApplication('DEC')">
-                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Verifier </a>
-                </div>
-            </div>
-            <div class="row  mt-3 AL_button" style="display: none;">
-                <div class="mb-3">
-                    <a href="#" class="btn btn-success" onclick="forwardApplication('AL')">
-                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
-                </div>
-            </div>
-            <div class="row mt-3 additional_payment_button" style="display: none;">
-                <div class="mb-3">
-                    <a href="#" class="btn btn-success" onclick="forwardApplication('AP')">
-                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
-                </div>
-            </div>
-            <div class="row mt-3 reject_button" style="display: none;">
-                <div class="mb-3">
-                    <a href="#" class="btn btn-success" onclick="forwardApplication('RRJ')">
-                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div id="luErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                <div class="mb-3"></div>
-                    <div class="LU_button" style="display:none;">
-                        <a href="#" class="btn btn-success" onclick="forwardApplication('LU')">
-                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
-                    </div>
-                </div>
-            </div>
-            <div class="row mt-3 rectification_button" style="display:none;">
-                <div class="mb-3">
-                    <a href="#" class="btn btn-success" onclick="forwardApplication('RS')">
-                        <i class="uil uil-history-alt me-1"></i> Resubmit </a>
-                </div>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 <div class="card-body" id="client_details_accordian" style="display:none;">
-    <div class="alert alert-primary">Client Details</div>
-        <form method="post" id="client_form">
-            {% csrf_token %}
-                <div class="row additional_info_div">
-                    <div class="col-lg-12">
-                        <label class="form-label fw-bold mb-2">Additional Information Exchange</label>
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card mt-1">
+                <div class="card-body">
+                    <div class="alert alert-primary">Client Details</div>
+                        <form method="post" id="client_form">
+                            {% csrf_token %}
+                                <div class="row additional_info_div">
+                                    <div class="col-lg-12">
+                                        <label class="form-label fw-bold mb-2">Additional Information Exchange</label>
 
-                        {% for info in additional_info %}
-                            <div class="mb-2 border rounded p-2">
+                                        {% for info in additional_info %}
+                                            <div class="mb-2 border rounded p-2">
 
-                                <div class="row g-2 align-items-start">
-                                    <!-- From CA -->
-                                    <div class="col-md-8">
-                                        <label class="form-label fw-semibold mb-1 small">
-                                            Remarks from Competent Authority
-                                        </label>
-                                        <textarea class="form-control form-control-sm"
-                                                  rows="1"
-                                                  readonly>{{ info.additional_info_ca }}</textarea>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label class="form-label fw-semibold mb-1 small">
-                                            Response Request Date
-                                        </label>
-                                        <input id="ca_date" value="{{ info.additional_info_ca_date }}" disabled>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label class="form-label fw-semibold mb-1 small">
-                                            Due Date
-                                        </label>
-                                        <input id="due_date" value="{{ info.additional_info_due_date }}" disabled>
-                                    </div>
-                                    <!-- Proponent / Your Response -->
-                                    <div class="col-md-8">
-                                        {% if info.additional_info_proponent_date %}
-                                            <label class="form-label fw-semibold mb-1 small">
-                                                Your Response
-                                            </label>
-                                            <textarea class="form-control form-control-sm"
-                                                      rows="1"
-                                                      readonly>{{ info.additional_info_proponent }}</textarea>
+                                                <div class="row g-2 align-items-start">
+                                                    <!-- From CA -->
+                                                    <div class="col-md-8">
+                                                        <label class="form-label fw-semibold mb-1 small">
+                                                            Remarks from Competent Authority
+                                                        </label>
+                                                        <textarea class="form-control form-control-sm"
+                                                                  rows="1"
+                                                                  readonly>{{ info.additional_info_ca }}</textarea>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <label class="form-label fw-semibold mb-1 small">
+                                                            Response Request Date
+                                                        </label>
+                                                        <input id="ca_date" value="{{ info.additional_info_ca_date }}" disabled>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <label class="form-label fw-semibold mb-1 small">
+                                                            Due Date
+                                                        </label>
+                                                        <input id="due_date" value="{{ info.additional_info_due_date }}" disabled>
+                                                    </div>
+                                                    <!-- Proponent / Your Response -->
+                                                    <div class="col-md-8">
+                                                        {% if info.additional_info_proponent_date %}
+                                                            <label class="form-label fw-semibold mb-1 small">
+                                                                Your Response
+                                                            </label>
+                                                            <textarea class="form-control form-control-sm"
+                                                                      rows="1"
+                                                                      readonly>{{ info.additional_info_proponent }}</textarea>
 
-                                        {% else %}
-                                            <div class="p-2 rounded bg-warning bg-opacity-10 border border-warning">
-                                                <label class="form-label fw-semibold mb-1 small">
-                                                    Your Response
-                                                </label>
-                                                <input type="hidden"
-                                                       id="record_id"
-                                                       name="record_id"
-                                                       value="{{ info.record_id }}">
-                                                <textarea class="form-control form-control-sm"
-                                                          name="additional_info"
-                                                          id="additional_info"
-                                                          rows="1"
-                                                          placeholder="Type your response here..."></textarea>
+                                                        {% else %}
+                                                            <div class="p-2 rounded bg-warning bg-opacity-10 border border-warning">
+                                                                <label class="form-label fw-semibold mb-1 small">
+                                                                    Your Response
+                                                                </label>
+                                                                <input type="hidden"
+                                                                       id="record_id"
+                                                                       name="record_id"
+                                                                       value="{{ info.record_id }}">
+                                                                <textarea class="form-control form-control-sm"
+                                                                          name="additional_info"
+                                                                          id="additional_info"
+                                                                          rows="1"
+                                                                          placeholder="Type your response here..."></textarea>
+                                                            </div>
+                                                        {% endif %}
+
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <label class="form-label fw-semibold mb-1 small">
+                                                            Response Date
+                                                        </label>
+                                                        <input id="pr_date" value="{% now 'Y-m-d' %}" disabled>
+                                                    </div>
+                                                </div>
+
+                                                {% if forloop.last and not info.additional_info_proponent %}
+                                                    <div id="client_additional_infoErrorMsg"
+                                                         class="alert alert-danger py-1 px-2 mt-1 mb-0 small"
+                                                         style="display: none;"></div>
+                                                {% endif %}
+
                                             </div>
-                                        {% endif %}
-
+                                        {% endfor %}
                                     </div>
-                                    <div class="col-md-2">
-                                        <label class="form-label fw-semibold mb-1 small">
-                                            Response Date
-                                        </label>
-                                        <input id="pr_date" value="{% now 'Y-m-d' %}" disabled>
-                                    </div>
-                                </div>
-
-                                {% if forloop.last and not info.additional_info_proponent %}
-                                    <div id="client_additional_infoErrorMsg"
-                                         class="alert alert-danger py-1 px-2 mt-1 mb-0 small"
-                                         style="display: none;"></div>
-                                {% endif %}
-
-                            </div>
-                        {% endfor %}
-                    </div>
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="card-widgets">
-                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#ai_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                                </div>
-                                <h5 class="card-title mb-0">Additional Info Attachment</h5>
-                                <div id="cardCollpase7" class="collapse pt-3 show">
-                                    <div id="ai_file_attachment">
-                                        {% include 'ai_attachment_page.html' %}
+                                    <div class="col-md-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="card-widgets">
+                                                    <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#ai_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                                </div>
+                                                <h5 class="card-title mb-0">Additional Info Attachment</h5>
+                                                <div id="cardCollpase7" class="collapse pt-3 show">
+                                                    <div id="ai_file_attachment">
+                                                        {% include 'ai_attachment_page.html' %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row resubmit_remarks_div" style="display: none;">
-                    <div class="col-lg-12">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Report/Clarification</label>
-                            <textarea class="form-control" rows="2" id="resubmit_remarks" name="resubmit_remarks"></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-12 eatc_attachment_details" style="display: none;">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title mb-0">EATC Attachment</h5>
-                            <div id="cardCollpase7" class="collapse pt-3 show">
-                                {% include 'eatc_attachment_page.html' %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-12 client_lu_attachment_div" style="display: none;">
-                    <div class="card">
-                        <div class="card-body">
-                            <table id="basic-datatable" class="table dt-responsive nowrap w-100">
-                                <thead>
-                                    <tr>
-                                        <!--<th scope="col">Commitee & Field Verification Paper</th>-->
-                                        <th scope="col">Draft Legal Undertaking</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <!--
-                                        <td>
-                                            {% for rev_lu_attach in eatc_attach %}
-                                                <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
-                                            {% endfor %}
-                                        </td>
-                                        -->
-                                        <td class="text-start">
-                                            {% for rev_lu_attach in rev_lu_attach %}
-                                                <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
-                                            {% endfor %}
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <hr><br><br>
-                            <div class="card-widgets">
-                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#lu_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                            </div>
-                            <h5 class="card-title mb-0">LU Attach</h5>
-                            <div id="cardCollpase7" class="collapse pt-3 show">
-                                <div id="lu_file_attachment">
-                                    {% include 'lu_attachment_page.html' %}
+                                <div class="row resubmit_remarks_div" style="display: none;">
+                                    <div class="col-lg-12">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Report/Clarification</label>
+                                            <textarea class="form-control" rows="2" id="resubmit_remarks" name="resubmit_remarks"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
+
+                                <div class="col-md-12 eatc_attachment_details" style="display: none;">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title mb-0">EATC Attachment</h5>
+                                            <div id="cardCollpase7" class="collapse pt-3 show">
+                                                {% include 'eatc_attachment_page.html' %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 client_lu_attachment_div" style="display: none;">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                                                <thead>
+                                                    <tr>
+                                                        <!--<th scope="col">Commitee & Field Verification Paper</th>-->
+                                                        <th scope="col">Draft Legal Undertaking</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <!--
+                                                        <td>
+                                                            {% for rev_lu_attach in eatc_attach %}
+                                                                <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                                            {% endfor %}
+                                                        </td>
+                                                        -->
+                                                        <td class="text-start">
+                                                            {% for rev_lu_attach in rev_lu_attach %}
+                                                                <a class="btn btn-primary" href='{{rev_lu_attach.file_path}}' target="_blank">{{rev_lu_attach.attachment}}</a>
+                                                            {% endfor %}
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <hr><br><br>
+                                            <div class="card-widgets">
+                                                <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#lu_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                            </div>
+                                            <h5 class="card-title mb-0">LU Attach</h5>
+                                            <div id="cardCollpase7" class="collapse pt-3 show">
+                                                <div id="lu_file_attachment">
+                                                    {% include 'lu_attachment_page.html' %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-success border-0 rounded-0" role="alert" id="client_application_successMsg" style="display:none">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                </div>
+                                <div class="alert alert-danger border-0 rounded-0" role="alert" id="client_application_errorMsg" style="display:none">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                </div>
+                                <div class="col-lg-6">
+                                <div class="mb-3 ALS_button" style="display:none;">
+                                    <div class="text-start">
+                                        <a href="#" class="btn btn-success" onclick="forwardApplication('ALS')">
+                                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 FEATC_button" style="display:none;">
+                                    <div class="text-start">
+                                        <a href="#" class="btn btn-success" onclick="forwardApplication('FEATC')">
+                                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 RSS_button" style="display:none;">
+                                    <div class="text-start">
+                                        <a href="#" class="btn btn-success" onclick="forwardApplication('RSS')">
+                                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 LUS_button" style="display:none;">
+                                    <div class="text-start">
+                                        <a href="#" class="btn btn-success" onclick="forwardApplication('LUS')">
+                                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit
+                                        </a>
+                                    </div>
+                                </div>
+                                <div id="clientLUErrorMsg" class="alert alert-danger" style="display: none;"></div>
                             </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
-
-                <div class="alert alert-success border-0 rounded-0" role="alert" id="client_application_successMsg" style="display:none">
-                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                </div>
-                <div class="alert alert-danger border-0 rounded-0" role="alert" id="client_application_errorMsg" style="display:none">
-                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                </div>
-                <div class="col-lg-6">
-                <div class="mb-3 ALS_button" style="display:none;">
-                    <div class="text-start">
-                        <a href="#" class="btn btn-success" onclick="forwardApplication('ALS')">
-                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit
-                        </a>
-                    </div>
-                </div>
-
-                <div class="mb-3 FEATC_button" style="display:none;">
-                    <div class="text-start">
-                        <a href="#" class="btn btn-success" onclick="forwardApplication('FEATC')">
-                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit
-                        </a>
-                    </div>
-                </div>
-
-                <div class="mb-3 RSS_button" style="display:none;">
-                    <div class="text-start">
-                        <a href="#" class="btn btn-success" onclick="forwardApplication('RSS')">
-                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit
-                        </a>
-                    </div>
-                </div>
-
-                <div class="mb-3 LUS_button" style="display:none;">
-                    <div class="text-start">
-                        <a href="#" class="btn btn-success" onclick="forwardApplication('LUS')">
-                            <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit
-                        </a>
-                    </div>
-                </div>
-                <div id="clientLUErrorMsg" class="alert alert-danger" style="display: none;"></div>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 <div class="card-body" id="verifier_details_accordian" style="display:none;">
-    <div class="alert alert-primary">Verifier Details</div>
-        <form method="post" id="verifier_form">
-            {% csrf_token %}
-            <div class="row verifierDiv" style="display: none;">
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Application Fees</label>
-                        <input type="number" class="form-control" id="amount" name="amount">
-                    </div>
-                    <div id="amount_ErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                </div>
-            </div>
-            <div class="row forwardTo" style="display: none;">
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Forward To</label>
-                        <select class="form-control" name="forward_to"  id="forward_to">
-                            <option value="">--SELECT REVIEWER--</option>
-                            {% for reviewer_list in reviewer_list %}
-                                <option value="{{ reviewer_list.login_id }}">{{ reviewer_list.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div id="forward_toErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                </div>
-            </div>
-            {% if additional_info %}
-            <div class="row verifier_additional_info_letter" style="display: none;">
-                <div class="col-lg-12">
-                <label class="form-label fw-bold mb-2">Additional Information Exchange</label>
-                {% for info in additional_info %}
-                    <div class="mb-3 border rounded p-2
-                        {% if not info.additional_info_proponent %}
-                            bg-warning bg-opacity-10 border-warning
-                        {% endif %}">
-                        <div class="row g-2 align-items-start">
-                            <!-- CA Remarks -->
-                            <div class="col-md-4">
-                                <label class="form-label fw-semibold mb-1 small">
-                                    Remarks from Competent Authority
-                                </label>
-                                <textarea class="form-control form-control-sm"
-                                      rows="1"
-                                      readonly>{{ info.additional_info_ca }}</textarea>
-                            </div>
-                            <!-- CA Date -->
-                            <div class="col-md-2">
-                                <label class="form-label fw-semibold mb-1 small">Remarks Date</label>
-                                <input class="form-control form-control-sm"
-                                    value="{{ info.additional_info_ca_date }}"
-                                    disabled>
-                            </div>
-                            <!-- Proponent Response -->
-                            <div class="col-md-4">
-                                <label class="form-label fw-semibold mb-1 small">
-                                    Proponent's Response
-                                </label>
-                                <textarea class="form-control form-control-sm"
-                                      rows="1"
-                                      readonly>{{ info.additional_info_proponent|default:"" }}</textarea>
-                            </div>
-                            <!-- Proponent Date -->
-                            <div class="col-md-2">
-                                <label class="form-label fw-semibold mb-1 small">
-                                    Proponent's Response Date
-                                </label>
-                                <input class="form-control form-control-sm"
-                                   value="{{ info.additional_info_proponent_date|default:'' }}"
-                                   disabled>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-                </div>
-                <table id="basic-datatable" class="table dt-responsive nowrap w-100">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">File</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                       {% for file_attach in ai_attach %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
-                                <!-- <td>
-                                    <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="delete_ai_attachment('{{ file_attach.file_id }}','{{ file_attach.application_no }}')"><i class="uil-trash"></i></button>
-                                </td> -->
-                            </tr>
-                            {% empty %}
-                            <tr>
-                              <td colspan="3" class="text-center">No Data</td>
-                            </tr>
-                       {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% endif %}
-            <div class="row verifier_payment_details" style="display: none;">
-                <div class="col-lg-12">
-                <label class="form-label fw-bold mb-2">Payment</label>
-                {% for payment in payment_details %}
-                    <div class="mb-3 border rounded p-2
-                        {% if not info.additional_info_proponent %}
-                            bg-warning bg-opacity-10 border-warning
-                        {% endif %}">
-                        <div class="row g-2 align-items-start">
-                             <div class="col-md-3">
-                                <label class="form-label fw-semibold mb-1 small">
-                                    Payment Advice No
-                                </label>
-                                <input class="form-control form-control-sm"
-                                    value="{{ payment.payment_advice_no }}"
-                                    disabled>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label fw-semibold mb-1 small">
-                                    Payable Amount
-                                </label>
-                                <input class="form-control form-control-sm"
-                                    value="{{ payment.total_payable_amount }}"
-                                    disabled>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label fw-semibold mb-1 small">Receipt No</label>
-                                <input class="form-control form-control-sm"
-                                    value="{{ payment.receipt_no }}"
-                                    disabled>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label fw-semibold mb-1 small">
-                                    Receipt Date-Time
-                                </label>
-                                <input class="form-control form-control-sm"
-                                    value="{{ payment.receipt_date }}"
-                                    disabled>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-                </div>
-            </div>
-            <div class="alert alert-success border-0" role="alert">
-              EC Details/Information
-            </div>
-            <div class="col-md-12 verifier_ec_draft_div" style="display: none;">
-                <br>
-                <div class="card">
-                    <div class="card-body">
-                        <div class="card-widgets">
-                            <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#draft_ec_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                        </div>
-                        <h5 class="card-title mb-0">Draft EC</h5>
-                        <div id="cardCollpase7" class="collapse pt-3 show">
-                            <div id="verifier_draft_ec_details">
-                                {% include 'ec_draft_details.html' %}
-                            </div>
-                        </div>
-                    </div>
-                    <div id="ecDraftErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                </div>
-                <div class="row g-3 align-items-end">
-                    <div class="col-md-6">
-                            <label class="form-label fw-bold">EC Expiry Date</label>
-                            {% for application_details in application_details %}
-                                <input type="date" name="ec_expiry_date_v" class="form-control" id="ec_expiry_date_v"
-                                       value="{% if application_details.ec_expiry_date %}{{ application_details.ec_expiry_date|date:'Y-m-d' }}{% endif %}">
-                            {% endfor %}
-                        </div>
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold">TAT (Number of Days)</label>
-                        {% for application_details in application_details %}
-                            <input type="number" name="tat_ecv" class="form-control" id="tat_ecv"
-                                   value="{{ application_details.tat }}" min="1">
-                        {% endfor %}
-                    </div>
-                    <div id="tat_ecvErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                </div>
-
-            </div>
-            <div class="col-md-12 reject_remarks_div_v" style="display: none;">
-                {% for application_details in application_details %}
-                    <div class="card">
-                        <div class="card-body">
-                            <!-- Row to enable proper col-* behavior -->
-                            <div class="row g-3">
-                                <!-- Rejection Remarks (70% width) -->
-                                <div class="col-lg-8">
-                                    <label class="form-label fw-bold">Rejection Remarks Submitted By Verifier:</label>
-                                    <input type="text" name="reject_reason" class="form-control" id="reject_reason"
-                                           value="{{ application_details.reject_remarks|default:'' }}">
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card mt-1">
+                <div class="card-body">
+                    <div class="alert alert-primary">Action Taken</div>
+                        <form method="post" id="verifier_form">
+                            {% csrf_token %}
+                            <div class="row verifierDiv" style="display: none;">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Application Fees</label>
+                                        <input type="number" class="form-control" id="amount" name="amount">
+                                    </div>
+                                    <div id="amount_ErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                 </div>
-                                <div id="reject_reasonErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                <!-- TAT (30% width) -->
-                                <div class="col-lg-4">
-                                    <label class="form-label fw-bold">TAT (No of Days):</label>
-                                    <input type="number" name="tat_v" class="form-control" id="tat_v"
-                                           value="{{ application_details.tat|default:'' }}" min="1" step="1">
+                            </div>
+                            <div class="row forwardTo" style="display: none;">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Forward To</label>
+                                        <select class="form-control" name="forward_to"  id="forward_to">
+                                            <option value="">--SELECT REVIEWER--</option>
+                                            {% for reviewer_list in reviewer_list %}
+                                                <option value="{{ reviewer_list.login_id }}">{{ reviewer_list.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div id="forward_toErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                 </div>
-                                <div id="tat_vErrorMsg" class="alert alert-danger" style="display: none;"></div>
                             </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-            <div class="col-md-12 reject_attachment_div_v" style="display: none;">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="card-widgets">
-                            <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#reject_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
-                        </div>
-                        <h5 class="card-title mb-0">Attach Rejection Letter/Justification</h5>
-                        <div id="cardCollpase7" class="collapse pt-3 show">
-                            <div id="verifier_reject_file_attachment">
-                                {% include 'reject_attachment_page.html' %}
+                            {% if additional_info %}
+                            <div class="row verifier_additional_info_letter" style="display: none;">
+                                <div class="col-lg-12">
+                                <label class="form-label fw-bold mb-2">Additional Information Exchange</label>
+                                {% for info in additional_info %}
+                                    <div class="mb-3 border rounded p-2
+                                        {% if not info.additional_info_proponent %}
+                                            bg-warning bg-opacity-10 border-warning
+                                        {% endif %}">
+                                        <div class="row g-2 align-items-start">
+                                            <!-- CA Remarks -->
+                                            <div class="col-md-4">
+                                                <label class="form-label fw-semibold mb-1 small">
+                                                    Remarks from Competent Authority
+                                                </label>
+                                                <textarea class="form-control form-control-sm"
+                                                      rows="1"
+                                                      readonly>{{ info.additional_info_ca }}</textarea>
+                                            </div>
+                                            <!-- CA Date -->
+                                            <div class="col-md-2">
+                                                <label class="form-label fw-semibold mb-1 small">Remarks Date</label>
+                                                <input class="form-control form-control-sm"
+                                                    value="{{ info.additional_info_ca_date }}"
+                                                    disabled>
+                                            </div>
+                                            <!-- Proponent Response -->
+                                            <div class="col-md-4">
+                                                <label class="form-label fw-semibold mb-1 small">
+                                                    Proponent's Response
+                                                </label>
+                                                <textarea class="form-control form-control-sm"
+                                                      rows="1"
+                                                      readonly>{{ info.additional_info_proponent|default:"" }}</textarea>
+                                            </div>
+                                            <!-- Proponent Date -->
+                                            <div class="col-md-2">
+                                                <label class="form-label fw-semibold mb-1 small">
+                                                    Proponent's Response Date
+                                                </label>
+                                                <input class="form-control form-control-sm"
+                                                   value="{{ info.additional_info_proponent_date|default:'' }}"
+                                                   disabled>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                </div>
+                                <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">File</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                       {% for file_attach in ai_attach %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
+                                                <!-- <td>
+                                                    <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="delete_ai_attachment('{{ file_attach.file_id }}','{{ file_attach.application_no }}')"><i class="uil-trash"></i></button>
+                                                </td> -->
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                              <td colspan="3" class="text-center">No Data</td>
+                                            </tr>
+                                       {% endfor %}
+                                    </tbody>
+                                </table>
                             </div>
-                        </div>
+                            {% endif %}
+                            <div class="row verifier_payment_details" style="display: none;">
+                                <div class="col-lg-12">
+                                <label class="form-label fw-bold mb-2">Payment</label>
+                                {% for payment in payment_details %}
+                                    <div class="mb-3 border rounded p-2
+                                        {% if not info.additional_info_proponent %}
+                                            bg-warning bg-opacity-10 border-warning
+                                        {% endif %}">
+                                        <div class="row g-2 align-items-start">
+                                             <div class="col-md-3">
+                                                <label class="form-label fw-semibold mb-1 small">
+                                                    Payment Advice No
+                                                </label>
+                                                <input class="form-control form-control-sm"
+                                                    value="{{ payment.payment_advice_no }}"
+                                                    disabled>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label fw-semibold mb-1 small">
+                                                    Payable Amount
+                                                </label>
+                                                <input class="form-control form-control-sm"
+                                                    value="{{ payment.total_payable_amount }}"
+                                                    disabled>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label fw-semibold mb-1 small">Receipt No</label>
+                                                <input class="form-control form-control-sm"
+                                                    value="{{ payment.receipt_no }}"
+                                                    disabled>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label fw-semibold mb-1 small">
+                                                    Receipt Date-Time
+                                                </label>
+                                                <input class="form-control form-control-sm"
+                                                    value="{{ payment.receipt_date }}"
+                                                    disabled>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                </div>
+                            </div>
+                            <div class="alert alert-success border-0" role="alert">
+                              EC Details/Information
+                            </div>
+                            <div class="col-md-12 verifier_ec_draft_div" style="display: none;">
+                                <br>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="card-widgets">
+                                            <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#draft_ec_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                        </div>
+                                        <h5 class="card-title mb-0">Draft EC</h5>
+                                        <div id="cardCollpase7" class="collapse pt-3 show">
+                                            <div id="verifier_draft_ec_details">
+                                                {% include 'ec_draft_details.html' %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="ecDraftErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                                <div class="row g-3 align-items-end">
+                                    <div class="col-md-6">
+                                            <label class="form-label fw-bold">EC Expiry Date</label>
+                                            {% for application_details in application_details %}
+                                                <input type="date" name="ec_expiry_date_v" class="form-control" id="ec_expiry_date_v"
+                                                       value="{% if application_details.ec_expiry_date %}{{ application_details.ec_expiry_date|date:'Y-m-d' }}{% endif %}">
+                                            {% endfor %}
+                                        </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">TAT (Number of Days)</label>
+                                        {% for application_details in application_details %}
+                                            <input type="number" name="tat_ecv" class="form-control" id="tat_ecv"
+                                                   value="{{ application_details.tat }}" min="1">
+                                        {% endfor %}
+                                    </div>
+                                    <div id="tat_ecvErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-12 reject_remarks_div_v" style="display: none;">
+                                {% for application_details in application_details %}
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <!-- Row to enable proper col-* behavior -->
+                                            <div class="row g-3">
+                                                <!-- Rejection Remarks (70% width) -->
+                                                <div class="col-lg-8">
+                                                    <label class="form-label fw-bold">Rejection Remarks Submitted By Verifier:</label>
+                                                    <input type="text" name="reject_reason" class="form-control" id="reject_reason"
+                                                           value="{{ application_details.reject_remarks|default:'' }}">
+                                                </div>
+                                                <div id="reject_reasonErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                                <!-- TAT (30% width) -->
+                                                <div class="col-lg-4">
+                                                    <label class="form-label fw-bold">TAT (No of Days):</label>
+                                                    <input type="number" name="tat_v" class="form-control" id="tat_v"
+                                                           value="{{ application_details.tat|default:'' }}" min="1" step="1">
+                                                </div>
+                                                <div id="tat_vErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-12 reject_attachment_div_v" style="display: none;">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="card-widgets">
+                                            <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#reject_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                        </div>
+                                        <h5 class="card-title mb-0">Attach Rejection Letter/Justification</h5>
+                                        <div id="cardCollpase7" class="collapse pt-3 show">
+                                            <div id="verifier_reject_file_attachment">
+                                                {% include 'reject_attachment_page.html' %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alert alert-success border-0 rounded-0" role="alert" id="verifier_application_successMsg" style="display:none">
+                                <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                            </div>
+                            <div class="alert alert-danger border-0 rounded-0" role="alert" id="verifier_application_errorMsg" style="display:none">
+                                <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                            </div>
+                            <div id="pageloader" class="spinner-container mt-4" style="display:none;" tabindex="-1">
+                                <div class="spinner-wrapper">
+                                    <div class="spinner-border text-primary spinner-lg" role="status" aria-live="polite">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p class="text-muted">Please wait, this may take a few moments.</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="mb-3 R_button" style="display:none;">
+                                    <a href="#" class="btn btn-success" onclick="forwardApplication('R')">
+                                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Reviewer </a>
+                                </div>
+                                <div class="mb-3 P_button" style="display:none;">
+                                    <a href="#" class="btn btn-success" onclick="forwardApplication('P')">
+                                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit Payment </a>
+                                </div>
+                                <div class="mb-3 ALA_button" style="display:none;">
+                                    <a href="#" class="btn btn-success" onclick="forwardApplication('ALA')">
+                                        <i class="mdi mdi-checkbox-marked-circle-outline me-1"></i> Additional Information Required </a>
+                                    <a href="#" class="btn btn-danger" onclick="forwardApplication('ALR')">
+                                        <i class="uil uil-multiply me-1"></i> Additional Information Not Required </a>
+                                </div>
+                                <div class="mb-3 approveButton" style="display:none;">
+                                    <a href="#" class="btn btn-success" onclick="forwardApplication('A')">
+                                        <i class="ri-check-line me-1 align-middle font-16"></i> Approve </a>
+                                </div>
+
+                                <div class="mb-3 rejectButton" style="display: none;">
+                                    <button type="button"
+                                            class="btn btn-success"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#rejectConfirmModal">
+                                        <i class="ri-check-line me-1 align-middle font-16"></i> Reject
+                                    </button>
+                                </div>
+
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
-            <div class="alert alert-success border-0 rounded-0" role="alert" id="verifier_application_successMsg" style="display:none">
-                <i class="uil-folder-heart me-1 h4 align-middle"></i>
-            </div>
-            <div class="alert alert-danger border-0 rounded-0" role="alert" id="verifier_application_errorMsg" style="display:none">
-                <i class="uil-folder-heart me-1 h4 align-middle"></i>
-            </div>
-            <div id="pageloader" class="spinner-container mt-4" style="display:none;" tabindex="-1">
-                <div class="spinner-wrapper">
-                    <div class="spinner-border text-primary spinner-lg" role="status" aria-live="polite">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <p class="text-muted">Please wait, this may take a few moments.</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="mb-3 R_button" style="display:none;">
-                    <a href="#" class="btn btn-success" onclick="forwardApplication('R')">
-                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward To Reviewer </a>
-                </div>
-                <div class="mb-3 P_button" style="display:none;">
-                    <a href="#" class="btn btn-success" onclick="forwardApplication('P')">
-                        <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit Payment </a>
-                </div>
-                <div class="mb-3 ALA_button" style="display:none;">
-                    <a href="#" class="btn btn-success" onclick="forwardApplication('ALA')">
-                        <i class="mdi mdi-checkbox-marked-circle-outline me-1"></i> Additional Information Required </a>
-                    <a href="#" class="btn btn-danger" onclick="forwardApplication('ALR')">
-                        <i class="uil uil-multiply me-1"></i> Additional Information Not Required </a>
-                </div>
-                <div class="mb-3 approveButton" style="display:none;">
-                    <a href="#" class="btn btn-success" onclick="forwardApplication('A')">
-                        <i class="ri-check-line me-1 align-middle font-16"></i> Approve </a>
-                </div>
-
-                <div class="mb-3 rejectButton" style="display: none;">
-                    <button type="button"
-                            class="btn btn-success"
-                            data-bs-toggle="modal"
-                            data-bs-target="#rejectConfirmModal">
-                        <i class="ri-check-line me-1 align-middle font-16"></i> Reject
-                    </button>
-                </div>
-
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-</div>
 </div>
 
 <div class="modal fade" id="rejectConfirmModal" tabindex="-1" aria-labelledby="rejectConfirmModalLabel" aria-hidden="true">
@@ -1740,7 +1761,7 @@ $(function() {
         }
         else if(status == 'P' && assigned_role_name == 'Reviewer')
         {
-            $('#verifier_details_accordian .alert-primary').text('Reviewer Details');
+            $('#verifier_details_accordian .alert-primary').text('Action Taken');
             $('.verifierDiv').show();
             $('.P_button').show();
         }

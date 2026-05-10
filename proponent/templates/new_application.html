@@ -64,25 +64,42 @@
         $.ajax({
             type: "GET",
             url: "{% url 'get_application_service_id' %}",
-            data: {'activity': activity},
+            data: {
+                activity: activity
+            },
             success: function(data) {
-                colour_code = data.colour_code;
-                has_tor = data.has_tor;
-                mas_integration = data.mas_integration;
+                const colour_code = data.colour_code;
+                const has_tor = data.has_tor;
+                const mas_integration = data.mas_integration;
 
-                if(colour_code == 'Green') {
-                    $('#alertMsg').html("No need For Environment Clearance.");
-                    $('#alertMsg').show();
-                    $('#alertMsg').delay(2000).fadeOut('slow');
+                // Green category
+                if (colour_code === 'Green') {
+
+                    $('#alertMsg')
+                        .html("No need for Environment Clearance.")
+                        .show()
+                        .delay(2000)
+                        .fadeOut('slow');
+
+                    return;
                 }
-                else {
-                    if(has_tor == 'No' && colour_code == 'Blue') {
-                        window.location.href = '/application_form';
-                    }
-                    else {
-                        window.location.href = '/tor_form';
-                    }
+
+                // TOR required only if:
+                // has_tor == 'Yes' AND colour_code == 'Red'
+                if (has_tor === 'Yes' && colour_code === 'Red') {
+                    window.location.href = '/tor_form';
+                } else {
+                    window.location.href = '/application_form';
                 }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error fetching application details:", error);
+
+                $('#alertMsg')
+                    .html("Something went wrong. Please try again.")
+                    .show()
+                    .delay(2000)
+                    .fadeOut('slow');
             }
         });
     }

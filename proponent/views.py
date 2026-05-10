@@ -1,29 +1,33 @@
 from datetime import date, datetime, timedelta, timezone
 import json
 import logging
-from django.db import transaction
+
 import threading
 import re
 import secrets
 import random
 import zlib
+import requests
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.db import connection
+from django.shortcuts import redirect, render
 from django.contrib.sessions.models import Session
 
+from datetime import datetime
+from django.utils import timezone
+from django.db import transaction
 from django.http import JsonResponse
-from django.shortcuts import redirect, render
-import requests
-from django.db.models import Count, Subquery, OuterRef,Exists
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+
+
+from django.db.models import Count, Subquery, OuterRef,Exists
 from django.core.files.storage import FileSystemStorage
 from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.conf import settings
-from django.db import transaction
 from django.db.models import Max
-from django.utils import timezone
 from django_extensions.management.jobs import noneimplementation
 
 from pyasn1.codec.ber.eoo import endOfOctets
@@ -122,7 +126,6 @@ def get_application_service_id(request):
             'has_tor': activity_details.has_tor,
             'mas_integration': activity_details.mas_integration
         }
-
     return JsonResponse(data)
 
 def application_form(request):
@@ -554,8 +557,11 @@ def save_general_details(request):
     return JsonResponse(data)
 
 # Save NEW General Details START
+@csrf_exempt
+@require_http_methods(["POST"])
 def save_new_general_details(request):
     data = {'message': 'failure'}
+
     try:
         post_data = request.POST
         session = request.session
@@ -563,15 +569,13 @@ def save_new_general_details(request):
         # Get the application number from POST data
         application_no = post_data.get('application_no')
         identifier = post_data.get('identifier', '')
-        #print(f"DEBUG: application_no from POST: {application_no}, identifier: {identifier}")
-        #print(f"DEBUG: Final application_no: {application_no}")
 
         # Check if application already exists
         existing_app = None
         if application_no:
             existing_app = t_ec_application_t1.objects.filter(
                 application_no=application_no
-            ).first()
+            ).select_related('service_id').first()
 
         # Service code mapping
         SERVICE_CODE_MAP = {
@@ -580,7 +584,8 @@ def save_new_general_details(request):
         }
 
         # Get location details
-        if post_data.get('dzongkhag_throm') == 'Dzongkhag':
+        dzongkhag_throm = post_data.get('dzongkhag_throm')
+        if dzongkhag_throm == 'Dzongkhag':
             dzongkhag_code = post_data.get('dzongkhag')
             gewog_code = post_data.get('gewog')
             village_code = post_data.get('vil_chiwog')
@@ -605,31 +610,38 @@ def save_new_general_details(request):
 
         service_code = SERVICE_CODE_MAP.get(str(service_id), 'GEN')
 
-        # Determine competent authority
+        # Determine competent authority - optimized with single query
         ca_auth = session.get('ca_auth')
-        print(ca_auth)
-        if ca_auth =='DEC' and dzongkhag_code:
+        ca_auth_id = ca_auth  # Default value
+
+        if ca_auth == 'DEC' and dzongkhag_code:
             auth_record = t_competant_authority_master.objects.filter(
                 competent_authority=ca_auth,
                 dzongkhag_code_id=dzongkhag_code
-            ).first()
-            ca_auth_id = auth_record.competent_authority_id if auth_record else ca_auth
+            ).values_list('competent_authority_id', flat=True).first()
+            ca_auth_id = auth_record if auth_record else ca_auth
+
         elif ca_auth == 'THROMDE' and thromde_id:
             auth_record = t_competant_authority_master.objects.filter(
                 competent_authority=ca_auth,
                 thromde_id_id=thromde_id
-            ).first()
-            ca_auth_id = auth_record.competent_authority_id if auth_record else ca_auth
-        else:
+            ).values_list('competent_authority_id', flat=True).first()
+            ca_auth_id = auth_record if auth_record else ca_auth
+
+        elif ca_auth:
             auth_record = t_competant_authority_master.objects.filter(
                 competent_authority=ca_auth
-            ).first()
-            ca_auth_id = auth_record.competent_authority_id if auth_record else ca_auth
+            ).values_list('competent_authority_id', flat=True).first()
+            ca_auth_id = auth_record if auth_record else ca_auth
+
+        # Get current time once
+        current_date = timezone.now().date()
+        current_datetime = timezone.now()
 
         # Prepare data
         common_data = {
             'application_no': application_no,
-            'application_date': timezone.now().date(),
+            'application_date': current_date,
             'application_type': 'New',
             'application_source': 'ECSS',
             'application_status': 'P',
@@ -647,7 +659,7 @@ def save_new_general_details(request):
             'location_name': post_data.get('project_site'),
             'project_name': post_data.get('project_name'),
             'project_description': post_data.get('project_description'),
-            'dzongkhag_throm': post_data.get('dzongkhag_throm'),
+            'dzongkhag_throm': dzongkhag_throm,
             'service_type': 'Main Activity',
             'service_id': service_id,
             'colour_code': color_code,
@@ -659,71 +671,75 @@ def save_new_general_details(request):
             'ca_authority': ca_auth_id,
             'tor_application_no': post_data.get('tor_no'),
             'mas_integration': post_data.get('mas_integration'),
-            'fmfsr_no' : post_data.get('fmfsr_no'),
-
+            'fmfsr_no': post_data.get('fmfsr_no'),
         }
 
         with transaction.atomic():
             if existing_app:
                 # UPDATE existing application
-                #print(f"DEBUG: Updating application {application_no}")
-                # Remove application_no from update data
                 update_data = common_data.copy()
-                del update_data['application_no']
+                update_data.pop('application_no', None)  # Remove application_no if exists
                 t_ec_application_t1.objects.filter(
                     application_no=application_no
                 ).update(**update_data)
+
+                # Update workflow if exists
                 t_workflow_dtls.objects.filter(
                     application_no=application_no
-                ).update(ca_authority=ca_auth_id,)
+                ).update(ca_authority=ca_auth_id)
+
             else:
-                # CREATE new application (only if we don't have application_no)
+                # CREATE new application
                 if not application_no:
-                    # Generate new application number
-                    # application_no = get_application_no(request, service_code, service_id)
                     application_no = get_new_application_no(request, service_code)
                     common_data['application_no'] = application_no
-                print(f"DEBUG: Creating new application {application_no}")
+
                 t_ec_application_t1.objects.create(**common_data)
+
                 # Create workflow
                 t_workflow_dtls.objects.create(
                     application_no=application_no,
                     service_id=service_id,
                     application_status='P',
-                    actor_id=request.session['login_id'],
-                    actor_name=request.session['name'],
+                    actor_id=session.get('login_id'),
+                    actor_name=session.get('name'),
                     assigned_role_id='3',
                     assigned_role_name='Reviewer',
                     ca_authority=ca_auth_id,
                     application_source='ECSS',
                     service_type='Main Activity',
                 )
+
             # Save application number to session for future tabs
             if application_no:
                 request.session['current_application_no'] = application_no
-            # Create history
+
+            # Create history entry (always create new history record)
             t_application_history.objects.create(
                 application_no=application_no,
-                application_date=timezone.now().date(),
+                application_date=current_date,
                 applicant_id=session.get('email'),
                 ca_authority=ca_auth_id,
                 service_id=service_id,
                 application_status='P',
-                action_date=timezone.now(),
+                action_date=current_datetime,
                 actor_id=session.get('login_id'),
                 actor_name=session.get('name'),
                 remarks=None,
                 status=None
             )
+
             data.update({
                 'message': 'success',
                 'application_no': application_no
             })
+
     except Exception as e:
         print(f'An error occurred: {e}')
         import traceback
         traceback.print_exc()
         data['error'] = str(e)
+
     return JsonResponse(data)
 # Save NEW General Details END
 
@@ -906,12 +922,13 @@ def save_draft_general_details(request):
         post_data = request.POST
         session = request.session
 
-        # Get the application number from POST data
         application_no = post_data.get('application_no')
-        identifier = post_data.get('identifier', '')
+        if not application_no:
+            return JsonResponse({'message': 'failure', 'error': 'Application number missing'}, status=400)
 
-        # Get location details
-        if post_data.get('dzongkhag_throm') == 'Dzongkhag':
+        # 1. Get location details efficiently
+        dzongkhag_throm = post_data.get('dzongkhag_throm')
+        if dzongkhag_throm == 'Dzongkhag':
             dzongkhag_code = post_data.get('dzongkhag')
             gewog_code = post_data.get('gewog')
             village_code = post_data.get('vil_chiwog')
@@ -922,37 +939,34 @@ def save_draft_general_details(request):
             village_code = None
             thromde_id = post_data.get('thromde_id')
 
-        # START Fetch Activity, Service, ca_auth from the existing record.
-        # These values do not change during the draft application. Its already been selected and saved While saving the New Application
-        activity_details = t_ec_application_t1.objects.filter(application_no=application_no).first()
-        draft_activity = activity_details.activity
+        # 2. Optimized Fetch Activity & Authority (One step further: check if they exist)
+        # Using .values() to avoid overhead of model instances
+        app_info = t_ec_application_t1.objects.filter(application_no=application_no).values('activity').first()
+        if not app_info:
+            return JsonResponse({'message': 'failure', 'error': 'Application not found'}, status=404)
 
-        ca_details = t_bsic_code.objects.filter(activity=draft_activity).first()
-        ca_auth = ca_details.competent_authority
+        draft_activity = app_info['activity']
 
-        #print(ca_auth)
+        # Get the ca_auth string from basic code master
+        ca_auth = t_bsic_code.objects.filter(activity=draft_activity).values_list('competent_authority',
+                                                                                  flat=True).first()
 
-        # END Fetch Activity, Service, ca_auth from the existing record.
+        # 3. Determine competent authority ID (Optimized lookup like Version 1)
+        ca_auth_id = ca_auth  # Fallback
 
-        if ca_auth =='DEC' and dzongkhag_code:
-            auth_record = t_competant_authority_master.objects.filter(
-                competent_authority=ca_auth,
-                dzongkhag_code_id=dzongkhag_code
-            ).first()
-            ca_auth_id = auth_record.competent_authority_id if auth_record else ca_auth
-        elif ca_auth == 'THROMDE' and thromde_id:
-            auth_record = t_competant_authority_master.objects.filter(
-                competent_authority=ca_auth,
-                thromde_id_id=thromde_id
-            ).first()
-            ca_auth_id = auth_record.competent_authority_id if auth_record else ca_auth
-        else:
-            auth_record = t_competant_authority_master.objects.filter(
-                competent_authority=ca_auth
-            ).first()
-            ca_auth_id = auth_record.competent_authority_id if auth_record else ca_auth
+        if ca_auth:
+            query = t_competant_authority_master.objects.filter(competent_authority=ca_auth)
 
-        # Prepare data
+            if ca_auth == 'DEC' and dzongkhag_code:
+                query = query.filter(dzongkhag_code_id=dzongkhag_code)
+            elif ca_auth == 'THROMDE' and thromde_id:
+                query = query.filter(thromde_id_id=thromde_id)
+
+            auth_id_record = query.values_list('competent_authority_id', flat=True).first()
+            if auth_id_record:
+                ca_auth_id = auth_id_record
+
+        # 4. Prepare data for update
         update_data = {
             'focal_person': post_data.get('focal_person'),
             'dzongkhag_code': dzongkhag_code,
@@ -962,18 +976,15 @@ def save_draft_general_details(request):
             'location_name': post_data.get('project_site'),
             'project_name': post_data.get('project_name'),
             'project_description': post_data.get('project_description'),
-            'dzongkhag_throm': post_data.get('dzongkhag_throm'),
+            'dzongkhag_throm': dzongkhag_throm,
             'ca_authority': ca_auth_id
         }
 
         with transaction.atomic():
-            t_ec_application_t1.objects.filter(
-                application_no=application_no
-            ).update(**update_data)
+            # Perform updates
+            t_ec_application_t1.objects.filter(application_no=application_no).update(**update_data)
 
-            t_workflow_dtls.objects.filter(
-                application_no=application_no
-            ).update(ca_authority=ca_auth_id)
+            t_workflow_dtls.objects.filter(application_no=application_no).update(ca_authority=ca_auth_id)
 
         data.update({
             'message': 'success',
@@ -982,7 +993,8 @@ def save_draft_general_details(request):
         return JsonResponse(data, status=200)
 
     except Exception as e:
-        print('An error occurred:', e)
+        import traceback
+        traceback.print_exc()
         data['error'] = str(e)
         return JsonResponse(data, status=500)
 # Save DRAFT General Details END
@@ -3962,7 +3974,6 @@ def view_tor_application_details(request):
         village = t_village_master.objects.all()
         thromde = t_thromde_master.objects.all()
 
-
     return render(request, 'new_application_form_tor.html',{'thromde':thromde,
                                                 'ec_renewal_count':ec_renewal_count,
                                                 'tor_application_count':tor_application_count,
@@ -4181,9 +4192,9 @@ def report_list(request):
         )
         # EC Renewal List ( Due for renewal)
         expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-        ec_renewal_count = t_ec_application_t1.objects.filter(
+        ec_renewal_count = t_ec_t1.objects.filter(
             ca_authority=ca_authority,
-            application_status='A',
+            status='A',
             ec_expiry_date__lt=expiry_date_threshold
         ).count()
 
@@ -4219,8 +4230,8 @@ def view_report_details(request):
     if request.session.get('ca_authority') is not None:
         v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
         expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-        ec_renewal_count = t_ec_application_t1.objects.filter(ca_authority=request.session['ca_authority'],
-                                                                                    application_status='A',
+        ec_renewal_count = t_ec_t1.objects.filter(ca_authority=request.session['ca_authority'],
+                                                                                    status='A',
                                                                                     ec_expiry_date__lt=expiry_date_threshold).count()
         
     return render(request, 'report_submission/report_details.html',
@@ -4496,9 +4507,9 @@ def ec_print_list(request):
         ).count()
         # print(p_application_count)
         # Fixed: EC renewals due within 60 days - ONLY calculated ONCE
-        ec_renewal_count = t_ec_application_t1.objects.filter(
+        ec_renewal_count = t_ec_t1.objects.filter(
             ca_authority=ca_authority,
-            application_status='A',
+            status='A',
             ec_expiry_date__lt=expiry_date_threshold,
             ec_expiry_date__isnull=False  # Added safety check
         ).count()
@@ -5055,73 +5066,147 @@ def ecss_payment_update(request):
         try:
             # Decode and strip raw body
             raw_body = request.body.decode('utf-8').strip()
-            
+
             # Remove unwanted characters and prefix using regex
             cleaned_body = re.sub(r'^Payload :', '', raw_body).strip()
-            
+
             # Remove invisible or non-printable characters
             cleaned_body = ''.join(char for char in cleaned_body if char.isprintable())
-            
+
             # Check for empty body
             if not cleaned_body:
                 return JsonResponse({"statusCode": "400", "statusDescription": "Empty request body"}, status=400)
-            
+
             # Attempt to parse the JSON from cleaned_body
             data = json.loads(cleaned_body)
+
+            # Extract required fields with better error handling
+            required_fields = ['refNo', 'receiptList', 'paymentMethod', 'paymentMode', 'instrumentDate', 'responseDate']
+            for field in required_fields:
+                if field not in data:
+                    return JsonResponse({
+                        "statusCode": "400",
+                        "statusDescription": f"Missing required field: {field}"
+                    }, status=400)
+
             ref_no = data['refNo']
-            
             receipt_list = data['receiptList']
+
+            if not receipt_list:
+                return JsonResponse({
+                    "statusCode": "400",
+                    "statusDescription": "receiptList cannot be empty"
+                }, status=400)
+
             payment_method = data['paymentMethod']
             payment_mode = data['paymentMode']
             instrument_date = data['instrumentDate']
+
             # Extracting values from receipt list
             receipt = receipt_list[0]  # Assuming there's only one receipt in the list
+
+            # Validate receipt fields
+            receipt_required = ['receiptNo', 'receiptDate', 'paymentAdviceStatus', 'paymentAdviceAmountPaid']
+            for field in receipt_required:
+                if field not in receipt:
+                    return JsonResponse({
+                        "statusCode": "400",
+                        "statusDescription": f"Missing required field in receipt: {field}"
+                    }, status=400)
+
             receipt_no = receipt['receiptNo']
             receipt_date = receipt['receiptDate']
             payment_advice_status = receipt['paymentAdviceStatus']
             responseDate = data['responseDate']
             payment_advice_amount_paid = receipt['paymentAdviceAmountPaid']
-            
-            instrument_date_datetime = datetime.fromisoformat(instrument_date.replace('Z', '+00:00'))
-            instrument_date_datetime_utc = instrument_date_datetime.astimezone(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
 
-            original_receipt_date = datetime.strptime(receipt_date, "%Y-%m-%d %H:%M:%S")
-            formatted_receipt_date = original_receipt_date.strftime("%Y-%m-%d %H:%M:%S")
-            
-            original_responseDate = datetime.strptime(responseDate, "%a %b %d %H:%M:%S BTT %Y")
-            formatted_responseDate = original_responseDate.strftime("%Y-%m-%d %H:%M:%S")
+            # Convert dates with proper error handling
+            try:
+                # Handle instrument_date
+                instrument_date_clean = instrument_date.replace('Z', '+00:00')
+                instrument_date_datetime = datetime.fromisoformat(instrument_date_clean)
+                instrument_date_datetime_utc = instrument_date_datetime.astimezone(timezone.utc).strftime(
+                    "%Y-%m-%d %H:%M:%S")
+            except Exception as e:
+                return JsonResponse({
+                    "statusCode": "400",
+                    "statusDescription": f"Invalid instrument_date format: {str(e)}"
+                }, status=400)
 
+            try:
+                original_receipt_date = datetime.strptime(receipt_date, "%Y-%m-%d %H:%M:%S")
+                formatted_receipt_date = original_receipt_date.strftime("%Y-%m-%d %H:%M:%S")
+            except Exception as e:
+                return JsonResponse({
+                    "statusCode": "400",
+                    "statusDescription": f"Invalid receipt_date format: {str(e)}"
+                }, status=400)
+
+            try:
+                # Handle different date formats for responseDate
+                try:
+                    original_responseDate = datetime.strptime(responseDate, "%a %b %d %H:%M:%S BTT %Y")
+                except ValueError:
+                    original_responseDate = datetime.strptime(responseDate, "%Y-%m-%d %H:%M:%S")
+                formatted_responseDate = original_responseDate.strftime("%Y-%m-%d %H:%M:%S")
+            except Exception as e:
+                return JsonResponse({
+                    "statusCode": "400",
+                    "statusDescription": f"Invalid responseDate format: {str(e)}"
+                }, status=400)
+
+            # Check if payment record exists before updating
             payment_details = t_payment_details.objects.filter(application_no=ref_no)
-            payment_details.update(
-                payment_method = payment_method,
-                payment_mode = payment_mode,
-                instrument_date = instrument_date_datetime_utc,
-                receipt_no = receipt_no,
-                receipt_date = formatted_receipt_date,
-                payment_advice_status = payment_advice_status,
-                response_date = formatted_responseDate,
-                payment_advice_amount_paid = payment_advice_amount_paid
+
+            if not payment_details.exists():
+                return JsonResponse({
+                    "statusCode": "404",
+                    "statusDescription": f"No payment record found for application_no: {ref_no}"
+                }, status=404)
+
+            # Perform the update
+            updated_count = payment_details.update(
+                payment_method=payment_method,
+                payment_mode=payment_mode,
+                instrument_date=instrument_date_datetime_utc,
+                receipt_no=receipt_no,
+                receipt_date=formatted_receipt_date,
+                payment_advice_status=payment_advice_status,
+                response_date=formatted_responseDate,
+                payment_advice_amount_paid=payment_advice_amount_paid
             )
+
+            # Log successful update (optional)
+            print(f"Payment details updated for application_no: {ref_no}, rows updated: {updated_count}")
 
             response_data = {
                 "statusCode": "200",
                 "statusDescription": "Payment Details received successfully",
             }
-            
+
             return JsonResponse(response_data)
-        
+
         except json.JSONDecodeError as e:
-            # Handle JSON parse error
             print("JSONDecodeError:", str(e))
-            return JsonResponse({"statusCode": "400", "statusDescription": "Invalid JSON payload"}, status=400)
-        
+            return JsonResponse({
+                "statusCode": "400",
+                "statusDescription": f"Invalid JSON payload: {str(e)}"
+            }, status=400)
+
         except Exception as e:
-            # Handle other exceptions
             print("Error:", str(e))
-            return JsonResponse({"statusCode": "400", "statusDescription": "Bad Request"}, status=400)
+            import traceback
+            traceback.print_exc()
+            return JsonResponse({
+                "statusCode": "500",
+                "statusDescription": f"Server Error: {str(e)}"
+            }, status=500)
     else:
-        # Handle non-POST requests
-        return JsonResponse({"statusCode": "405", "statusDescription": "Method not allowed"}, status=405)
+        return JsonResponse({
+            "statusCode": "405",
+            "statusDescription": "Method not allowed. Only POST requests are accepted."
+        }, status=405)
+
 
 @csrf_exempt
 def ecss_payment_reversal(request):
@@ -5329,7 +5414,7 @@ def save_old_ec_general_details(request):
         ec_validity = request.POST.get('ec_validity')
         service_type_to_use = 'Main Activity'
 
-        # 🔥 CRITICAL FIX: Initialize ALL variables early
+        # CRITICAL FIX: Initialize ALL variables early
         service_id_to_use = None
         activity_to_use = None
         color_code_to_use = None
@@ -5422,7 +5507,7 @@ def save_old_ec_general_details(request):
         }
 
         with transaction.atomic():
-            # 🔥 CRITICAL FIX: Determine ca_auth with proper error handling
+            #  CRITICAL FIX: Determine ca_auth with proper error handling
             if ca_auth is None:
                 try:
                     # Method 1: Get from activity
@@ -5470,7 +5555,7 @@ def save_old_ec_general_details(request):
                     print(f"Error determining ca_auth: {ca_error}")
                     ca_auth = None
 
-            # 🔥 CRITICAL VALIDATION: Ensure ca_auth is not None
+            #  CRITICAL VALIDATION: Ensure ca_auth is not None
             if ca_auth is None:
                 error_msg = "Unable to determine competent authority (ca_auth). Please check activity and location data."
                 print(f"ERROR: {error_msg}")
@@ -5537,7 +5622,7 @@ def save_old_ec_general_details(request):
             data['application_no'] = application_no
 
     except Exception as e:
-        print(f'❌ An error occurred: {e}')
+        print(f'An error occurred: {e}')
         import traceback
         print(f'📊 Traceback: {traceback.format_exc()}')
         data['error'] = str(e)

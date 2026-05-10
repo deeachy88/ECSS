@@ -54,9 +54,9 @@ def verify_application_list(request):
 
         # EC Renewal List ( Due for renewal)
         expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-        ec_renewal_count = t_ec_application_t1.objects.filter(
+        ec_renewal_count = t_ec_t1.objects.filter(
             ca_authority=ca_authority,
-            application_status='A',
+            status='A',
             ec_expiry_date__lt=expiry_date_threshold
         ).count()
         
@@ -1046,9 +1046,9 @@ def payment_list(request):
 
     # EC Renewal List ( Due for renewal)
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-    ec_renewal_count = t_ec_application_t1.objects.filter(
+    ec_renewal_count = t_ec_t1.objects.filter(
         ca_authority=ca_authority,
-        application_status='A',
+        status='A',
         ec_expiry_date__lt=expiry_date_threshold
     ).count()
 
@@ -1147,7 +1147,7 @@ def view_application_details(request):
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
         thromde = t_thromde_master.objects.all()
-        reviewer_list = t_user_master.objects.filter(role_id='3', agency_code=ca_auth)
+        reviewer_list = t_user_master.objects.filter(role_id__in=['3', '5'], agency_code=ca_auth)
         file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='TOR')
         tor_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RTOR')
         additional_info = t_ec_additional_information.objects.filter(application_no=application_no).order_by('-record_id')
@@ -3677,8 +3677,8 @@ def inspection_list(request):
         ).count()
 
         expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-        ec_renewal_count = t_ec_application_t1.objects.filter(ca_authority=request.session['ca_authority'],
-                                                                                  application_status='A',
+        ec_renewal_count = t_ec_t1.objects.filter(ca_authority=request.session['ca_authority'],
+                                                                                  status='A',
                                                                                   ec_expiry_date__lt=expiry_date_threshold).count()
     
     response = render(request, 'inspection/inspection.html', {
@@ -4191,8 +4191,8 @@ def fines_penalties(request):
     ).count()
 
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-    ec_renewal_count = t_ec_application_t1.objects.filter(ca_authority=request.session['ca_authority'],
-                                                          application_status='A',
+    ec_renewal_count = t_ec_t1.objects.filter(ca_authority=request.session['ca_authority'],
+                                                          status='A',
                                                           ec_expiry_date__lt=expiry_date_threshold).count()
 
     response = render(request, 'fines_penalties.html',

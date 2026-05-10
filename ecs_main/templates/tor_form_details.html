@@ -202,153 +202,225 @@
         </div>
     </div>
     <!-- Reviewer Details Accordian -->
-    <div class="card-body" id="reviewer_details_accordian" style="display:none;">
-        <div class="alert alert-primary">Reviewer Details</div>
-        <form method="post" id="reviewer_form">
-            {% csrf_token %}
-            <!-- Change verifierPaymentDiv to ID -->
-            <div class="row" id="verifierPaymentDiv" style="display: none;">
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Application Fees</label>
-                        <input type="number" class="form-control" id="amount" name="amount">
-                    </div>
-                    <div id="amount_ErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                </div>
-            </div>
-            <div class="mb-3 P_button" style="display:none;">
-                <a href="#" class="btn btn-success" onclick="forwardApplication('P')">
-                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit Payment </a>
-            </div>
-            <div id="pageloader" class="spinner-container mt-4" style="display:none;" tabindex="-1">
-                <div class="spinner-wrapper">
-                    <div class="spinner-border text-primary spinner-lg" role="status" aria-live="polite">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <p class="mt-3 fw-bold text-primary fs-5">Processing Payment...</p>
-                    <p class="text-muted">Please wait, this may take a few moments.</p>
-                </div>
-            </div>
-            <div class="alert alert-success border-0 rounded-0" role="alert" id="reviewer_application_successMsg" style="display:none">
-                <i class="uil-folder-heart me-1 h4 align-middle"></i>
-            </div>
-            <div class="alert alert-danger border-0 rounded-0" role="alert" id="reviewer_application_errorMsg" style="display:none">
-                <i class="uil-folder-heart me-1 h4 align-middle"></i>
-            </div>
-            <div class="col-md-12 reviewer_attach_details" style="display: none;">
-                <div class="card">
+    <div class="card-body" id="reviewer_details_accordian" style="display: none;">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card mt-1">
                     <div class="card-body">
-                        <div class="card-widgets">
-                            <button type="button" class="btn btn-primary btn-sm"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#rev_tor_attachment_modal">
-                                <i class="mdi mdi-plus me-2"></i>Add
-                            </button>
-                        </div>
-                        <h5 class="card-title mb-0">DRAFT TOR</h5>
-                        <div id="cardCollpase7" class="collapse pt-3 show">
-                            <div id="tor_rev_attachment">
-                                {% include 'tor_attachment_page.html' %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="alert alert-success border-0 rounded-0" role="alert" id="tor_form_successMsg" style="display:none">
-                <i class="uil-folder-heart me-1 h4 align-middle"></i>
-            </div>
-            <div class="col-lg-12 tor_remarks_div"  style="display: none;">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Remarks</label>
-                    <textarea class="form-control" name="tor_remarks" id="tor_remarks" rows="2"></textarea>
-                </div>
-            </div>
-            <div class="mb-3 F_button" style="display:none;">
-                <a href="#" id="forwardBtn" class="btn btn-success" onclick="forward_tor_form('FT')">
-                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward
-                </a>
-            </div>
-        </form>
-    </div>
-    <!-- Verifier Details Accordian -->
-    <div class="card-body" id="verifier_details_accordian" style="display:none;">
-        <div class="alert alert-primary">Verifier Details</div>
-            <form method="post" id="verifier_form">
-                {% csrf_token %}
-                <!-- One line: Forward To | Remarks | Button -->
-                <div class="row g-2 align-items-end" id="verifierForwardDiv" style="display:none;">
-                    <div class="col-lg-4">
-                        <label class="form-label fw-bold">Forward To</label>
-                        <select class="form-control" name="forward_to" id="forward_to">
-                        <option value="">--SELECT REVIEWER--</option>
-                        {% for reviewer_list in reviewer_list %}
-                          <option value="{{ reviewer_list.login_id }}">{{ reviewer_list.name }}</option>
-                        {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-lg-3 text-lg-end" id="verifierForwardButtonDiv" style="display:none;">
-                        <button type="button" class="btn btn-success" onclick="forward_tor_form('R')">
-                            <i class="mdi mdi-arrow-right me-1"></i> Forward
-                        </button>
-                    </div>
-                </div>
-                <div class="alert alert-danger border-0 rounded-0" role="alert" id="tor_form_errorMsg" style="display:none">
-                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                </div>
-                <div id="pageloader" class="spinner-container mt-4" style="display:none;" tabindex="-1">
-                <div class="spinner-wrapper">
-                    <div class="spinner-border text-primary spinner-lg" role="status" aria-live="polite">
-                        <span class="visually-hidden">Loading...</span>
-                        </div>
-                        <p class="mt-3 fw-bold text-primary fs-5">Processing...</p>
-                        <p class="text-muted">Please wait, this may take a few moments.</p>
-                    </div>
-                </div>
-                <div class="row" id="verifier_attach_detailsDiv" style="display: none;">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="card-widgets">
-                                <button type="button" class="btn btn-primary btn-sm"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#ver_tor_attachment_modal">
-                                    <i class="mdi mdi-plus me-2"></i>Add
-                                </button>
-                            </div>
-                            <h5 class="card-title mb-0">DRAFT TOR</h5>
-                            <div id="cardCollpase7" class="collapse pt-3 show">
-                                <div id="tor_ver_attachment">
-                                    {% include 'tor_ver_attachment_page.html' %}
+
+                        <!-- Section Header -->
+                        <div class="alert alert-primary mb-3">Action Taken</div>
+
+                        <form method="post" id="reviewer_form">
+                            {% csrf_token %}
+
+                            <!-- ========================= -->
+                            <!-- Payment Section           -->
+                            <!-- ========================= -->
+                            <div class="row" id="verifierPaymentDiv" style="display: none;">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Application Fees</label>
+                                        <input
+                                            type="number"
+                                            class="form-control"
+                                            id="amount"
+                                            name="amount"
+                                            placeholder="Enter amount"
+                                        >
+                                    </div>
+                                    <!-- Amount Validation Error -->
+                                    <div id="amount_ErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                 </div>
                             </div>
-                        </div>
+
+                            <!-- Submit Payment Button -->
+                            <div class="mb-3 P_button" style="display: none;">
+                                <button type="button" class="btn btn-success" onclick="forwardApplication('P')">
+                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit Payment
+                                </button>
+                            </div>
+
+                            <!-- ========================= -->
+                            <!-- Page Loader / Spinner     -->
+                            <!-- ========================= -->
+                            <div id="pageloader" class="spinner-container mt-4" style="display: none;" tabindex="-1" aria-hidden="true">
+                                <div class="spinner-wrapper text-center">
+                                    <div class="spinner-border text-primary spinner-lg" role="status" aria-live="polite">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p class="mt-3 fw-bold text-primary fs-5">Processing Payment...</p>
+                                    <p class="text-muted">Please wait, this may take a few moments.</p>
+                                </div>
+                            </div>
+
+                            <!-- ========================= -->
+                            <!-- Reviewer Alert Messages   -->
+                            <!-- ========================= -->
+                            <div class="alert alert-success border-0 rounded-0" role="alert" id="reviewer_application_successMsg" style="display: none;">
+                                <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                <span class="msg-text"></span>
+                            </div>
+                            <div class="alert alert-danger border-0 rounded-0" role="alert" id="reviewer_application_errorMsg" style="display: none;">
+                                <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                <span class="msg-text"></span>
+                            </div>
+
+                            <!-- ========================= -->
+                            <!-- Draft TOR Attachment      -->
+                            <!-- ========================= -->
+                            <div class="col-md-12 reviewer_attach_details" style="display: none;">
+                                <div class="card">
+                                    <div class="card-body">
+
+                                        <!-- Card Action -->
+                                        <div class="card-widgets mb-2">
+                                            <button
+                                                type="button"
+                                                class="btn btn-primary btn-sm"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#rev_tor_attachment_modal"
+                                            >
+                                                <i class="mdi mdi-plus me-2"></i> Add
+                                            </button>
+                                        </div>
+
+                                        <h5 class="card-title mb-0">DRAFT TOR</h5>
+
+                                        <div id="cardCollpase7" class="collapse pt-3 show">
+                                            <div id="tor_rev_attachment">
+                                                {% include 'tor_attachment_page.html' %}
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TOR Form Success Alert -->
+                            <div class="alert alert-success border-0 rounded-0" role="alert" id="tor_form_successMsg" style="display: none;">
+                                <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                <span class="msg-text"></span>
+                            </div>
+
+                            <!-- ========================= -->
+                            <!-- TOR Remarks               -->
+                            <!-- ========================= -->
+                            <div class="col-lg-12 tor_remarks_div" style="display: none;">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold" for="tor_remarks">Remarks</label>
+                                    <textarea
+                                        class="form-control"
+                                        name="tor_remarks"
+                                        id="tor_remarks"
+                                        rows="2"
+                                        placeholder="Enter your remarks here..."
+                                    ></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Forward Button -->
+                            <div class="mb-3 F_button" style="display: none;">
+                                <button type="button" id="forwardBtn" class="btn btn-success" onclick="forward_tor_form('FT')">
+                                    <i class="mdi mdi-arrow-right-top-bold me-1"></i> Forward
+                                </button>
+                            </div>
+
+                        </form>
                     </div>
                 </div>
-                <div class="col-lg-12 tor_verifier_remarks_div"  style="display: none;">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Remarks</label>
-                        <textarea class="form-control" name="tor_remarks" id="tor_remarks" rows="2" readonly>{{application_details.tor_remarks}}</textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- Verifier Details Accordian -->
+    <div class="card-body" id="verifier_details_accordian" style="display:none;">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card mt-1">
+                    <div class="card-body">
+                        <!-- Section Header -->
+                        <div class="alert alert-primary mb-3">Action Taken</div>
+                            <form method="post" id="verifier_form">
+                                {% csrf_token %}
+                                <!-- One line: Forward To | Remarks | Button -->
+                                <div class="row g-2 align-items-end" id="verifierForwardDiv" style="display:none;">
+                                    <div class="col-lg-4">
+                                        <label class="form-label fw-bold">Forward To</label>
+                                        <select class="form-control" name="forward_to" id="forward_to">
+                                        <option value="">--SELECT REVIEWER--</option>
+                                        {% for reviewer_list in reviewer_list %}
+                                          <option value="{{ reviewer_list.login_id }}">{{ reviewer_list.name }}</option>
+                                        {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 text-lg-end" id="verifierForwardButtonDiv" style="display:none;">
+                                        <button type="button" class="btn btn-success" onclick="forward_tor_form('R')">
+                                            <i class="mdi mdi-arrow-right me-1"></i> Forward
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="alert alert-danger border-0 rounded-0" role="alert" id="tor_form_errorMsg" style="display:none">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                </div>
+                                <div id="pageloader" class="spinner-container mt-4" style="display:none;" tabindex="-1">
+                                <div class="spinner-wrapper">
+                                    <div class="spinner-border text-primary spinner-lg" role="status" aria-live="polite">
+                                        <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                        <p class="mt-3 fw-bold text-primary fs-5">Processing...</p>
+                                        <p class="text-muted">Please wait, this may take a few moments.</p>
+                                    </div>
+                                </div>
+                                <div class="row" id="verifier_attach_detailsDiv" style="display: none;">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="card-widgets">
+                                                <button type="button" class="btn btn-primary btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#ver_tor_attachment_modal">
+                                                    <i class="mdi mdi-plus me-2"></i>Add
+                                                </button>
+                                            </div>
+                                            <h5 class="card-title mb-0">DRAFT TOR</h5>
+                                            <div id="cardCollpase7" class="collapse pt-3 show">
+                                                <div id="tor_ver_attachment">
+                                                    {% include 'tor_ver_attachment_page.html' %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 tor_verifier_remarks_div"  style="display: none;">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Remarks</label>
+                                        <textarea class="form-control" name="tor_remarks" id="tor_remarks" rows="2" readonly>{{application_details.tor_remarks}}</textarea>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 tor_verifier_reject_reason_div"  style="display: none;">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Reject Reason</label>
+                                        <textarea class="form-control" name="reject_reason" id="reject_reason" rows="2" ></textarea>
+                                    </div>
+                                </div>
+                                <div class="alert alert-success border-0 rounded-0" role="alert" id="tor_approve_successMsg" style="display:none">
+                                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
+                                </div>
+                                <div class="row g-2 align-items-end" id="approveButtonDiv" style="display:none;">
+                                    <div class="col-lg-4">
+                                        <button type="button" id="approveBtn" class="btn btn-success me-2" onclick="forward_tor_form('AT')">
+                                            <i class="mdi mdi-arrow-right me-1"></i> Approve
+                                        </button>
+                                        <button type="button" class="btn btn-danger" id="openRejectModalBtn">
+                                            <i class="mdi mdi-close-circle me-1"></i> Reject
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
                     </div>
                 </div>
-                <div class="col-lg-12 tor_verifier_reject_reason_div"  style="display: none;">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Reject Reason</label>
-                        <textarea class="form-control" name="reject_reason" id="reject_reason" rows="2" ></textarea>
-                    </div>
-                </div>
-                <div class="alert alert-success border-0 rounded-0" role="alert" id="tor_approve_successMsg" style="display:none">
-                    <i class="uil-folder-heart me-1 h4 align-middle"></i>
-                </div>
-                <div class="row g-2 align-items-end" id="approveButtonDiv" style="display:none;">
-                    <div class="col-lg-4">
-                        <button type="button" id="approveBtn" class="btn btn-success me-2" onclick="forward_tor_form('AT')">
-                            <i class="mdi mdi-arrow-right me-1"></i> Approve
-                        </button>
-                        <button type="button" class="btn btn-danger" id="openRejectModalBtn">
-                            <i class="mdi mdi-close-circle me-1"></i> Reject
-                        </button>
-                    </div>
-                </div>
-            </form>
+            </div>
+        </div>
     </div>
 
 {% endfor %}

@@ -13,6 +13,15 @@ from django.db.models import Count, Subquery, OuterRef, Exists
 from django.db.models import Sum
 from collections import defaultdict
 
+import logging
+import threading
+
+from django.conf import settings
+from django.core.mail import send_mail
+from django.db import transaction
+
+logger = logging.getLogger(__name__)
+
 from ecs_admin.models import t_competant_authority_master, t_file_attachment, t_service_master, t_dzongkhag_master, t_gewog_master, t_thromde_master, t_user_master, \
     t_village_master, t_bsic_code, t_country_master, t_fees_schedule, t_other_details
 
@@ -56,8 +65,8 @@ def ec_report_form(request):
             action_date__isnull=False  # action_date is not null
         ).count()
         expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-        ec_renewal_count = t_ec_application_t1.objects.filter(ca_authority=request.session['ca_authority'],
-                                                                                  application_status='A',
+        ec_renewal_count = t_ec_t1.objects.filter(ca_authority=request.session['ca_authority'],
+                                                                                  status='A',
                                                                                   ec_expiry_date__lt=expiry_date_threshold).count()
     response = render(request, 'ec_report_form.html',
                   {'dzongkhag_list': dzongkhag_list,'client_application_count':client_application_count,'ec_renewal_count':ec_renewal_count,'v_application_count':v_application_count,'r_application_count':r_application_count, 'p_application_count':p_application_count, 'ca_list': ca_list, 'service_list': service_list})
@@ -139,9 +148,9 @@ def view_ec_list(request):
     ).count()
 
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-    ec_renewal_count = t_ec_application_t1.objects.filter(ca_authority=request.session['ca_authority'],
-                                                                                  application_status='A',
-                                                                                  ec_expiry_date__lt=expiry_date_threshold).count()
+    ec_renewal_count = t_ec_t1.objects.filter(ca_authority=request.session['ca_authority'],
+                                                                              status='A',
+                                                                              ec_expiry_date__lt=expiry_date_threshold).count()
     return render(request, 'ec_list.html',
                   {'dzongkhag_list': dzongkhag_list,'ec_renewal_count':ec_renewal_count,'v_application_count':v_application_count,'r_application_count':r_application_count,'p_application_count':p_application_count, 'ec_list': ec_list, 'ca_list': ca_list})
 
@@ -154,9 +163,9 @@ def ec_reject_report_form(request):
     r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
     client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
-    ec_renewal_count = t_ec_application_t1.objects.filter(ca_authority=request.session['ca_authority'],
-                                                                                  application_status='A',
-                                                                                  ec_expiry_date__lt=expiry_date_threshold).count()
+    ec_renewal_count = t_ec_t1.objects.filter(ca_authority=request.session['ca_authority'],
+                                                                              status='A',
+                                                                              ec_expiry_date__lt=expiry_date_threshold).count()
     return render(request, 'ec_reject_report_form.html',
                   {'dzongkhag_list': dzongkhag_list,'client_application_count':client_application_count,'ec_renewal_count':ec_renewal_count, 'ca_list': ca_list,'v_application_count':v_application_count,'r_application_count':r_application_count, 'service_list': service_list})
 
@@ -225,9 +234,9 @@ def view_ec_reject_list(request):
         action_date__isnull=False  # action_date is not null
     ).count()
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-    ec_renewal_count = t_ec_application_t1.objects.filter(ca_authority=request.session['ca_authority'],
-                                                                                  application_status='A',
-                                                                                  ec_expiry_date__lt=expiry_date_threshold).count()
+    ec_renewal_count = t_ec_t1.objects.filter(ca_authority=request.session['ca_authority'],
+                                                                              status='A',
+                                                                              ec_expiry_date__lt=expiry_date_threshold).count()
     return render(request, 'ec_reject_list.html',
                   {'dzongkhag_list': dzongkhag_list,'ec_renewal_count':ec_renewal_count, 'ec_list': ec_list,'v_application_count':v_application_count,'r_application_count':r_application_count, 'p_application_count':p_application_count, 'ca_list': ca_list})
 
@@ -270,9 +279,9 @@ def ec_pending_report_form(request):
         accept_reject__isnull=True,
         login_type='C'
     ).count()
-    ec_renewal_count = t_ec_application_t1.objects.filter(
+    ec_renewal_count = t_ec_t1.objects.filter(
         ca_authority=request.session['ca_authority'],
-        application_status='A',
+        status='A',
         ec_expiry_date__lt=expiry_date_threshold
     ).count()
     return render(request, 'ec_pending_report_form.html',
@@ -327,9 +336,9 @@ def ec_pending_list(request):
         action_date__isnull=False  # action_date is not null
     ).count()
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-    ec_renewal_count = t_ec_application_t1.objects.filter(ca_authority=request.session['ca_authority'],
-                                                                                  application_status='A',
-                                                                                  ec_expiry_date__lt=expiry_date_threshold).count()
+    ec_renewal_count = t_ec_t1.objects.filter(ca_authority=request.session['ca_authority'],
+                                                                              status='A',
+                                                                              ec_expiry_date__lt=expiry_date_threshold).count()
     return render(request, 'ec_pending_list.html',
                   {'dzongkhag_list': dzongkhag_list,'ec_renewal_count':ec_renewal_count,'v_application_count':v_application_count,'r_application_count':r_application_count, 'p_application_count':p_application_count,'ec_list': ec_list, 'ca_list': ca_list})
 
@@ -342,9 +351,9 @@ def land_use_report_form(request):
     r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
     client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
-    ec_renewal_count = t_ec_application_t1.objects.filter(ca_authority=request.session['ca_authority'],
-                                                                                  application_status='A',
-                                                                                  ec_expiry_date__lt=expiry_date_threshold).count()
+    ec_renewal_count = t_ec_t1.objects.filter(ca_authority=request.session['ca_authority'],
+                                                                              status='A',
+                                                                              ec_expiry_date__lt=expiry_date_threshold).count()
     return render(request, 'land_use_report_form.html',
                   {'dzongkhag_list': dzongkhag_list,'client_application_count':client_application_count,'ec_renewal_count':ec_renewal_count,'v_application_count':v_application_count,'r_application_count':r_application_count, 'ca_list': ca_list, 'service_list': service_list})
 
@@ -375,8 +384,8 @@ def land_use_report(request):
     v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
     r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-    ec_renewal_count = t_ec_application_t1.objects.filter(ca_authority=request.session['ca_authority'],
-                                                                                  application_status='A',
+    ec_renewal_count = t_ec_t1.objects.filter(ca_authority=request.session['ca_authority'],
+                                                                                  status='A',
                                                                                   ec_expiry_date__lt=expiry_date_threshold).count()
     return render(request, 'land_use_list.html',
                   {'dzongkhag_list': dzongkhag_list,'ec_renewal_count':ec_renewal_count,'v_application_count':v_application_count,'r_application_count':r_application_count, 'ec_list': ec_list, 'ca_list': ca_list})
@@ -415,8 +424,8 @@ def revenue_report_form(request):
     ).count()
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
     client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
-    ec_renewal_count = t_ec_application_t1.objects.filter(ca_authority=request.session['ca_authority'],
-                                                                                  application_status='A',
+    ec_renewal_count = t_ec_t1.objects.filter(ca_authority=request.session['ca_authority'],
+                                                                                  status='A',
                                                                                   ec_expiry_date__lt=expiry_date_threshold).count()
     return render(request, 'revenue_report_form.html',
                   {'dzongkhag_list': dzongkhag_list,'client_application_count':client_application_count,'ec_renewal_count':ec_renewal_count,'v_application_count':v_application_count,'r_application_count':r_application_count, 'p_application_count':p_application_count, 'ca_list': ca_list, 'service_list': service_list})
@@ -468,8 +477,8 @@ def revenue_report(request):
         action_date__isnull=False  # action_date is not null
     ).count()
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-    ec_renewal_count = t_ec_application_t1.objects.filter(ca_authority=request.session['ca_authority'],
-                                                                                  application_status='A',
+    ec_renewal_count = t_ec_t1.objects.filter(ca_authority=request.session['ca_authority'],
+                                                                                  status='A',
                                                                                   ec_expiry_date__lt=expiry_date_threshold).count()
     return render(request, 'revenue_report.html', {'ec_list': ec_list,'total_sum':total_sum, 'ec_renewal_count':ec_renewal_count, 'ca_list': ca_list,'v_application_count':v_application_count,'r_application_count':r_application_count, 'p_application_count':p_application_count})
 
@@ -594,7 +603,6 @@ def application_status_list(request):
             # Reviewer application count Payment List
             p_application_count = t_workflow_dtls.objects.filter(
                 assigned_role_id='3',
-                assigned_role_name='Reviewer',
                 ca_authority=ca_authority,
                 assigned_user_id__isnull=True,  # assigned_user_id is null
                 action_date__isnull=False  # action_date is not null
@@ -604,7 +612,7 @@ def application_status_list(request):
             # print(p_application_count)
 
             expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-            ec_renewal_count = t_ec_application_t1.objects.filter(ca_authority=request.session['ca_authority'], application_status='A', ec_expiry_date__lt=expiry_date_threshold).count()
+            ec_renewal_count = t_ec_t1.objects.filter(ca_authority=request.session['ca_authority'], status='A', ec_expiry_date__lt=expiry_date_threshold).count()
 
     # FIX: Use distinct() and order by application date to get unique records
     if login_type == 'C':
@@ -869,14 +877,14 @@ def ec_renewal_list(request):
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
     if ca_authority is not None:
-        ec_list = t_ec_application_t1.objects.filter(
+        ec_list = t_ec_t1.objects.filter(
             ca_authority=ca_authority,
-            application_status='A',
+            status='A',
             ec_expiry_date__lt=expiry_date_threshold
         ).values()
-        ec_renewal_count = t_ec_application_t1.objects.filter(
+        ec_renewal_count = t_ec_t1.objects.filter(
             ca_authority=ca_authority,
-            application_status='A',
+            status='A',
             ec_expiry_date__lt=expiry_date_threshold
         ).count()
 
@@ -892,37 +900,63 @@ def ec_renewal_list(request):
 
 
 def send_notification(request):
-    notice = request.POST.get('notice')
-    ca_authority = request.session['ca_authority']
-    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+    try:
+        ca_authority          = request.session['ca_authority']
+        expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
-    ec_list = t_ec_application_t1.objects.filter(
-        ca_authority=ca_authority,
-        application_status='A',
-        ec_expiry_date__lt=expiry_date_threshold
-    ).values('ec_reference_no', 'applicant_id')
+        ec_list = t_ec_t1.objects.filter(
+            ca_authority       = ca_authority,
+            status = 'A',
+            ec_expiry_date__lt = expiry_date_threshold
+        ).values('ec_reference_no', 'applicant_id')
 
-    for ec in ec_list:
-        ec_reference_no = ec['ec_reference_no']
-        email = [ec['applicant_id']]  # Convert to list for send_mail
+        for ec in ec_list:
+            ec_reference_no = ec['ec_reference_no']
+            email           = ec['applicant_id']  # plain string — list wrapping done in send_notification_mail
 
-        subject = 'Environment Clearance Renewal Notification'
-        message = "Dear Sir/Madam, \n\nYour Environmental Clearance No. " + ec_reference_no + " is due for renewal in less than 30 Days. DECC would like to request you to renew the Environmental Clearance before the expiry. \n\nThanking You"
+            with transaction.atomic():
+                transaction.on_commit(lambda ec_ref=ec_reference_no, em=email: threading.Thread(
+                    target=_send_notification_mail_in_background,
+                    args=(em, ec_ref),
+                    daemon=True
+                ).start())
 
-        send_mail(
-            subject,
-            message,
-            'systems@moenr.gov.bt',
-            email,
-            fail_silently=False,
-            auth_user='systems@moenr.gov.bt',
-            auth_password='aqjsbjamnzxtadvl',
-            connection=None,
-            html_message=None
+        return redirect('ec_renewal_list')
+
+    except Exception as exc:
+        logger.exception("send_notification failed for ca_authority=%s", ca_authority)
+        return redirect('ec_renewal_list')
+
+
+def _send_notification_mail_in_background(email, ec_reference_no):
+    """
+    Thread target: never uses request/session. Only uses passed primitives.
+    """
+    try:
+        send_notification_mail(email, ec_reference_no)
+    except Exception:
+        logger.exception(
+            "Failed to send renewal notification email to=%s for ec_reference_no=%s",
+            email, ec_reference_no
         )
 
-    # Move return OUTSIDE the loop
-    return redirect('ec_renewal_list')
+
+def send_notification_mail(email, ec_reference_no):
+    subject = "Environment Clearance Renewal Notification"
+    message = (
+        f"Dear Sir/Madam,\n\n"
+        f"Your Environmental Clearance No. {ec_reference_no} is due for renewal "
+        f"in less than 60 days. DECC would like to request you to renew the "
+        f"Environmental Clearance before the expiry.\n\n"
+        f"Thanking You,\nECS System Team"
+    )
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=getattr(settings, "DEFAULT_FROM_EMAIL", None),
+        recipient_list=[email],
+        fail_silently=False,
+    )
 
 
 # ADDITIONAL INFORMATION List
@@ -1055,9 +1089,9 @@ def ai_list(request):
             # print(p_application_count)
 
             expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-            ec_renewal_count = t_ec_application_t1.objects.filter(
+            ec_renewal_count = t_ec_t1.objects.filter(
                 ca_authority=request.session['ca_authority'],
-                application_status='A',
+                status='A',
                 ec_expiry_date__lt=expiry_date_threshold
             ).count()
 

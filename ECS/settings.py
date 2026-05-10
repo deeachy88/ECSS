@@ -211,7 +211,7 @@ USE_TZ = True
 CELERY_BEAT_SCHEDULE = {
     'send-ai-reminders-daily': {
         'task': 'ecs_admin.tasks.send_additional_info_reminder',
-        'schedule': crontab(hour=22, minute=14),   # 8 AM Thimphu time
+        'schedule': crontab(hour=12, minute=00),   # 8 AM Thimphu time
     },
 }
 
