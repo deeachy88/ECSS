@@ -1012,21 +1012,21 @@ def save_general_attachment(request):
         return HttpResponseBadRequest("application_no is required")
 
     service_code = None
-    if request.session['service_id'] == '1':
+    if request.session['service_id'] == 1:
         service_code = 'IEE'
-    elif request.session['service_id'] == '2':
+    elif request.session['service_id'] == 2:
         service_code = 'ENE'
-    elif request.session['service_id'] == '3':
+    elif request.session['service_id'] == 3:
         service_code = 'ROA'
-    elif request.session['service_id'] == '4':
+    elif request.session['service_id'] == 4:
         service_code = 'TRA'
-    elif request.session['service_id'] == '5':
+    elif request.session['service_id'] == 5:
         service_code = 'TOU'
-    elif request.session['service_id'] == '6':
+    elif request.session['service_id'] == 6:
         service_code = 'GWA'
-    elif request.session['service_id'] == '7':
+    elif request.session['service_id'] == 7:
         service_code = 'FOR'
-    elif request.session['service_id'] == '8':
+    elif request.session['service_id'] == 8:
         service_code = 'QUA'
     else:
         service_code = 'GEN'
@@ -1052,21 +1052,21 @@ def save_general_attachment_details(request):
     file_url = request.POST.get('file_url')
     application_no = request.POST.get('application_no')
     service_code = None
-    if request.session['service_id'] == '1':
+    if request.session['service_id'] == 1:
         service_code = 'IEE'
-    elif request.session['service_id'] == '2':
+    elif request.session['service_id'] == 2:
         service_code = 'ENE'
-    elif request.session['service_id'] == '3':
+    elif request.session['service_id'] == 3:
         service_code = 'ROA'
-    elif request.session['service_id'] == '4':
+    elif request.session['service_id'] == 4:
         service_code = 'TRA'
-    elif request.session['service_id'] == '5':
+    elif request.session['service_id'] == 5:
         service_code = 'TOU'
-    elif request.session['service_id'] == '6':
+    elif request.session['service_id'] == 6:
         service_code = 'GWA'
-    elif request.session['service_id'] == '7':
+    elif request.session['service_id'] == 7:
         service_code = 'FOR'
-    elif request.session['service_id'] == '8':
+    elif request.session['service_id'] == 8:
         service_code = 'QUA'
     else :
         service_code = 'GEN'
@@ -1080,7 +1080,6 @@ def save_general_attachment_details(request):
 def check_file_attachment(request):
     data = dict()
     application_no = request.GET.get('application_no')
-    print(application_no)
     file_count = t_file_attachment.objects.filter(application_no=application_no).count()
     data['file_count'] = file_count
     return JsonResponse(data)
@@ -3963,9 +3962,8 @@ def view_tor_application_details(request):
         gewog_code = app_det.gewog_code
         village_code = app_det.village_code
         mas_integration = app_det.mas_integration
-        print(request.session['ca_auth'])
-        print(dzongkhag_throm)
-        print(thromde_id)
+        service_id = app_det.service_id
+        print(service_id)
         #application_no = get_application_no(request, service_code, service_id)
         #application_no = get_new_application_no(request, service_code)
         #request.session['application_no'] = application_no
@@ -3990,6 +3988,7 @@ def view_tor_application_details(request):
                                                 'thromde_id':thromde_id,
                                                 'dzongkhag_code':dzongkhag_code,
                                                 'gewog_code':gewog_code,
+                                                'service_id': service_id,
                                                 'village_code':village_code,
                                                 'mas_integration':mas_integration
                                                 })

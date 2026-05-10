@@ -16,6 +16,7 @@
                     </span>
                     Application Number:- {{ application_details.application_no }}
                 </h5>
+
                 {% if application_details.service_id == 1 %}
                     <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Industry Projects</h4>
                 {% elif application_details.service_id == 2 %}
@@ -35,33 +36,37 @@
                 {% elif application_details.service_id == 9 %}
                     <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for General Projects</h4>
                 {% endif %}
+
                 <div id="rootwizard">
                     <ul class="nav nav-pills nav-justified form-wizard-header mb-3">
-                        <li class="nav-item" data-target-form="#accountForm">
-                            <a href="#first" data-bs-toggle="tab" data-toggle="tab" class="nav-link rounded-0 py-2 active">
+                        <li class="nav-item">
+                            <a href="#first" data-bs-toggle="tab" class="nav-link rounded-0 py-2 active">
                                 <i class="mdi mdi-account-circle font-18 align-middle me-1"></i>
                                 <span class="d-none d-sm-inline">General Information</span>
                             </a>
                         </li>
-                        <li class="nav-item" data-target-form="#profileForm">
-                            <a href="#second" data-bs-toggle="tab" data-toggle="tab"  class="nav-link rounded-0 py-2">
+                        <li class="nav-item">
+                            <a href="#second" data-bs-toggle="tab" class="nav-link rounded-0 py-2">
                                 <i class="mdi mdi-face-man-profile font-18 align-middle me-1"></i>
                                 <span class="d-none d-sm-inline">File Attachment</span>
                             </a>
                         </li>
                     </ul>
+
                     <div class="tab-content mb-0 b-0">
+                        <!-- FIRST TAB -->
                         <div class="tab-pane active show" id="first">
-                            <input type="text" class="form-control" value="{{status}}" id="status" name="status" style="display:none;">
-                            <input type="text" class="form-control" value="{{assigned_role_name}}" id="assigned_role_name" name="assigned_role_name" style="display:none;">
-                            <input type="text" class="form-control" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
+                            <input type="text" value="{{status}}" id="status" name="status" style="display:none;">
+                            <input type="text" value="{{assigned_role_name}}" id="assigned_role_name" name="assigned_role_name" style="display:none;">
+                            <input type="text" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
+
                             <div class="row justify-content-left">
                                 <div class="col-lg-12">
                                     <label class="form-label fw-bold">Activity</label>
                                     <p class="distinct-activity">{{application_details.activity}}</p>
                                 </div>
                             </div>
-                            <!-- FMFSR Number + Retrieve -->
+
                             {% if application_details.fmfsr_no %}
                             <div class="row" style="margin-bottom: -15px;">
                                 <div class="col-lg-4">
@@ -71,105 +76,83 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="mb-5">
-                                        <label class="form-label fw-bold text-primary">
-                                            <i class="fas fa-link me-1"></i> FMFSR No:
-                                        </label>
-                                        <div class="input-group">
-                                            <input
-                                                type="text"
-                                                class="form-control"
-                                                id="fmfsr_no"
-                                                name="fmfsr_no"
-                                                value="{{ application_details.fmfsr_no }}"
-                                                readonly>
-                                        </div>
+                                        <label class="form-label fw-bold text-primary">FMFSR No:</label>
+                                        <input type="text" class="form-control" value="{{ application_details.fmfsr_no }}" readonly>
                                     </div>
                                 </div>
                             </div>
                             {% endif %}
-                            <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+
+                            <div class="row" style="margin-bottom: -15px;">
                                 <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Name of the Applicant</label>
-                                        <input type="text" name="applicant_name" class="form-control" id="applicant_name" value="{{application_details.applicant_name}}" disabled> 
+                                        <input type="text" class="form-control" value="{{application_details.applicant_name}}" disabled>
                                     </div>
-                                    <div id="applicant_nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Address</label>
-                                        <input type="text" name="address" class="form-control" id="address" value="{{application_details.address}}" disabled>
+                                        <input type="text" class="form-control" value="{{application_details.address}}" disabled>
                                     </div>
-                                    <div id="addressErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Contact No</label>
-                                        <input type="number" name="contact_no" class="form-control" id="contact_no" maxlength="8" value="{{application_details.contact_no}}" disabled>
+                                        <input type="number" class="form-control" value="{{application_details.contact_no}}" disabled>
                                     </div>
-                                    <div id="contact_noErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                 </div>
                             </div>
-                            <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+
+                            <div class="row" style="margin-bottom: -15px;">
                                 <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Email</label>
-                                        <input type="email" name="email" class="form-control" id="email" value="{{application_details.email}}" disabled>
+                                        <input type="email" class="form-control" value="{{application_details.email}}" disabled>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Name of the Project</label>
-                                        <input type="text" name="project_name" class="form-control" id="project_name" value="{{application_details.project_name}}" disabled>
+                                        <input type="text" class="form-control" value="{{application_details.project_name}}" disabled>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold">Name and Contact Details of Environmental Focal Person (if other than applicant)</label>
-                                        <input type="text" name="focal_person" class="form-control" id="focal_person" value="{{application_details.focal_person}}" disabled>
+                                        <label class="form-label fw-bold">Environmental Focal Person</label>
+                                        <input type="text" class="form-control" value="{{application_details.focal_person}}" disabled>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+
+                            <div class="row" style="margin-bottom: -15px;">
                                 <div class="col-lg-12">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Brief Description of the Project</label>
-                                        <textarea class="form-control" id="project_description" name="project_description" disabled>{{application_details.project_description}}</textarea>
+                                        <textarea class="form-control" disabled>{{application_details.project_description}}</textarea>
                                     </div>
                                 </div>
                             </div>
+
                             <div class="alert custom-bg border-0" role="alert">
                                 <h5 class="mb-0">Project Location</h5>
                             </div>
-                            <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+
+                            <div class="row" style="margin-bottom: -15px;">
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Site</label>
-                                        {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
-                                            <div class="mt-2">
-                                                <div class="form-check form-check-inline">
-                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)" checked>
-                                                    <label class="form-check-label" for="customRadio3">Dzongkhag</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)" disabled>
-                                                    <label class="form-check-label" for="customRadio4">Thromde</label>
-                                                </div>
+                                        <div class="mt-2">
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio" class="form-check-input" {% if application_details.dzongkhag_throm == 'Dzongkhag' %}checked{% endif %} disabled>
+                                                <label class="form-check-label">Dzongkhag</label>
                                             </div>
-                                        {% else %}
-                                            <div class="mt-2">
-                                                <div class="form-check form-check-inline">
-                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" onclick="check_dzong_throm(this.value)" disabled>
-                                                    <label class="form-check-label" for="customRadio3">Dzongkhag</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" onclick="check_dzong_throm(this.value)" checked>
-                                                    <label class="form-check-label" for="customRadio4">Thromde</label>
-                                                </div>
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio" class="form-check-input" {% if application_details.dzongkhag_throm == 'Thromde' %}checked{% endif %} disabled>
+                                                <label class="form-check-label">Thromde</label>
                                             </div>
-                                        {% endif %}
+                                        </div>
                                     </div>
-                                    <div id="siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                 </div>
                                 {% if application_details.dzongkhag_throm == 'Thromde' %}
                                     <div class="col-lg-6 thromde_div">
@@ -177,86 +160,85 @@
                                             <label class="form-label fw-bold">Thromde</label>
                                             <select class="form-select" disabled>
                                                 {% for thromde in thromde %}
-                                                    <option value="{{thromde.thromde_id}}"{% if application_details.thromde_id == thromde.thromde_id %}selected{% endif %}>
+                                                    <option value="{{thromde.thromde_id}}" {% if application_details.thromde_id == thromde.thromde_id %}selected{% endif %}>
                                                         {{ thromde.thromde_name }}
                                                     </option>
                                                 {% endfor %}
                                             </select>
                                         </div>
-                                        <div id="thromdeErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
                                 {% endif %}
                             </div>
-                            <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
-                                {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
-                                    <div class="col-lg-4 dzongkhag_div">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Dzongkhag</label>
-                                            <select class="form-select" disabled>
-                                                {% for dzongkhag in dzongkhag %}
-                                                    <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
-                                                        {{ dzongkhag.dzongkhag_name }}
-                                                    </option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Gewog</label>
-                                            <select class="form-select" disabled>
-                                                {% for gewog in gewog %}
-                                                    <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
-                                                        {{ gewog.gewog_name }}
-                                                    </option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                        <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Village/Chiwog</label>
-                                            <select class="form-select" disabled>
-                                                {% for village in village %}
-                                                    <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
-                                                        {{ village.village_name }}
-                                                    </option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                        <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+
+                            {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
+                            <div class="row" style="margin-bottom: -15px;">
+                                <div class="col-lg-4 dzongkhag_div">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Dzongkhag</label>
+                                        <select class="form-select" disabled>
+                                            {% for dzongkhag in dzongkhag %}
+                                                <option value="{{dzongkhag.dzongkhag_code}}" {% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
+                                                    {{ dzongkhag.dzongkhag_name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Gewog</label>
+                                        <select class="form-select" disabled>
+                                            {% for gewog in gewog %}
+                                                <option value="{{gewog.gewog_code}}" {% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
+                                                    {{ gewog.gewog_name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Village/Chiwog</label>
+                                        <select class="form-select" disabled>
+                                            {% for village in village %}
+                                                <option value="{{village.village_code}}" {% if application_details.village_code == village.village_code %}selected{% endif %}>
+                                                    {{ village.village_name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                             {% endif %}
-                            <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+
+                            <div class="row" style="margin-bottom: -15px;">
                                 <div class="col-lg-8">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Name of the Particular Project Site</label>
-                                        <input type="text" name="project_site" class="form-control" id="project_site" value="{{application_details.location_name}}" disabled>
+                                        <input type="text" class="form-control" value="{{application_details.location_name}}" disabled>
                                     </div>
-                                    <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- SECOND TAB -->
                         <div class="tab-pane fade" id="second">
-                            <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+                            <div class="row">
                                 <div class="col-lg-12">
-                                    <table class="table table-hover table-bordered table-centered mb-0">
+                                    <table class="table table-hover table-bordered table-centered mb-3">
                                         <tbody id="attachments_tbody">
                                             {{ attachments|safe }}
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
-                            <div class="col-md-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="card-title mb-0">Attachments</h5>
-                                        <div id="cardCollpase7" class="collapse pt-3 show">
-                                            <div id="general_attachment">
-                                                <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title mb-0">Attachments</h5>
+                                            <div class="pt-3">
+                                                <table class="table dt-responsive nowrap w-100">
                                                     <thead>
                                                         <tr>
                                                             <th scope="col">#</th>
@@ -268,13 +250,10 @@
                                                             <tr>
                                                                 <td>{{ forloop.counter }}</td>
                                                                 <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
-                                                                <!-- <td>
-                                                                    <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="delete_attachment('{{ file_attach.file_id }}','{{ file_attach.attachment_type }}','{{ file_attach.application_no }}')"><i class="uil-trash"></i></button>
-                                                                </td> -->
                                                             </tr>
-                                                            {% empty %}
+                                                        {% empty %}
                                                             <tr>
-                                                                <td colspan="3" class="text-center">No Data</td>
+                                                                <td colspan="2" class="text-center">No Data</td>
                                                             </tr>
                                                         {% endfor %}
                                                     </tbody>
@@ -290,7 +269,7 @@
             </div> <!-- end card-body -->
         </div> <!-- end card-->
     </div> <!-- end col -->
-</div>
+</div> <!-- end main row -->
 {% endfor %}
 <div class="card-body" id="reviewer_details_accordian" style="display:none;">
     <div class="row">
@@ -426,7 +405,7 @@
                                                                 <td>{{ forloop.counter }}</td>
                                                                 <td class="py-2">{{ payment.payment_type }}</td>
                                                                 <td class="py-2 text-end fw-bold text-success">
-                                                                    Nu. {{ payment.total_receipt_amount|floatformat:2 }}
+                                                                    Nu. {{ payment.payment_advice_amount_paid|floatformat:2 }}
                                                                 </td>
                                                                 <td class="py-2">
                                                                     <code class="bg-light text-dark px-2 py-1 rounded">{{ payment.receipt_no }}</code>
@@ -553,6 +532,7 @@
                                 <div class="row g-2">
                                     <div class="col-md-8 reject_remarks_div" style="display: none;">
                                         <div class="card border-0 shadow-sm">
+                                            <h5 class="card-title mb-0">Rejection Remarks</h5>
                                             <div class="card-body p-3">
                                                 <label class="form-label fw-bold">
                                                     Remarks
@@ -667,7 +647,7 @@
                                             <div class="card-widgets">
                                                 <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#rev_lu_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                                             </div>
-                                            <h5 class="card-title mb-0">Legal Undertaking Attach</h5>
+                                            <h5 class="card-title mb-0">Draft Legal Undertaking Attach</h5>
                                             <div id="cardCollpase7" class="collapse pt-3 show">
                                                 <div id="rev_lu_file_attachment">
                                                     {% include 'rev_lu_attachment_page.html' %}
@@ -942,7 +922,7 @@
                                             <div class="card-widgets">
                                                 <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#lu_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
                                             </div>
-                                            <h5 class="card-title mb-0">LU Attach</h5>
+                                            <h5 class="card-title mb-0">Legal Undertaking Attach</h5>
                                             <div id="cardCollpase7" class="collapse pt-3 show">
                                                 <div id="lu_file_attachment">
                                                     {% include 'lu_attachment_page.html' %}
@@ -1126,7 +1106,7 @@
                                                     Payable Amount
                                                 </label>
                                                 <input class="form-control form-control-sm"
-                                                    value="{{ payment.total_payable_amount }}"
+                                                    value="{{ payment.payment_advice_amount_paid }}"
                                                     disabled>
                                             </div>
                                             <div class="col-md-3">

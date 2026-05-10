@@ -70,17 +70,17 @@ def verify_application_list(request):
         # Group payments by ref_no
         payments_by_ref = {}
         for payment in payments:
-            if payment.ref_no:
-                if payment.ref_no not in payments_by_ref:
-                    payments_by_ref[payment.ref_no] = []
-                payments_by_ref[payment.ref_no].append(payment)
+            if payment.application_no:
+                if payment.application_no not in payments_by_ref:
+                    payments_by_ref[payment.application_no] = []
+                payments_by_ref[payment.application_no].append(payment)
         
         # Check for each ref_no if ALL entries have receipt_no
-        for ref_no, payment_list in payments_by_ref.items():
+        for application_no, payment_list in payments_by_ref.items():
             # Check if ALL payments for this ref_no have non-null receipt_no
             all_have_receipt = all(payment.receipt_no is not None and payment.receipt_no != '' 
                                  for payment in payment_list)
-            payment_receipt_lookup[ref_no] = all_have_receipt
+            payment_receipt_lookup[application_no] = all_have_receipt
         
         # Get service names
         service_lookup = dict(t_service_master.objects.values_list('service_id', 'service_name'))
@@ -1255,7 +1255,11 @@ def view_application_details(request):
             gewog = t_gewog_master.objects.all()
             village = t_village_master.objects.all()
             #file_attach = t_file_attachment.objects.filter(application_no=application_no, attachment_type='GEN')
-            file_attach = t_file_attachment.objects.filter(application_no=application_no)
+            file_attach = t_file_attachment.objects.filter(
+                application_no=application_no
+            ).exclude(
+                attachment_type__in=['EATC', 'LU', 'RLU']
+            )
             ec_details = t_ec_application_t2.objects.filter(application_no=application_no).order_by('order','ec_type')
             reviewer_list = t_user_master.objects.filter(
                 role_id__in=['3', '5'],
@@ -1493,7 +1497,7 @@ def save_eatc_attachment_details(request):
     t_file_attachment.objects.create(application_no=application_no,file_path=file_url, attachment=file_name,attachment_type='EATC')
     file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='EATC')
 
-    return render(request, 'file_attachment_page.html', {'file_attach': file_attach})
+    return render(request, 'file_attachment_page_eatc.html', {'file_attach': file_attach})
 
 
 def save_reject_attachment(request):

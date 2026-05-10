@@ -5,23 +5,23 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                {% if service_id == '1' %}
+                {% if service_id == 1 %}
                     <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Industry Projects</h4>
-                {% elif service_id == '2' %}
+                {% elif service_id == 2 %}
                     <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Energy Projects</h4>
-                {% elif service_id == '3' %}
+                {% elif service_id == 3 %}
                     <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Road Projects</h4>
-                {% elif service_id == '4' %}
+                {% elif service_id == 4 %}
                     <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Transmission Projects</h4>
-                {% elif service_id == '5' %}
+                {% elif service_id == 5 %}
                     <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Tourism Projects</h4>
-                {% elif service_id == '6' %}
+                {% elif service_id == 6 %}
                     <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Ground Water Projects</h4>
-                {% elif service_id == '7' %}
+                {% elif service_id == 7 %}
                     <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Forest Projects</h4>
-                {% elif service_id == '8' %}
+                {% elif service_id == 8 %}
                     <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Quarry Projects</h4>
-                {% elif service_id == '9' %}
+                {% elif service_id == 9 %}
                     <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for General Projects</h4>
                 {% endif %}
                 <div id="rootwizard">
@@ -55,6 +55,8 @@
                                 <input type="text" class="form-control" value="{{request.session.ca_auth}}" id="ca_auth"  style="display:none;">
                                 <input type="text" class="form-control" value="{{request.session.activity}}" name="activity" style="display:none;">
                                 <input type="text" class="form-control" value="{{mas_integration}}" name="mas_integration" id="mas_integration" style="display:none;">
+                                <input type="hidden" id="selected_attachment_type" value="{{ attachment_type|default:'GEN' }}">
+
                                 <div class="row justify-content-left">
                                     <div class="col-lg-12">
                                         <label class="form-label fw-bold">Activity</label>
@@ -303,11 +305,11 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="card-widgets">
-                                            <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#general_attachment_modal"><i class="mdi mdi-plus me-2"></i>Add</button>
+                                            <button type="button" class="btn btn-primary btn-sm"  data-bs-toggle="modal" data-bs-target="#general_attachment_modal" data-attachment-type="{{ attachment_type|default:'GEN' }}"><i class="mdi mdi-plus me-2"></i>Add</button>
                                         </div>
                                         <h5 class="card-title mb-0">Attachments</h5>
                                         <div id="cardCollpase7" class="collapse pt-3 show">
-                                            <div id="TOR_attachment">
+                                            <div id="{{ attachment_type|default:'GEN' }}_attachment">
                                                 {% include 'file_attachment_page.html' %}
                                             </div>
                                         </div>
@@ -418,6 +420,10 @@
     </div>
 </form>
 <script>
+    $(document).on('click', '.btn[data-bs-target="#general_attachment_modal"]', function () {
+        $('#selected_attachment_type').val($(this).data('attachment-type'));
+    });
+
     let fmfsr_validated = false;
 
     $('#fmfsr_no').on('input', function () {
@@ -459,13 +465,13 @@
 
                     $('#fmfsr_success').show();
 
-                    // ✅ Autofill fields
+                    // Autofill fields
                     $('#project_name').val(data.project_name);
-                    $('#project_description').val(data.project_description);
+                    //$('#project_description').val(data.project_description);
 
                     // Optional: lock fields
                     $('#project_name').prop('readonly', true);
-                    $('#project_description').prop('readonly', true);
+                    //$('#project_description').prop('readonly', true);
 
                 } else {
 
@@ -720,7 +726,7 @@
             }
         });
 
-        
+
     }
 
     function save_general_attachment()
@@ -737,7 +743,11 @@
             var fileName = document.getElementById('general_attach').files[0].name;
             var fd = new FormData();
             var file = document.getElementById('general_attach').files[0];
+            let application_no = $('#application_no').val();
+
             fd.append('general_attach', file);
+            fd.append('application_no', application_no);
+
             token_value=$("input[name=csrfmiddlewaretoken]").val();
             $.ajaxSetup
             ({
@@ -760,6 +770,8 @@
                     {
                         let file_url = data.file_url;
                         let application_no = $('#general_disclaimer_application_no').val();
+                        let attachment_type = $('#selected_attachment_type').val();
+                        //alert(attachment_type);
                         $.ajax
                         ({
                             type : "POST",
@@ -768,7 +780,8 @@
                             success : function(responseText)
                             {
                                 $('#general_attachment_modal').modal('hide');
-                                $('#TOR_attachment').html(responseText);
+                                //$('#general_attachment').html(responseText);
+                                $('#' + attachment_type + '_attachment').html(responseText);
                                 $('.modal-backdrop').remove();
                                 $('#general_attachment_form')[0].reset();
                             }

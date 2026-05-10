@@ -1283,6 +1283,15 @@ def delete_attachment(request):
             fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/GW/")
             fs.delete(str(file_n))
         file.delete()
+    elif identifier == 'EATC':
+        file = t_file_attachment.objects.filter(file_id=file_id)
+        for file in file:
+            file_name = file.attachment
+            file_n = f"{application_no}_{file_name}"
+            print(file_n)
+            fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/EATC/")
+            fs.delete(str(file_n))
+        file.delete()
     elif identifier == 'RRJ':
         for file_obj in files_to_delete:
             file_name = file_obj.attachment

@@ -33,11 +33,13 @@
                                 <div class="btn-group btn-group-sm">
                                     <a class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Edit" href="{% url 'get_menu_details' menu_details.menu_id %}"><i class="mdi mdi-square-edit-outline"></i></a>
                                     {% if menu_details.is_active == "Y" %}
-                                    <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Deactivate" onclick="manage_menu('{{ menu_details.menu_id }}','Deactivate')"><i class="uil uil-lock-alt"></i></button>
+                                    <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Deactivate" onclick="manage_menu('{{ menu_details.menu_id }}','Deactivate')"><i class="uil uil-lock-alt">Deactivate</i></button>
                                     {% else %}
-                                    <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Activate" onclick="manage_menu('{{ menu_details.menu_id }}','Activate')"><i class="uil uil-unlock"></i></button>
+                                    <button  type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" title="Activate" onclick="manage_menu('{{ menu_details.menu_id }}','Activate')"><i class="uil uil-unlock">Activate</i></button>
                                     {% endif %}
+                                    <!--
                                     <button  type="button" class="btn btn-outline-danger btn-sm" data-toggle="tooltip" title="Delete" onclick="populate_delete_menu('{{ menu_details.menu_id }}','{{menu_details.menu_name}}','{{menu_details.document_id}}')"><i class="uil-trash"></i></button>
+                                    -->
                                 </div>
                             </td>
                         </tr>
