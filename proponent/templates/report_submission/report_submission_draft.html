@@ -17,7 +17,7 @@
             <form method="post" id="report_submission_form">
                 {% csrf_token %}
                 {% for report_details in report_details %}
-                <input type="hidden" name="record_id" id="record_id" value="{{report_details.record_id}}">
+                <input type="hidden" name="record_id" id="record_id" value="{{report_details.report_reference_no}}">
                 <input type="hidden" name="report_reference_no" id="report_reference_no" value="{{report_details.report_reference_no}}">
                 <div class="row justify-content-left">
                     <ul class="nav nav-tabs nav-bordered nav-justified form-wizard-header mb-4">

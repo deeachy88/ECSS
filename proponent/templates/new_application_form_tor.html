@@ -66,9 +66,10 @@
                                 </div>
                                 <br>
                                 <!-- FMFSR Number + Retrieve -->
+                                {% if mas_integration == 'Yes' %}
                                 <div class="row">
                                     <div class="col-lg-6">
-                                        <label class="form-label fw-bold">
+                                        <label for="fmfsr_no" class="form-label fw-bold">
                                             FMFSR Number
                                             <span style="color:red;">(If Processing from MAS)</span>
                                         </label>
@@ -93,6 +94,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                {% endif %}
                                 <br>
                                 <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                     <div class="col-lg-4">
@@ -493,7 +495,6 @@
             }
         });
     });
-
 
     function check_dzong_throm(value) {
         if (value === "Thromde") {

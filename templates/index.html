@@ -882,39 +882,62 @@
         if (!formData.email) return showError('#emailErrorMsg', "Enter Official Email.");
         if (!formData.contact_number) return showError('#mobileErrorMsg', "Enter Contact Number.");
         if (formData.contact_number.length < 8) return showError('#mobileErrorMsg', "Cannot Be Less Than Eight Digits.");
-        if (formData.proponent_type != '4' && !formData.dzongkhag) return showError('#dzongkhagErrorMsg', "Select Dzongkhag.");
-        if (formData.proponent_type != '4' && !formData.gewog) return showError('#gewogErrorMsg', "Select Gewog.");
-        if (formData.proponent_type != '4' && !formData.village) return showError('#villageErrorMsg', "Select Village.");
+
+        // Geographic validation for non-individual users
+        if (formData.proponent_type != '4') {
+            if (!formData.dzongkhag) return showError('#dzongkhagErrorMsg', "Select Dzongkhag.");
+            if (!formData.gewog) return showError('#gewogErrorMsg', "Select Gewog.");
+            if (!formData.village) return showError('#villageErrorMsg', "Select Village.");
+        }
+
+        // Get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
 
         // AJAX request to check email existence
         $.ajax({
             type: "POST",
             url: "{% url 'check_email_id' %}",
-            data: $('#client_registration_form').serialize(),
+            data: {
+                'email': formData.email,
+                'csrfmiddlewaretoken': $('[name=csrfmiddlewaretoken]').val()
+            },
+            headers: {
+                "X-CSRFToken": getCookie('csrftoken')
+            },
             success: function(data) {
-                if (data.file_count == "1") {
+                if (data.file_count > 0) {
                     $('#emailErrorMsg').html("Email Already Exists. Try With Another Email");
                     $('#email').val("");
-                    $('#emailErrorMsg').show();
-                    $('#emailErrorMsg').delay(2000).fadeOut('slow');
-                }
-                else
-                {
-                    if (formData.proponent_type != '4')
-                    {
+                    $('#emailErrorMsg').show().delay(2000).fadeOut('slow');
+                } else {
+                    // Proceed with registration
+                    if (formData.proponent_type != '4') {
                         registerClient(formData);
-                    }
-                    else
-                    {
+                    } else {
                         checkCidAndRegister(formData);
                     }
                 }
             },
-            error: function() {
+            error: function(xhr, status, error) {
                 showError('#client_registration_error_message_div', "An error occurred during email validation.");
             }
         });
     }
+
+
 
     // Function to check CID and register client if valid
     function checkCidAndRegister(formData) {

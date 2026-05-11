@@ -1407,19 +1407,40 @@ def update_payment_details(request):
                     ca_authority=ca_auth)
     return redirect(payment_list)
 
+
 def get_ec_no(request):
-    last_ec_no = t_ec_application_t1.objects.exclude(application_type='Old_EC').aggregate(Max('ec_reference_no'))
-    lastECNo = last_ec_no['ec_reference_no__max']
-    if not lastECNo:
-        year = timezone.now().year
-        newECNo = "EC" + "-" + str(year) + "-" + "0001"
+    # 1. Get the current year
+    current_year = timezone.now().year
+    year_prefix = f"EC-{current_year}-"
+
+    # 2. Get the list of reference numbers to exclude
+    # We find reference numbers in the application table where type is 'Old_EC'
+    excluded_refs = t_ec_application_t1.objects.filter(
+        application_type='Old_EC'
+    ).values_list('ec_reference_no', flat=True)
+
+    # 3. Find the Max reference number for the current year, EXCLUDING those refs
+    last_ec = t_ec_t1.objects.filter(
+        ec_reference_no__startswith=year_prefix
+    ).exclude(
+        ec_reference_no__in=excluded_refs  # ✅ Exclude the subquery results
+    ).aggregate(Max('ec_reference_no'))
+
+    last_ec_no = last_ec['ec_reference_no__max']
+
+    # 4. If no record exists for this year, start at 0001
+    if not last_ec_no:
+        new_sequence = "0001"
     else:
-        substring = str(lastECNo)[9:12]
-        substring = int(substring) + 1
-        ecNo = str(substring).zfill(4)
-        year = timezone.now().year
-        newECNo ="EC" + "-" + str(year) + "-" + ecNo
-    return newECNo
+        try:
+            # 5. Safely get the numeric part after the last hyphen
+            last_sequence_str = last_ec_no.rsplit('-', 1)[-1]
+            new_sequence = str(int(last_sequence_str) + 1).zfill(4)
+        except (ValueError, IndexError):
+            new_sequence = "0001"
+
+    # 6. Combine into the final string
+    return f"EC-{current_year}-{new_sequence}"
 
 def get_tor_clearance_no(request,service_id):
     service_name = None
@@ -3904,10 +3925,11 @@ def get_fines_penalties_details(request):
     village = t_village_master.objects.all()
     return render(request, 'fines_penalties_details.html', {'application_details':application_details, 'ca_authority':ca_authority, 'ec_count':ec_count, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village})
 
+
 def save_fines_penalties(request):
     data = dict()
     try:
-        application_no = get_application_no_fp()
+        applicationno = get_application_no_fp()
         fines_penalties_remarks = request.POST.get('fines_penalties_remarks')
         ec_no = request.POST.get('ec_ref_no')
         proponent_name = request.POST.get('applicant_name')
@@ -3915,116 +3937,133 @@ def save_fines_penalties(request):
         validity = request.POST.get('ec_expiry_date')
         amount = request.POST.get('fines_and_penalties')
         ca_authority = request.POST.get('ca_authority')
-        
-        parsed_date = datetime.strptime(validity, "%d-%m-%Y")
-        formatted_date = parsed_date.strftime("%Y-%m-%d")
 
-        t_fines_penalties.objects.create(application_no=application_no,
-                                        fines_date=date.today(),
-                                        ec_no=ec_no,
-                                        proponent_name=proponent_name,
-                                        address=address,
-                                        validity=formatted_date,
-                                        amount=amount,
-                                        fines_status='P',
-                                        ca_authority=ca_authority,
-                                        remarks=fines_penalties_remarks
-                                        )
+        # ✅ Input validation
+        if not all([ec_no, proponent_name, address, validity, amount]):
+            data['message'] = "Missing required fields"
+            return JsonResponse(data)
+
+        # ✅ Date parsing with error handling
+        try:
+            parsed_date = datetime.strptime(validity, "%d-%m-%Y")
+            formatted_date = parsed_date.strftime("%Y-%m-%d")
+        except ValueError:
+            data['message'] = "Invalid date format"
+            return JsonResponse(data)
+
+        # Create fines penalty record
+        t_fines_penalties.objects.create(
+            application_no=applicationno,
+            fines_date=date.today(),
+            ec_no=ec_no,
+            proponent_name=proponent_name,
+            address=address,
+            validity=formatted_date,
+            amount=amount,
+            fines_status='P',
+            ca_authority=ca_authority,
+            remarks=fines_penalties_remarks
+        )
+
+        # ✅ Get application details and store email for later use
         application_details = t_ec_t1.objects.filter(ec_reference_no=ec_no)
+        applicant_email = None  # Store email outside loop
+
         for app_det in application_details:
-            applicationno = app_det.application_no
+            application_no = app_det.application_no
             applicant = app_det.applicant_id
             service_id = app_det.service_id
             ca_auth = app_det.ca_authority
             cid_no = app_det.cid
             mob_no = app_det.contact_no
             app_name = app_det.applicant_name
-            email = app_det.email
-            t_application_history.objects.create(application_no=applicationno,
+            applicant_email = app_det.email  # ✅ Store email here
+
+            # Create application history
+            t_application_history.objects.create(
+                application_no=application_no,
                 application_status='FP',
                 application_date=date.today(),
                 action_date=date.today(),
-                actor_id=request.session['login_id'], 
+                actor_id=request.session['login_id'],
                 actor_name=request.session['name'],
                 applicant_id=applicant,
                 remarks='Fines Payment Pending',
                 service_id=service_id,
-                ca_authority=ca_auth)
-            
-            token = get_birms_token()
-            #print("Token:", token)
+                ca_authority=ca_auth
+            )
 
-            url = "https://birmsstagging.drc.gov.bt/api-services/moenr-service/api/v1/paymentdetails/create"
-            today_date_str = date.today().isoformat()
-
-            payload = {
-                "platform": "Environment Clearance Services System",
-                "refNo": application_no,
-                "taxPayerNo": "11122233344",
-                "taxPayerDocumentNo": "222333444555",
-                "paymentRequestDate": today_date_str,
-                "agencyCode": "DTH1552",
-                "payerEmail": email,
-                "mobileNo": mob_no,
-                "totalPayableAmount": amount,
-                "paymentDueDate": None,
-                "taxPayerName": app_name,
-                "code": "moenr",
-                "paymentLists": [
-                    {
-                        "serviceCode": "211",
-                        "description": "Fine and Penalities",
-                        "payableAmount": amount
-                    }
-                ]
-            }
-
-            headers = {'Authorization': "Bearer {}".format(token)}
-            
+            # ✅ Payment API call with better error handling
             try:
-                response = requests.post(url, headers=headers, json=payload, verify=False)
-                print(payload)
-                print("Response Status Code:", response.status_code)
-                print("Response Content:", response.text)
+                token = get_birms_token()
+                if not token:
+                    print("Failed to get BIRMS token")
+                    continue
 
-                # Check if the response content is empty
-                if response.status_code == 200:
-                    try:
-                        data = response.json()  # Parse response JSON
-                        paymentAdviceNo = data['content']['paymentAdviceNo']
-                        #insert_app_payment_details(request, application_no, "fines_penalties", amount, "fines_penalties", paymentAdviceNo,None)
-                       
-                        t_payment_details.objects.create(
-                            ref_no=application_no,
-                            payment_request_date=date.today(),
-                            tax_payer_name=app_name,
-                            agency_code="DTH1552",
-                            tax_payer_document_no=cid_no,
-                            mobile_no=mob_no,
-                            payer_email=email,
-                            description="fines_and_penalties",
-                            total_payable_amount=amount,
-                            service_type="FINE",
-                            payment_advice_no=paymentAdviceNo,
-                            payment_type='Fines and Penalties',
-                            application_no=application_no,
-                            ca_authority=ca_authority
-                        )
-                    except ValueError as e:
-                        print("Failed to parse JSON response:", e)
-                
+                url = "https://birmsstagging.drc.gov.bt/api-services/moenr-service/api/v1/paymentdetails/create"
+
+                payload = {
+                    "platform": "Environment Clearance Services System",
+                    "refNo": applicationno,
+                    "taxPayerNo": None,
+                    "taxPayerDocumentNo": cid_no,
+                    "paymentRequestDate": date.today().isoformat(),
+                    "agencyCode": "DTH1552",
+                    "payerEmail": applicant_email,
+                    "mobileNo": mob_no,
+                    "totalPayableAmount": amount,
+                    "paymentDueDate": None,
+                    "taxPayerName": app_name,
+                    "code": "moenr",
+                    "paymentLists": [
+                        {
+                            "serviceCode": '211',
+                            "description": 'Fines and Penalties',
+                            "payableAmount": amount
+                        }
+                    ]
+                }
+
+                headers = {'Authorization': f"Bearer {token}"}
+                response = requests.post(url, headers=headers, json=payload, verify=False)
+                response.raise_for_status()
+
+                response_data = response.json()
+                paymentAdviceNo = response_data.get('content', {}).get('paymentAdviceNo')
+
+                if paymentAdviceNo:
+                    insert_app_payment_details(
+                        request, applicationno, fines_penalties_remarks,
+                        amount, 'Fines and Penalties', paymentAdviceNo, applicationno
+                    )
+                    print("Payment request successful:", response_data)
                 else:
-                    print("Payment request failed with status code:", response.status_code)
-                    print("Response text:", response.text)
+                    print("Payment advice number not received")
+
             except requests.exceptions.RequestException as e:
-                print("HTTP Request failed:", e)
-        application_details = t_ec_application_t1.objects.filter(application_no=application_no)
-        for application_details in application_details:
-            fines_penalties_email(application_details.email, application_no, amount)
+                print("Payment request failed:", e)
+                if 'response' in locals():
+                    print("Response:", response.text)
+            except Exception as e:
+                print("Unexpected error in payment processing:", e)
+
+        # ✅ Send email using stored email
+        if applicant_email:
+            try:
+                fines_penalties_email(applicant_email, applicationno, amount)
+            except Exception as e:
+                print("Failed to send email:", e)
+        else:
+            print("No email found to send notification")
+
         data['message'] = "success"
+
     except Exception as e:
         print('An error occurred:', e)
+        import traceback
+        traceback.print_exc()  # ✅ Better error logging
         data['message'] = "failure"
+
     return JsonResponse(data)
 
 def get_application_no_fp():

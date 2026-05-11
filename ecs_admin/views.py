@@ -740,24 +740,48 @@ def get_random_document_id_string(length):
 
 def load_gewog(request):
     dzongkhag_id = request.GET.get('dzongkhag_id')
-    gewog_list = t_gewog_master.objects.filter(dzongkhag_code_id=dzongkhag_id).order_by('gewog_name')
-    return render(request, 'gewog_list.html', {'gewog': gewog_list})
 
+    if not dzongkhag_id or dzongkhag_id.strip() == '':
+        gewog_list = t_gewog_master.objects.none()
+    else:
+        try:
+            gewog_list = t_gewog_master.objects.filter(
+                dzongkhag_code_id=int(dzongkhag_id)
+            ).order_by('gewog_name')
+        except (ValueError, TypeError):
+            gewog_list = t_gewog_master.objects.none()
+
+    return render(request, 'gewog_list.html', {'gewog': gewog_list})
 
 def load_village(request):
     gewog_id = request.GET.get('gewog_id')
-    village_list = t_village_master.objects.filter(gewog_code_id=gewog_id).order_by('village_name')
+
+    # Handle empty or invalid gewog_id
+    if not gewog_id or gewog_id.strip() == '':
+        village_list = t_village_master.objects.none()  # Return empty queryset
+    else:
+        try:
+            village_list = t_village_master.objects.filter(
+                gewog_code_id=int(gewog_id)
+            ).order_by('village_name')
+        except (ValueError, TypeError):
+            # Handle non-numeric gewog_id
+            village_list = t_village_master.objects.none()
+
     return render(request, 'village_list.html', {'village': village_list})
 
-
 def check_email_id(request):
-    data = dict()
-    email = request.POST.get('email')
-    print(email)
-    file_count = t_user_master.objects.filter(email_id=email).count()
-    print(file_count)
-    data['file_count'] = file_count
-    return JsonResponse(data)
+    email = request.POST.get('email', '').strip()
+
+    if not email:
+        return JsonResponse({'error': 'No email provided'}, status=400)
+
+    try:
+        file_count = t_user_master.objects.filter(email_id__iexact=email).count()
+        return JsonResponse({'file_count': file_count})
+    except Exception as e:
+        return JsonResponse({'error': 'Database error'}, status=500)
+
 
 def check_cid(request):
     data = dict()
