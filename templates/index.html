@@ -854,89 +854,220 @@
         }
     }
 
-    function register_client() {
-        const formData = {
-            proponent_type: $('#proponent_type').val(),
-            cid: $('#cid').val(),
-            proponent_name: $('#proponent_name').val(),
-            address: $('#proponent_address').val(),
-            contact_person: $('#contact_person').val(),
-            email: $('#email').val(),
-            contact_number: $('#contact_number').val(),
-            dzongkhag: $('#dzongkhag').val(),
-            gewog: $('#gewog').val(),
-            village: $('#village').val(),
-        };
 
-        // Helper function to show error messages
-        function showError(element, message) {
-            $(element).html(message).show().delay(2000).fadeOut('slow');
-        }
+ function register_client() {
 
-        // Validation checks
-        if (!formData.proponent_type) return showError('#proponent_typeErrorMsg', "Select Proponent Type.");
-        if (formData.proponent_type == '4' && !formData.cid) return showError('#cidErrorMsg', "Enter CID.");
-        if (!formData.proponent_name) return showError('#proponent_nameErrorMsg', "Enter Proponent Name.");
-        if (!formData.address) return showError('#proponent_addressErrorMsg', "Enter Address.");
-        if (!formData.contact_person) return showError('#contact_personErrorMsg', "Enter Contact Person.");
-        if (!formData.email) return showError('#emailErrorMsg', "Enter Official Email.");
-        if (!formData.contact_number) return showError('#mobileErrorMsg', "Enter Contact Number.");
-        if (formData.contact_number.length < 8) return showError('#mobileErrorMsg', "Cannot Be Less Than Eight Digits.");
+    // ✅ Collect all form field values
+    const formData = {
+        proponent_type: $('#proponent_type').val(),
+        cid: $('#cid').val(),
+        proponent_name: $('#proponent_name').val(),
+        address: $('#proponent_address').val(),
+        contact_person: $('#contact_person').val(),
+        email: $('#email').val(),
+        contact_number: $('#contact_number').val(),
+        dzongkhag: $('#dzongkhag').val(),
+        gewog: $('#gewog').val(),
+        village: $('#village').val(),
+    };
 
-        // Geographic validation for non-individual users
-        if (formData.proponent_type != '4') {
-            if (!formData.dzongkhag) return showError('#dzongkhagErrorMsg', "Select Dzongkhag.");
-            if (!formData.gewog) return showError('#gewogErrorMsg', "Select Gewog.");
-            if (!formData.village) return showError('#villageErrorMsg', "Select Village.");
-        }
+    // ✅ Hide all previous error messages first
+    $('.alert-danger').hide();
 
-        // Get CSRF token
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-
-        // AJAX request to check email existence
-        $.ajax({
-            type: "POST",
-            url: "{% url 'check_email_id' %}",
-            data: {
-                'email': formData.email,
-                'csrfmiddlewaretoken': $('[name=csrfmiddlewaretoken]').val()
-            },
-            headers: {
-                "X-CSRFToken": getCookie('csrftoken')
-            },
-            success: function(data) {
-                if (data.file_count > 0) {
-                    $('#emailErrorMsg').html("Email Already Exists. Try With Another Email");
-                    $('#email').val("");
-                    $('#emailErrorMsg').show().delay(2000).fadeOut('slow');
-                } else {
-                    // Proceed with registration
-                    if (formData.proponent_type != '4') {
-                        registerClient(formData);
-                    } else {
-                        checkCidAndRegister(formData);
-                    }
-                }
-            },
-            error: function(xhr, status, error) {
-                showError('#client_registration_error_message_div', "An error occurred during email validation.");
-            }
-        });
+    // ✅ Helper Function: Show error message and scroll to it
+    function showError(element, message) {
+        $(element).html(message).show();
+        $('html, body').animate({
+            scrollTop: $(element).offset().top - 100
+        }, 400);
+        $('#proponent_register_btn').prop('disabled', false).html('<i class="uil uil-message me-1"></i>Submit');
     }
 
+    // ✅ Helper Function: Get CSRF token from cookie
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // =============================================
+    // ✅ VALIDATION CHECKS
+    // =============================================
+
+    if (!formData.proponent_type) {
+        showError('#proponent_typeErrorMsg', "Please select a Proponent Type.");
+        return;
+    }
+
+    if (formData.proponent_type == '4' && !formData.cid) {
+        showError('#cidErrorMsg', "Please enter your CID.");
+        return;
+    }
+
+    if (!formData.proponent_name) {
+        showError('#proponent_nameErrorMsg', "Please enter Proponent Name.");
+        return;
+    }
+
+    if (!formData.address) {
+        showError('#proponent_addressErrorMsg', "Please enter Address.");
+        return;
+    }
+
+    if (!formData.contact_person) {
+        showError('#contact_personErrorMsg', "Please enter Contact Person.");
+        return;
+    }
+
+    if (!formData.email) {
+        showError('#emailErrorMsg', "Please enter Official Email.");
+        return;
+    }
+
+    if (!formData.contact_number) {
+        showError('#mobileErrorMsg', "Please enter Contact Number.");
+        return;
+    }
+
+    if (String(formData.contact_number).length < 8) {
+        showError('#mobileErrorMsg', "Contact Number cannot be less than 8 digits.");
+        return;
+    }
+
+    if (formData.proponent_type != '4' && !formData.dzongkhag) {
+        showError('#dzongkhagErrorMsg', "Please select a Dzongkhag.");
+        return;
+    }
+
+    if (formData.proponent_type != '4' && !formData.gewog) {
+        showError('#gewogErrorMsg', "Please select a Gewog.");
+        return;
+    }
+
+    if (formData.proponent_type != '4' && !formData.village) {
+        showError('#villageErrorMsg', "Please select a Village.");
+        return;
+    }
+
+    // =============================================
+    // ✅ ALL VALIDATIONS PASSED - PROCEED TO AJAX
+    // =============================================
+
+    const csrfToken = getCookie('csrftoken');
+    const serializedData = $('#client_registration_form').serialize();
+
+    console.log("Serialized Data:", serializedData);
+    console.log("CSRF Token:", csrfToken);
+
+    // ✅ Disable submit button to prevent double submission
+    $('#proponent_register_btn').prop('disabled', true).html('<i class="uil uil-message me-1"></i>Validating...');
+
+    // =============================================
+    // ✅ AJAX - CHECK IF EMAIL ALREADY EXISTS
+    // =============================================
+
+    $.ajax({
+        type: "POST",
+        url: "{% url 'check_email_id' %}",
+        data: serializedData,
+        headers: {
+            "X-CSRFToken": csrfToken
+        },
+        success: function(data) {
+
+            console.log("Email Check Response:", data);
+
+            // ✅ Re-enable submit button after response
+            $('#proponent_register_btn').prop('disabled', false).html('<i class="uil uil-message me-1"></i>Submit');
+
+            if (data.file_count >= 1) {
+
+                // ❌ Email already exists
+                $('#email').val("");
+                showError('#emailErrorMsg', "Email Already Exists. Please try with another Email.");
+
+            } else {
+
+                // ✅ Email is available — proceed with registration
+                if (formData.proponent_type != '4') {
+
+                    // Non-CID Proponent Registration
+                    if (typeof registerClient === 'function') {
+                        registerClient(formData);
+                    } else {
+                        console.error("❌ registerClient() is not defined!");
+                        showError(
+                            '#client_registration_error_message_div',
+                            "Registration function is missing. Please contact support."
+                        );
+                    }
+
+                } else {
+
+                    // CID-based Proponent Registration
+                    if (typeof checkCidAndRegister === 'function') {
+                        checkCidAndRegister(formData);
+                    } else {
+                        console.error("❌ checkCidAndRegister() is not defined!");
+                        showError(
+                            '#client_registration_error_message_div',
+                            "CID verification function is missing. Please contact support."
+                        );
+                    }
+
+                }
+
+            }
+
+        },
+        error: function(xhr, status, error) {
+
+        // Re-enable submit button
+        $('#proponent_register_btn')
+            .prop('disabled', false)
+            .html('<i class="uil uil-message me-1"></i>Submit');
+
+        console.error("AJAX Error:");
+        console.error("Status:", xhr.status);
+        console.error("Status Text:", xhr.statusText);
+        console.error("Response:", xhr.responseText);
+        console.error("Error:", error);
+
+        let errorMessage = "An error occurred while validating email.";
+
+        // Try extracting Django JSON error
+        try {
+
+            const response = JSON.parse(xhr.responseText);
+
+            if (response.error) {
+                errorMessage = response.error;
+            }
+
+        } catch (e) {
+
+            errorMessage += " Error Code: " + xhr.status;
+        }
+
+        showError(
+            '#client_registration_error_message_div',
+            errorMessage
+        );
+    }
+
+    }); // ← END of $.ajax()
+
+}
+// ← END of register_client()
 
 
     // Function to check CID and register client if valid

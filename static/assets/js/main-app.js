@@ -237,38 +237,6 @@
         }
     }
 
-    // Registration Handler
-    class RegistrationHandler {
-        static registerClient() {
-            // Validation logic here
-            const requiredFields = ['proponent_type', 'cid', 'proponent_name', 'proponent_address', 'contact_person', 'email', 'contact_number'];
-            let isValid = true;
-
-            requiredFields.forEach(field => {
-                const value = document.getElementById(field)?.value;
-                if (!value) {
-                    Utils.showAlert('danger', `${field.replace('_', ' ')} is required`, `${field}ErrorMsg`);
-                    isValid = false;
-                }
-            });
-
-            if (isValid) {
-                document.getElementById('client_registration_form').submit();
-            }
-        }
-
-        static checkCID(cid) {
-            if (cid.length === 11) {
-                fetch(`/api/check-cid/${cid}/`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.exists) {
-                            Utils.showAlert('danger', 'CID already registered', 'cidErrorMsg');
-                        }
-                    });
-            }
-        }
-    }
 
     // Initialize Application
     function init() {
@@ -287,7 +255,7 @@
         window.showLoginForm = ModalManager.showLoginForm.bind(ModalManager);
         window.forgotPassword = ModalManager.forgotPassword.bind(ModalManager);
         window.back = ModalManager.back.bind(ModalManager);
-        window.register_client = RegistrationHandler.registerClient.bind(RegistrationHandler);
+        //window.register_client = RegistrationHandler.registerClient.bind(RegistrationHandler);
         window.check_cid = RegistrationHandler.checkCID.bind(RegistrationHandler);
         window.authenticate_ndi = (type) => {
             Utils.showLoading(true);
