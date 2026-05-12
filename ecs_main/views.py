@@ -3101,7 +3101,10 @@ def make_payment_request(request, application_no, total_amount, description, ser
     mob_no = app_det.contact_no
     app_name = app_det.applicant_name
     proponent_type = app_det.proponent_type
-    email_id = app_det.applicant_id
+    if 'OC' in str(application_no):
+        email_id = app_det.buyer_email
+    else:
+        email_id = app_det.applicant_id
 
     # Override taxPayerDocumentNo for non-individual proponents
     if proponent_type != 4:

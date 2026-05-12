@@ -1,41 +1,43 @@
-from datetime import date, datetime, timedelta, timezone
-import json
-import logging
-
-import threading
 import re
+import json
+import zlib
 import secrets
 import random
-import zlib
+import logging
+import threading
 import requests
+import traceback
+
+from datetime import date, datetime, timedelta, timezone as dt_timezone
+
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
-from django.db import connection
+
+from django.db import connection, transaction
+from django.db.models import Count, Subquery, OuterRef, Exists, Max
 from django.shortcuts import redirect, render
 from django.contrib.sessions.models import Session
-
-from datetime import datetime
 from django.utils import timezone
-from django.db import transaction
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-
-
-from django.db.models import Count, Subquery, OuterRef,Exists
 from django.core.files.storage import FileSystemStorage
 from django.core.mail import send_mail
-from django.http import HttpResponse
 from django.conf import settings
-from django.db.models import Max
-from django_extensions.management.jobs import noneimplementation
 
-from pyasn1.codec.ber.eoo import endOfOctets
-
-from ecs_admin.models import payment_details_master, t_bsic_code, t_competant_authority_master, t_dzongkhag_master, t_fees_schedule, t_file_attachment, t_gewog_master, t_role_master, t_security_question_master, t_service_master, t_thromde_master, t_user_master, t_village_master, t_other_details
+from ecs_admin.models import (
+    payment_details_master, t_bsic_code, t_competant_authority_master,
+    t_dzongkhag_master, t_fees_schedule, t_file_attachment, t_gewog_master,
+    t_role_master, t_security_question_master, t_service_master, t_thromde_master,
+    t_user_master, t_village_master, t_other_details
+)
 from ecs_main.models import t_application_history
 from ecs_main.views import get_birms_token, get_random_tax_no, insert_app_payment_details, make_payment_request
-from proponent.models import t_ec_application_t2, t_ec_application_t1, t_ec_compliance, t_payment_details, t_report_submission_t1, t_report_submission_t2, t_workflow_dtls, t_ec_t1, t_ec_t2, t_ec_t1_history
+from proponent.models import (
+    t_ec_application_t2, t_ec_application_t1, t_ec_compliance, t_payment_details,
+    t_report_submission_t1, t_report_submission_t2, t_workflow_dtls, t_ec_t1,
+    t_ec_t2, t_ec_t1_history
+)
 
 logger = logging.getLogger(__name__)
 
@@ -4725,6 +4727,7 @@ def name_change(request):
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
+    thromde = t_thromde_master.objects.all()
 
     app_hist_count = t_application_history.objects.filter(
         applicant_id=request.session['email']
@@ -4776,6 +4779,7 @@ def name_change(request):
             'dzongkhag': dzongkhag,
             'gewog': gewog,
             'village': village,
+            'thromde':thromde,
             'draft_count': draft_count,
             'app_hist_count': app_hist_count,
             'cl_application_count': cl_application_count,
@@ -4808,6 +4812,7 @@ def ownership_change(request):
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
+    thromde = t_thromde_master.objects.all()
 
     app_hist_count = t_application_history.objects.filter(
         applicant_id=request.session['email']
@@ -4859,6 +4864,7 @@ def ownership_change(request):
             'dzongkhag': dzongkhag,
             'gewog': gewog,
             'village': village,
+            'thromde': thromde,
             'draft_count': draft_count,
             'app_hist_count': app_hist_count,
             'cl_application_count': cl_application_count,
@@ -4895,6 +4901,7 @@ def other_change(request):
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
+    thromde = t_thromde_master.objects.all()
 
     app_hist_count = t_application_history.objects.filter(
         applicant_id=request.session['email']
@@ -4944,6 +4951,7 @@ def other_change(request):
             'dzongkhag': dzongkhag,
             'gewog': gewog,
             'village': village,
+            'thromde': thromde,
             'draft_count': draft_count,
             'app_hist_count': app_hist_count,
             'cl_application_count': cl_application_count,
@@ -5037,6 +5045,10 @@ def other_modifications(request):
             is_deleted='N'
         ).values('document_id')
     )
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    thromde = t_thromde_master.objects.all()
 
     # Pass the dynamic identifier instead of hardcoded 'NC'
     response = render(request, 'other_modification_details.html',
@@ -5046,6 +5058,10 @@ def other_modifications(request):
                           'app_hist_count': app_hist_count,
                           'cl_application_count': cl_application_count,
                           'application_details': application_details,
+                          'dzongkhag': dzongkhag,
+                          'gewog': gewog,
+                          'village': village,
+                          'thromde': thromde,
                           'identifier': identifier,  # Dynamic identifier passed here
                           'tor_application_count': tor_application_count,
                           'draft_count': draft_count,
@@ -5124,7 +5140,9 @@ def ecss_payment_update(request):
                 # Handle instrument_date
                 instrument_date_clean = instrument_date.replace('Z', '+00:00')
                 instrument_date_datetime = datetime.fromisoformat(instrument_date_clean)
-                instrument_date_datetime_utc = instrument_date_datetime.astimezone(timezone.utc).strftime(
+                #instrument_date_datetime_utc = instrument_date_datetime.astimezone(timezone.utc).strftime(
+                #    "%Y-%m-%d %H:%M:%S")
+                instrument_date_datetime_utc = instrument_date_datetime.astimezone(dt_timezone.utc).strftime(
                     "%Y-%m-%d %H:%M:%S")
             except Exception as e:
                 return JsonResponse({

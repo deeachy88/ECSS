@@ -1823,5 +1823,28 @@
         // continue login flow
     }
 </script>
+<script>
+document.querySelectorAll('.input-group-text[data-password]').forEach(item => {
+    item.addEventListener('click', function() {
+        // Find the password input field within the same input-group
+        const passwordField = this.parentElement.querySelector('input');
+        const eyeIcon = this.querySelector('.password-eye');
+
+        if (passwordField.type === 'password') {
+            // Switch to text and update icon
+            passwordField.type = 'text';
+            this.setAttribute('data-password', 'true');
+            eyeIcon.classList.remove('uil-eye');
+            eyeIcon.classList.add('uil-eye-slash');
+        } else {
+            // Switch back to password and update icon
+            passwordField.type = 'password';
+            this.setAttribute('data-password', 'false');
+            eyeIcon.classList.remove('uil-eye-slash');
+            eyeIcon.classList.add('uil-eye');
+        }
+    });
+});
+</script>
 </body>
 </html>
