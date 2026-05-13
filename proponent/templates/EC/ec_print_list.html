@@ -15,9 +15,12 @@
                             <th scope="col">EC_Reference_No</th>
                             <th scope="col">Project_Name</th>
                             <th scope="col">Activity</th>
-                            <th scope="col">Service Name</th>
                             <th scope="col">Expiry_Date</th>
-                            <!--<th scope="col">Application Date</th>-->
+                            <!--
+                            <th scope="col">Service Name</th>
+
+                            <th scope="col">Application Date</th>
+                            -->
                             <th></th>
                         </tr>
                     </thead>
@@ -28,13 +31,16 @@
                                 <td>{{application_details.ec_reference_no}}</td>
                                 <td>{{application_details.project_name}}</td>
                                 <td>{{application_details.activity}}</td>
+                                <td>{{application_details.ec_expiry_date|date:"d-m-Y"}}</td>
+
+                                <!--
                                 {% for service_details in service_details %}
                                     {% if application_details.service_id == service_details.service_id %}
                                         <td>{{service_details.service_name}}</td>
                                     {% endif %}
                                 {% endfor %}
-                                <td>{{application_details.ec_expiry_date|date:"d-m-Y"}}</td>
-                                <!--<td>{{application_details.ec_application_date|date:"d-m-Y"}}</td>-->
+
+                                <td>{{application_details.ec_application_date|date:"d-m-Y"}}</td>-->
                                 <td><button type="button" class="btn btn-sm btn-outline-primary px-1 py-0" onclick="view_print_details('{{application_details.ec_reference_no}}', '{{application_details.ca_authority}}')"> <i class="uil uil-file-copy-alt font-16"></i> </button></td>
                                 <!--{% for payment_details in payment_details %}
                                     {% if application_details.application_no == payment_details.ref_no %}

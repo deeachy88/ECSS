@@ -4436,6 +4436,7 @@ def ec_print_list(request):
     login_id = request.session.get('login_id')
     assigned_user_id = request.session.get('login_id', None)
     ca_authority = request.session.get('ca_authority', None)
+    role_id=request.session.get('role_id', None)
 
     # Calculate expiry date threshold ONCE - Fixed duplicate calculations
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
@@ -4477,7 +4478,10 @@ def ec_print_list(request):
     if ca_authority:
         # Retrieve t_ec_application_t1 objects with application_status='A' and service_type="Main Activity"
         #application_details = t_ec_t1.objects.filter(status='A',service_type="Main Activity", ca_authority=ca_authority)
-        application_details = t_ec_t1.objects.filter(status='A', ca_authority=ca_authority)
+        if role_id == 1:
+            application_details = t_ec_t1.objects.filter(status='A').order_by('ca_authority', 'ec_approve_date')
+        else:
+            application_details = t_ec_t1.objects.filter(status='A', ca_authority=ca_authority).order_by('ec_approve_date')
         # Count the number of t_workflow_dtls objects with assigned_role_id='2',
         # assigned_role_name='Verifier', and ca_authority matching the logged-in user's 'ca_authority'
         v_application_count = t_workflow_dtls.objects.filter(

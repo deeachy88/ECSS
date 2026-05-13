@@ -3664,9 +3664,14 @@ def delete_draft_ec_details(request):
 # Inspection Report
 def inspection_list(request):
     login_id = request.session.get('login_id')
-    print('inside inspection_list')
+    role_id = request.session.get('role_id')
+    ca_auth = request.session.get('ca_authority')
 
-    inspection_list = t_inspection_monitoring_t1.objects.filter(record_status='Active').order_by('inspection_date')
+    if role_id == 1:
+        inspection_list = t_inspection_monitoring_t1.objects.filter(record_status='Active').order_by('inspection_date')
+    else:
+        inspection_list = t_inspection_monitoring_t1.objects.filter(record_status='Active', updated_by_ca=ca_auth).order_by('inspection_date')
+
     user_list = t_user_master.objects.all()
     v_application_count = 0
     r_application_count = 0

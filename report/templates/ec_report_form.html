@@ -52,7 +52,7 @@
 
 <div id="ECDetails">
   <form id="certificateReportForm">
-
+    <input type="hidden" id="role_id" value="{{ request.session.role_id }}">
     <div class="card border-0 shadow-sm mt-3">
       <div class="card-body p-4">
 
@@ -102,19 +102,21 @@
           </div>
 
           <!-- COMPETENT AUTHORITY -->
-          <div class="col-md-6">
-            <label class="form-label">
-              Competent Authority <span class="required">*</span>
-            </label>
-            <select id="ca_authority" name="ca_authority" class="form-select">
-              <option value="ALL">-- Select All --</option>
-              {% for ca_list in ca_list %}
-                <option value="{{ ca_list.competent_authority_id }}">
-                  {{ ca_list.remarks }}
-                </option>
-              {% endfor %}
-            </select>
-          </div>
+          {% if request.session.role_id == 1 %}
+            <div class="col-md-6">
+              <label class="form-label">
+                Competent Authority <span class="required">*</span>
+              </label>
+              <select id="ca_authority" name="ca_authority" class="form-select">
+                <option value="ALL">-- Select All --</option>
+                {% for ca_list in ca_list %}
+                  <option value="{{ ca_list.competent_authority_id }}">
+                    {{ ca_list.remarks }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+          {% endif %}
 
         </div>
 
@@ -137,6 +139,7 @@ function viewECIssuedList() {
     var to_date = $('#toDate').val();
     var service_id = $('#service_id').val();
     var ca_authority = $('#ca_authority').val();
+    var role_id = $('#role_id').val();
 
     let valid = true;
 
@@ -163,7 +166,8 @@ function viewECIssuedList() {
             'from_date': from_date,
             'to_date': to_date,
             'service_id': service_id,
-            'ca_authority': ca_authority
+            'ca_authority': ca_authority,
+            'role_id': role_id
         },
         success: function(data) {
             $('#ECDetails').html(data);
