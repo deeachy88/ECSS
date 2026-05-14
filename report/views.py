@@ -299,33 +299,29 @@ def ec_pending_list(request):
     login_id = request.session.get('login_id')
     print(ca_auth)
 
-    if role_id == '1':
-        if ca_authority == 'ALL' and service_id == 'ALL':
-            ec_list = t_ec_application_t1.objects.filter(application_date__range=[from_date, to_date],
-                                                         application_status='P').values()
-        elif ca_authority == 'ALL' and service_id != 'ALL':
-            ec_list = t_ec_application_t1.objects.filter(application_date__range=[from_date, to_date],
-                                                         application_status='P',
-                                                         service_id=service_id).values()
-        elif ca_authority != 'ALL' and service_id == 'ALL':
-            ec_list = t_ec_application_t1.objects.filter(application_date__range=[from_date, to_date],
-                                                         ca_authority=ca_authority,
-                                                         application_status='P').values()
-        elif ca_authority != 'ALL' and service_id != 'ALL':
-            ec_list = t_ec_application_t1.objects.filter(application_date__range=[from_date, to_date],
-                                                         ca_authority=ca_authority,
-                                                         service_id=service_id,
-                                                         application_status='P').values()
+    # 1. Start with the common filters
+    filters = {
+        'application_date__range': [from_date, to_date]
+    }
+
+    # 2. Handle the CA Authority logic
+    if str(role_id) == '1':
+        if ca_authority != 'ALL':
+            filters['ca_authority'] = ca_authority
     else:
-        if service_id == 'ALL':
-            ec_list = t_ec_application_t1.objects.filter(application_date__range=[from_date, to_date],
-                                                         ca_authority=ca_auth,
-                                                         application_status='P').values()
-        else:
-            ec_list = t_ec_application_t1.objects.filter(application_date__range=[from_date, to_date],
-                                                         ca_authority=ca_auth,
-                                                         application_status='P',
-                                                         service_id=service_id).values()
+        # Non-admin roles use the specific 'ca_auth' context
+        filters['ca_authority'] = ca_auth
+
+    # 3. Handle the Service ID logic
+    if service_id != 'ALL':
+        filters['service_id'] = service_id
+
+    # 4. Execute the query excluding 'A' (Approved) and 'R' (Rejected)
+    ec_list = t_ec_application_t1.objects.filter(
+        **filters
+    ).exclude(
+        application_status__in=['A', 'R']
+    ).values()
 
     # Verifier application count
     v_application_count = t_workflow_dtls.objects.filter(
