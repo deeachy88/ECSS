@@ -97,31 +97,31 @@ def view_ec_list(request):
 
     if role_id == '1':
         if ca_authority == 'ALL' and service_id == 'ALL':
-            ec_list = t_ec_application_t1.objects.filter(ec_approve_date__range=[from_date, to_date],
-                                                                application_status='A').values()
+            ec_list = t_ec_t1.objects.filter(ec_approve_date__range=[from_date, to_date],
+                                                                status='A').values()
         elif ca_authority == 'ALL' and service_id != 'ALL':
-            ec_list = t_ec_application_t1.objects.filter(ec_approve_date__range=[from_date, to_date],
-                                                                application_status='A',
+            ec_list = t_ec_t1.objects.filter(ec_approve_date__range=[from_date, to_date],
+                                                                status='A',
                                                                 service_id=service_id).values()
         elif ca_authority != 'ALL' and service_id == 'ALL':
-            ec_list = t_ec_application_t1.objects.filter(ec_approve_date__range=[from_date, to_date],
+            ec_list = t_ec_t1.objects.filter(ec_approve_date__range=[from_date, to_date],
                                                                 ca_authority=ca_authority,
-                                                                application_status='A').values()
+                                                                status='A').values()
         elif ca_authority != 'ALL' and service_id != 'ALL':
-            ec_list = t_ec_application_t1.objects.filter(ec_approve_date__range=[from_date, to_date],
+            ec_list = t_ec_t1.objects.filter(ec_approve_date__range=[from_date, to_date],
                                                                 ca_authority=ca_authority,
                                                                 service_id=service_id,
-                                                                application_status='A').values()
+                                                                status='A').values()
     else:
         if service_id == 'ALL':
-            ec_list = t_ec_application_t1.objects.filter(ec_approve_date__range=[from_date, to_date],
+            ec_list = t_ec_t1.objects.filter(ec_approve_date__range=[from_date, to_date],
                                                          ca_authority=ca_auth,
-                                                         application_status='A').values()
+                                                         status='A').values()
         else:
-            ec_list = t_ec_application_t1.objects.filter(ec_approve_date__range=[from_date, to_date],
+            ec_list = t_ec_t1.objects.filter(ec_approve_date__range=[from_date, to_date],
                                                          ca_authority=ca_auth,
                                                          service_id=service_id,
-                                                         application_status='A').values()
+                                                         status='A').values()
 
     # Verifier application count
     v_application_count = t_workflow_dtls.objects.filter(
