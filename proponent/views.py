@@ -16,14 +16,24 @@ from channels.layers import get_channel_layer
 from django.db import connection, transaction
 from django.db.models import Count, Subquery, OuterRef, Exists, Max
 from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.contrib.sessions.models import Session
 from django.utils import timezone
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.core.files.storage import FileSystemStorage
 from django.core.mail import send_mail
 from django.conf import settings
+
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from io import BytesIO
+
+import os
+
+from django.contrib.staticfiles import finders
 
 from ecs_admin.models import (
     payment_details_master, t_bsic_code, t_competant_authority_master,
@@ -577,7 +587,7 @@ def save_new_general_details(request):
         if application_no:
             existing_app = t_ec_application_t1.objects.filter(
                 application_no=application_no
-            ).select_related('service_id').first()
+            ).first()
 
         # Service code mapping
         SERVICE_CODE_MAP = {
@@ -674,6 +684,7 @@ def save_new_general_details(request):
             'tor_application_no': post_data.get('tor_no'),
             'mas_integration': post_data.get('mas_integration'),
             'fmfsr_no': post_data.get('fmfsr_no'),
+            'app_remarks': post_data.get('app_remarks'),
         }
 
         with transaction.atomic():
@@ -850,7 +861,8 @@ def save_other_modification_general_details(request):
             'proponent_type': session.get('proponent_type'),
             'activity': activity,
             'prev_ec_reference_no': previous_ec_reference_no,
-            'ca_authority': ca_auth_id
+            'ca_authority': ca_auth_id,
+            'app_remarks': post_data.get('app_remarks'),
         }
 
         with transaction.atomic():
@@ -2252,8 +2264,38 @@ def view_draft_application_details(request):
 
     return render(request, 'draft_application_details.html', context)
 
+    #DELETE DRAFT APPLICATION start
+def delete_draft_application(request):
+    application_no = request.GET.get('application_no') or request.session.get('application_no')
+    service_id = request.GET.get('service_id')
 
-#OLD EC APPLICATION LIST start
+    try:
+        # Delete related file attachments
+        t_file_attachment.objects.filter(application_no=application_no).delete()
+
+        # Delete the main application records
+        t_ec_application_t1.objects.filter(
+            application_no=application_no
+        ).delete()
+
+        # Clear session data
+        if request.session.get('application_no') == application_no:
+            del request.session['application_no']
+        if request.session.get('service_id') == service_id:
+            del request.session['service_id']
+        if 'attachments' in request.session:
+            del request.session['attachments']
+
+        # ✅ CORRECT: Build URL first, then redirect
+        url = reverse('draft_application_list') + '?identifier=NEW'
+        return redirect(url)
+
+    except Exception as e:
+        print(f"Error deleting application: {e}")
+        url = reverse('draft_application_list') + '?identifier=NEW'
+        return redirect(url)
+    #OLD EC APPLICATION LIST start
+
 def old_ec_application_list(request):
     assigned_user_id = request.session.get('login_id', None)
     applicant_id = request.session.get('email', None)
@@ -2422,6 +2464,7 @@ def view_pending_old_ec_details(request):
 
 def ec_renewal(request):
     applicant_id = request.session.get('email')
+    login_id = request.session.get('login_id')
     if not applicant_id:
         return redirect('login')
 
@@ -2526,6 +2569,12 @@ def ec_renewal(request):
         service_type__in=["Main Activity", "TC", "PC", "CC", "AC", "LC"],
         action_date__isnull=True
     ).count()
+
+    # Client application count
+    cl_application_count = t_workflow_dtls.objects.filter(
+        assigned_user_id=login_id
+    ).count()
+
     # -----------------------------------
     # Context
     # -----------------------------------
@@ -2534,6 +2583,7 @@ def ec_renewal(request):
         'app_hist_count': app_hist_count,
         'renewal_details': renewal_details,
         'ec_renewal_count': ec_renewal_count,
+        'cl_application_count': cl_application_count,
         'service_details': service_details,
         'draft_count': draft_count,
         'tor_application_count': tor_application_count,
@@ -2569,6 +2619,7 @@ def ec_renewal_details(request):
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
+    thromde = t_thromde_master.objects.all()
 
     app_hist_count = t_application_history.objects.filter(
         applicant_id=request.session['email']
@@ -2619,6 +2670,7 @@ def ec_renewal_details(request):
             'dzongkhag': dzongkhag,
             'gewog': gewog,
             'village': village,
+            'thromde': thromde,
             'draft_count': draft_count,
             'app_hist_count': app_hist_count,
             'cl_application_count': cl_application_count,
@@ -2834,6 +2886,7 @@ def submit_oc_application(request):
         ec_reference_no = request.POST.get('ec_reference_no')
         temp_application_no = request.POST.get('temp_application_no')
         applicant_focal_person = request.POST.get('applicant_focal_person')
+        app_remarks = request.POST.get('app_remarks')
         name = request.session.get('name')
         email_id = request.session.get('email')
         service_code = 'OC'
@@ -2905,7 +2958,8 @@ def submit_oc_application(request):
                 buyer_contact_no=applicant_details.contact_number,
                 buyer_proponent_type=applicant_details.proponent_type,
                 buyer_project_name=application_details.project_name,
-                buyer_focal_person=applicant_focal_person
+                buyer_focal_person=applicant_focal_person,
+                app_remarks=app_remarks
             )
 
             # B) Create workflow record
@@ -3197,6 +3251,7 @@ def submit_nc_application(request):
         ec_reference_no = request.POST.get('ec_reference_no')
         temp_application_no = request.POST.get('temp_application_no')
         new_project_name = request.POST.get('new_project_name')
+        app_remarks = request.POST.get('app_remarks')
         name = request.session.get('name')
         email_id = request.session.get('email')
         service_code = 'NC'
@@ -3260,7 +3315,8 @@ def submit_nc_application(request):
                 service_type=application_details.service_type,
                 proponent_type=application_details.proponent_type,
                 cid=application_details.cid,
-                new_project_name=new_project_name
+                new_project_name=new_project_name,
+                app_remarks=app_remarks
 
             )
 
@@ -3645,6 +3701,7 @@ def save_tor_form(request):
         contact_no = request.POST.get('contact_no')
         email = request.POST.get('email')
         project_description = request.POST.get('project_description')
+        app_remarks = request.POST.get('app_remarks')
         focal_person = request.POST.get('focal_person')
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
         proponent_type = request.session['proponent_type']
@@ -3736,6 +3793,7 @@ def save_tor_form(request):
             service_type='TOR',
             application_type='New',
             project_description=project_description,
+            app_remarks=app_remarks,
             mas_integration=mas_integration
         )
 
@@ -3829,6 +3887,7 @@ def save_tor_attachment_details(request):
 
 def tor_list(request):
     applicant_id = request.session.get('email', None)
+    login_id = request.session.get('login_id')
     t1_general_subquery = t_ec_application_t1.objects.filter(
         tor_application_no=OuterRef('application_no') 
     ).values('tor_application_no')
@@ -3845,7 +3904,11 @@ def tor_list(request):
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
-    
+    #Client application count
+    cl_application_count = t_workflow_dtls.objects.filter(
+        assigned_user_id=login_id
+    ).count()
+
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
     # Renewal exists AND is NOT approved
@@ -3884,7 +3947,10 @@ def tor_list(request):
     app_hist_count = t_application_history.objects.filter(
             applicant_id=applicant_id
         ).distinct('application_no').count()
-    response = render(request, 'tor/tor_list.html', {'tor_application_count':tor_application_count,'ec_renewal_count':ec_renewal_count,'tor_details':tor_details,'service_details':service_details, 'app_hist_count':app_hist_count, 'draft_count':draft_count})
+    response = render(request, 'tor/tor_list.html', {'tor_application_count':tor_application_count,
+                                             'ec_renewal_count':ec_renewal_count,'tor_details':tor_details,
+                                             'service_details':service_details, 'app_hist_count':app_hist_count,
+                                             'cl_application_count':cl_application_count, 'draft_count':draft_count})
 
     # Set cache-control headers to prevent caching
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -3965,7 +4031,6 @@ def view_tor_application_details(request):
         village_code = app_det.village_code
         mas_integration = app_det.mas_integration
         service_id = app_det.service_id
-        print(service_id)
         #application_no = get_application_no(request, service_code, service_id)
         #application_no = get_new_application_no(request, service_code)
         #request.session['application_no'] = application_no
@@ -4478,10 +4543,21 @@ def ec_print_list(request):
     if ca_authority:
         # Retrieve t_ec_application_t1 objects with application_status='A' and service_type="Main Activity"
         #application_details = t_ec_t1.objects.filter(status='A',service_type="Main Activity", ca_authority=ca_authority)
+
         if role_id == 1:
-            application_details = t_ec_t1.objects.filter(status='A').order_by('ca_authority', 'ec_approve_date')
+            application_details = t_ec_t1.objects.filter(
+                status='A',
+                ec_reference_no__in=t_ec_t2.objects.values_list('ec_reference_no', flat=True)
+            ).order_by('ca_authority', 'ec_approve_date')
         else:
-            application_details = t_ec_t1.objects.filter(status='A', ca_authority=ca_authority).order_by('ec_approve_date')
+            application_details = t_ec_t1.objects.filter(
+                status='A',
+                ca_authority=ca_authority,
+                ec_reference_no__in=t_ec_t2.objects.values_list('ec_reference_no', flat=True)
+            ).order_by('ec_approve_date')
+
+
+
         # Count the number of t_workflow_dtls objects with assigned_role_id='2',
         # assigned_role_name='Verifier', and ca_authority matching the logged-in user's 'ca_authority'
         v_application_count = t_workflow_dtls.objects.filter(
@@ -4520,7 +4596,12 @@ def ec_print_list(request):
         ).count()
     else:
         # Retrieve t_ec_application_t1 objects with application_status='A' and service_type="Main Activity"
-        application_details = t_ec_t1.objects.filter(status='A', applicant_id=applicant_id)
+        application_details = t_ec_t1.objects.filter(
+            status='A',
+            applicant_id=applicant_id,
+            ec_reference_no__in=t_ec_t2.objects.values_list('ec_reference_no', flat=True)
+        ).order_by('ec_approve_date')
+
         # If 'ca_authority' is not found or empty, set the variables to appropriate default values
         email_id = request.session['email']
         login_id = request.session['login_id']
@@ -4672,6 +4753,58 @@ def view_print_details(request):
                                                 'competent_authority': ca_name}
                                                 )
 
+#VIEW DRAFT EC START
+def view_draft_ec_details(request):
+    # Retrieve the 'ec_reference_no' parameter from the GET request
+    app_no = request.GET.get('application_no')
+
+    # Retrieve competent_authority
+    competent_authority = t_competant_authority_master.objects.filter(
+        competent_authority_id=request.session['ca_authority']
+    ).first()
+    ca_name = competent_authority.remarks if competent_authority else None
+    print(ca_name)
+    # Retrieve t_ec_application_t1 objects with ec_reference_no=ec_reference_no and service_type="Main Activity"
+    application_details = t_ec_application_t1.objects.filter(application_no=app_no, service_type="Main Activity")
+
+    # Retrieve t_ec_application_t2 objects with ec_reference_no=ec_reference_no
+    ec_details = t_ec_application_t2.objects.filter(application_no=app_no).order_by('order')
+
+    # Count the number of t_application_history objects related to the logged-in user
+    app_hist_count = t_application_history.objects.filter(
+        applicant_id=request.session['email']
+    ).distinct('application_no').count()
+
+    # Count the number of t_workflow_dtls objects with assigned_user_id equal to the logged-in user
+    cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
+
+    # Check if the 'ca_authority' exists in the session and has a non-empty value
+    if 'ca_authority' in request.session and request.session['ca_authority']:
+        # Count the number of t_workflow_dtls objects with assigned_role_id='2',
+        # assigned_role_name='Verifier', and ca_authority matching the logged-in user's 'ca_authority'
+        v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier',
+                                                             ca_authority=request.session['ca_authority']).count()
+
+        # Count the number of t_workflow_dtls objects with assigned_role_id='3',
+        # assigned_role_name='Reviewer', and ca_authority matching the logged-in user's 'ca_authority'
+        r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer',
+                                                             ca_authority=request.session['ca_authority']).count()
+    else:
+        # If 'ca_authority' is not found or empty, set the variables to appropriate default values
+        v_application_count = 0
+        r_application_count = 0
+
+    # Pass the retrieved data to the 'print_ec.html' template for rendering
+    return render(request, 'EC/draft_ec.html', {'application_details': application_details,
+                                                'ec_details': ec_details,
+                                                'app_hist_count': app_hist_count,
+                                                'cl_application_count': cl_application_count,
+                                                'v_application_count': v_application_count,
+                                                'r_application_count': r_application_count,
+                                                'competent_authority': ca_name}
+                  )
+
+
 #VIEW EC from OUTSIDE START
 
 def view_ec(request, ec_reference_no):
@@ -4703,6 +4836,73 @@ def view_ec(request, ec_reference_no):
         'competent_authority': ca_name
     })
 #VIEW EC from OUTSIDE START
+
+
+# DOWNLOAD EC START
+def download_ec_details(request):
+    ec_reference_no = request.GET.get('ec_reference_no')
+    ca_authority = request.GET.get('ca_authority')
+
+    # Retrieve competent_authority
+    competent_authority = t_competant_authority_master.objects.filter(
+        competent_authority_id=ca_authority
+    ).first()
+    ca_name = competent_authority.remarks if competent_authority else None
+
+    # Retrieve t_ec_application_t1 objects with ec_reference_no=ec_reference_no and service_type="Main Activity"
+    application_details = t_ec_t1.objects.filter(ec_reference_no=ec_reference_no, service_type="Main Activity")
+
+    # Retrieve t_ec_application_t2 objects with ec_reference_no=ec_reference_no
+    ec_details = t_ec_t2.objects.filter(ec_reference_no=ec_reference_no).order_by('order')
+
+    context = {
+        'application_details': application_details,
+        'ec_details': ec_details,
+        'competent_authority': ca_name}
+
+    template = get_template('EC/pdf_ec.html')
+    html = template.render(context)
+
+    result = BytesIO()
+
+    pdf = pisa.pisaDocument(
+        BytesIO(html.encode("UTF-8")),
+        result,
+        link_callback=link_callback
+    )
+
+    if pdf.err:
+        return HttpResponse("PDF Error", status=500)
+
+    response = HttpResponse(
+        result.getvalue(),
+        content_type='application/pdf'
+    )
+
+    response['Content-Disposition'] = (
+        f'attachment; filename="EC_{ec_reference_no}.pdf"'
+    )
+
+    return response
+
+
+# DOWNLOAD EC END
+
+def link_callback(uri, rel):
+
+    # Convert HTML URIs to absolute system paths
+
+    path = finders.find(uri.replace(settings.STATIC_URL, ""))
+
+    if path:
+        return path
+
+    path = os.path.join(
+        settings.MEDIA_ROOT,
+        uri.replace(settings.MEDIA_URL, "")
+    )
+
+    return path
 
 
 # OTHER MODIFICATION DETAILS

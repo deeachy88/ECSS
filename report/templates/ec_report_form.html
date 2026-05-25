@@ -102,7 +102,7 @@
           </div>
 
           <!-- COMPETENT AUTHORITY -->
-          {% if request.session.role_id == 1 %}
+          {% if request.session.role_id == 1 or request.session.role_id == 4 %}
             <div class="col-md-6">
               <label class="form-label">
                 Competent Authority <span class="required">*</span>

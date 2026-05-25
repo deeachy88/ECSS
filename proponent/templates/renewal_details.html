@@ -1,3 +1,15 @@
+<style>
+    .action-taken-error {
+        border: 2px solid #dc3545 !important;
+        background-color: #fff8f8 !important;
+        transition: all 0.3s ease;
+    }
+
+    .action-taken-error:focus {
+        border-color: #dc3545 !important;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+    }
+</style>
 <div class="card mt-1">
     <div class="card-body">
         {% for renewal_details in application_details %}
@@ -63,7 +75,7 @@
                         <div class="col-lg-8">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Name and contact details of Environmental Focal Person if other than the applicant</label>
-                                <textarea class="form-control" id="focal_person" name="focal_person" rows="3" readonly>{{ application_details.focal_person }}</textarea>
+                                <input type="email" name="focal_person" class="form-control" id="focal_person" value="{{ application_details.focal_person }}" readonly>
                             </div>
                         </div>
                     </div>
@@ -76,50 +88,112 @@
                         </div>
                     </div>
                     <div class="alert custom-bg border-0" role="alert">
-                        <i class="uil-folder-heart me-1 h4 align-middle"></i> Project Location and Area
+                        <i class="uil-folder-heart me-1 h4 align-middle"></i>Project Location and Area
                     </div>
-                    <div class="row">
-                        <div class="col-lg-4">
+                    <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+                        {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <div class="mt-2">
+                                        <div class="form-check form-check-inline">
+                                            <input
+                                                type="radio"
+                                                name="dzongkhag_throm"
+                                                id="dzongkhag-radio"
+                                                class="form-check-input"
+                                                value="Dzongkhag"
+                                                onclick="check_dzong_throm(this.value)"
+                                                {% if application_details.dzongkhag_throm == 'Dzongkhag' %}checked{% endif %}>
+                                            <label class="form-check-label">Dzongkhag</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% elif application_details.dzongkhag_throm == 'Thromde' %}
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <div class="mt-2">
+                                        <div class="form-check form-check-inline">
+                                            <input
+                                                type="radio"
+                                                name="dzongkhag_throm"
+                                                id="thromde-radio"
+                                                class="form-check-input"
+                                                value="Thromde"
+                                                onclick="check_dzong_throm(this.value)"
+                                                {% if application_details.dzongkhag_throm == 'Thromde' %}checked{% endif %}>
+                                            <label class="form-check-label">Thromde</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <!-- Thromde Section - Always included but conditionally hidden -->
+                        <div class="col-lg-6 thromde" {% if application_details.dzongkhag_throm != 'Thromde' %}style="display:none;"{% endif %}>
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Dzongkhag/Thromde</label>
-                                <select class="form-select" name="dzo_throm"  id="dzo_throm" disabled>
-                                    {% for dzongkhag in dzongkhag %}
-                                        <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
-                                            {{ dzongkhag.dzongkhag_name }}
+                                <label class="form-label fw-bold">Thromde</label>
+                                <select class="form-select" id="thromde_id" name="thromde_id" disabled>
+                                    {% for thromde in thromde %}
+                                        <option value="{{ thromde.thromde_id }}" {% if application_details.thromde_id == thromde.thromde_id %}selected{% endif %}>
+                                            {{ thromde.thromde_name }}
                                         </option>
                                     {% endfor %}
                                 </select>
                             </div>
+                            <div id="thromdeErrorMsg" class="alert alert-danger d-none"></div>
                         </div>
-                        <div class="col-lg-4">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Gewog</label>
-                                <select class="form-select" name="gewog" id="gewog" disabled>
-                                    {% for gewog in gewog %}
-                                        <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
-                                            {{ gewog.gewog_name }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
+                    </div>
+
+                    <!-- Dzongkhag Section - Always included but conditionally hidden -->
+                    <div class="dzongkhag" {% if application_details.dzongkhag_throm != 'Dzongkhag' %}style="display:none;"{% endif %}>
+                        <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Dzongkhag</label>
+                                    <select class="form-select" name="dzongkhag" id="dzongkhag" disabled>
+                                        {% for dzongkhag in dzongkhag %}
+                                            <option value="{{ dzongkhag.dzongkhag_code }}" {% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
+                                                {{ dzongkhag.dzongkhag_name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Gewog</label>
+                                    <select class="form-select" name="gewog" id="gewog" disabled>
+                                        {% for gewog in gewog %}
+                                            <option value="{{ gewog.gewog_code }}" {% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
+                                                {{ gewog.gewog_name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div id="gewogErrorMsg" class="alert alert-danger d-none"></div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Village/Chiwog</label>
+                                    <select class="form-select" name="vil_chiwog" id="vil_chiwog" disabled>
+                                        {% for village in village %}
+                                            <option value="{{ village.village_code }}" {% if application_details.village_code == village.village_code %}selected{% endif %}>
+                                                {{ village.village_name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div id="vil_chiwogErrorMsg" class="alert alert-danger d-none"></div>
                             </div>
                         </div>
-                        <div class="col-lg-4">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Village/Chiwog</label>
-                                <select class="form-select" name="vil_chiwog" id="vil_chiwog" disabled>
-                                    {% for village in village %}
-                                    <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
-                                        {{ village.village_name }}
-                                    </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                         <div class="col-lg-8">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Name of the Particular Project Site</label>
-                                <input type="text" name="location_name" class="form-control" id="location_name" value="{{ application_details.location_name }}" readonly>
+                                <input type="text" name="project_site" class="form-control" id="project_site" value="{{application_details.location_name}}" disabled>
                             </div>
+                            <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
                         </div>
                     </div>
                     <div class="alert custom-bg border-0" role="alert">
@@ -202,8 +276,7 @@
                                                             name="action_undertaken[]"
                                                             rows="4"
                                                             placeholder="Describe actions taken to comply with this term..."
-                                                            style="resize: vertical; min-height: 80px;">
-                                                        </textarea>
+                                                            style="resize: vertical; min-height: 80px;"></textarea>
                                                         <div class="mt-1">
                                                             <small class="text-muted char-count" data-target="action_undertaken_{{ forloop.counter0 }}"></small>
                                                         </div>
@@ -215,8 +288,7 @@
                                                             name="remarks[]"
                                                             rows="4"
                                                             placeholder="Additional remarks or compliance notes..."
-                                                            style="resize: vertical; min-height: 80px;">
-                                                        </textarea>
+                                                            style="resize: vertical; min-height: 80px;"></textarea>
                                                         <div class="mt-1">
                                                             <small class="text-muted char-count" data-target="remarks_{{ forloop.counter0 }}"></small>
                                                         </div>
@@ -447,7 +519,77 @@
 <script>
     function submit_renew_application()
     {
-        // Show loading indicator
+        // Validate that all Action Taken fields are filled
+        const actionTextareas = document.querySelectorAll('textarea[name="action_undertaken[]"]');
+        let emptyCount = 0;
+        const emptyIndices = [];
+
+        // Remove any existing error highlights
+        document.querySelectorAll('.action-taken-error').forEach(el => {
+            el.classList.remove('action-taken-error');
+            const errorMsgDiv = el.parentElement.querySelector('.error-message');
+            if (errorMsgDiv) errorMsgDiv.remove();
+        });
+
+        actionTextareas.forEach((textarea, index) => {
+            if (!textarea.value.trim()) {
+                emptyCount++;
+                emptyIndices.push(index + 1);
+
+                // Add visual highlight to empty textarea
+                textarea.classList.add('action-taken-error');
+
+                // Add error message below textarea
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'text-danger error-message';
+                errorDiv.style.fontSize = '0.8rem';
+                errorDiv.style.marginTop = '0.25rem';
+                errorDiv.innerHTML = '<i class="mdi mdi-alert-circle me-1"></i>Action Taken is required';
+                textarea.parentElement.appendChild(errorDiv);
+            }
+        });
+
+        if (emptyCount > 0) {
+            // Show error alert
+            const errorMsg = emptyCount === 1
+                ? `Please fill in the "Action Taken" field for Term ${emptyIndices[0]}.`
+                : `Please fill in the "Action Taken" fields for ${emptyCount} terms (Terms: ${emptyIndices.join(', ')})`;
+
+            $('#general_submit_errorMsg')
+                .text(`❌ ${errorMsg}`)
+                .removeAttr('tabindex')
+                .attr({
+                    'aria-live': 'assertive',
+                    'aria-atomic': 'true'
+                })
+                .show()
+                .focus();
+
+            // Scroll to the first empty field
+            const firstEmptyAction = actionTextareas[emptyIndices[0] - 1];
+            if (firstEmptyAction) {
+                firstEmptyAction.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstEmptyAction.focus();
+            }
+
+            // Auto-hide error message after 5 seconds
+            setTimeout(() => {
+                $('#general_submit_errorMsg').fadeOut('slow');
+                // Remove highlights after error fades
+                setTimeout(() => {
+                    document.querySelectorAll('.action-taken-error').forEach(el => {
+                        el.classList.remove('action-taken-error');
+                    });
+                    document.querySelectorAll('.error-message').forEach(el => {
+                        el.remove();
+                    });
+                }, 500);
+            }, 5000);
+
+            return; // Stop submission
+        }
+
+        // If validation passes, continue with submission
         $("#pageloader").show();
 
         $.ajax
@@ -459,9 +601,8 @@
             {
                 if(data.message == 'success')
                 {
-                   // Success case
                     $('#general_submit_successMsg')
-                        .text("Application Submitted Successfully")
+                        .text("✅ Application Submitted Successfully")
                         .removeAttr('tabindex')
                         .attr({
                             'aria-live': 'polite',
@@ -471,7 +612,7 @@
                         .focus();
 
                     setTimeout(() => {
-                        $('#general_submit_successMsg').delay(3000).fadeOut('slow');
+                        $('#general_submit_successMsg').fadeOut('slow');
                     }, 3000);
 
                     setTimeout(() => {
@@ -480,9 +621,9 @@
                 }
                 else
                 {
-                    // Other error cases
+                    $("#pageloader").hide();
                     $('#general_submit_errorMsg')
-                        .text(`Application Error: ${data.error}`)
+                        .text(`❌ Application Error: ${data.error}`)
                         .removeAttr('tabindex')
                         .attr({
                             'aria-live': 'assertive',
@@ -492,9 +633,18 @@
                         .focus();
 
                     setTimeout(() => {
-                        $('#general_submit_errorMsg').delay(2000).fadeOut('slow');
-                    }, 2000);
+                        $('#general_submit_errorMsg').fadeOut('slow');
+                    }, 3000);
                 }
+            },
+            error: function(xhr, status, error) {
+                $("#pageloader").hide();
+                $('#general_submit_errorMsg')
+                    .text(`❌ Submission failed: ${error}`)
+                    .show();
+                setTimeout(() => {
+                    $('#general_submit_errorMsg').fadeOut('slow');
+                }, 3000);
             }
         });
     }

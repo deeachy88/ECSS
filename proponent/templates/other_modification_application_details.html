@@ -94,7 +94,7 @@
                                     </div>
                                 </div>
                                 <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
-                                    <div class="col-lg-8">
+                                    <div class="col-lg-12">
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Brief Description of the project</label>
                                             <textarea class="form-control" name="project_description" id="project_description" rows="3">{{application_details.project_description}}</textarea>
@@ -241,6 +241,12 @@
                                             <input type="text" name="project_site" class="form-control" id="project_site" value="{{application_details.location_name}}">
                                         </div>
                                         <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Remarks (Any Other Details)</label>
+                                            <textarea class="form-control" name="app_remarks" id="app_remarks" rows="3"></textarea>
+                                        </div>
                                     </div>
                                 </div>
                             </form>

@@ -68,12 +68,18 @@
                         </div>
                     </div>
                     <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
-                        <div class="col-lg-12">
+                        <div class="col-lg-8">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Brief Description of the project</label>
                                 <textarea class="form-control" name="project_description" id="project_description" rows="3"></textarea>
                             </div>
                             <div id="project_descriptionErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Remarks (Any Other Details)</label>
+                                <textarea class="form-control" name="app_remarks" id="app_remarks" rows="3"></textarea>
+                            </div>
                         </div>
                     </div>
                     <div class="alert custom-bg border-0" role="alert">
@@ -319,7 +325,7 @@
         let project_description = $('#project_description').val();
         let focal_person = $('#focal_person').val();
         let project_site = $('#project_site').val();
-
+        let app_remarks = $('#app_remarks').val();
         let site = $("input[name='dzongkhag_throm']:checked").length;
         let site_value = $("input[name='dzongkhag_throm']:checked").val();
         let dzongkhag = $('#dzongkhag').val();

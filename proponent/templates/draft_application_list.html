@@ -15,7 +15,10 @@
                             <th scope="col">Application No</th>
                             <th scope="col">Project name</th>
                             <th scope="col">Activity</th>
+                            <!--
                             <th scope="col">Service Name</th>
+                            -->
+                            <th scope="col">Acttion</th>
 
                         </tr>
                     </thead>
@@ -32,11 +35,21 @@
                                 </td>
                                 <td>{{application_details.project_name}}</td>
                                 <td>{{application_details.activity}}</td>
+                                <!--
                                 {% for service_details in service_details %}
                                     {% if application_details.service_id == service_details.service_id %}
                                         <td>{{service_details.service_name}}</td>
                                     {% endif %}
                                 {% endfor %}
+                                -->
+                                <td>
+                                    <a href="javascript:void(0);"
+                                       class="text-danger"
+                                       onclick="openDeleteModal('{{application_details.application_no}}', '{{ application_details.service_id }}')"
+                                       title="Delete">
+                                       <i class="fas fa-trash-alt"></i> Delete
+                                    </a>
+                                </td>
                             </tr>
                             {% empty %}
                             <tr>
@@ -49,13 +62,33 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to Delete this Application?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn" onclick="handleDeleteConfirm()">
+                    Yes, Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
-    function viewApplicationDetails(application_no,service_id)
+
+    function viewApplicationDetails(application_no, service_id)
     {
         $.ajax({
             type : "GET",
             url : "{% url 'view_draft_application_details' %}",
-            data :{'application_no':application_no, 'service_id':service_id},
+            data : {'application_no': application_no, 'service_id': service_id},
             success : function(data)
             {
                 $('#application_details').html(data);
@@ -63,6 +96,35 @@
             }
         });
     }
+
+    // Variables to hold the values for deletion
+    let deleteApplicationNo = '';
+    let deleteServiceId = '';
+
+    function openDeleteModal(application_no, service_id) {
+        // Store values in global variables
+        deleteApplicationNo = application_no;
+        deleteServiceId = service_id;
+
+        // Open the modal
+        var deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+        deleteModal.show();
+    }
+
+    function handleDeleteConfirm() {
+        var application_no = deleteApplicationNo;
+        var service_id = deleteServiceId;
+
+        // Close the modal
+        var deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
+        if (deleteModal) {
+            deleteModal.hide();
+        }
+
+        // Direct navigation - let the server handle the redirect
+        window.location.href = "{% url 'delete_draft_application' %}?application_no=" + encodeURIComponent(application_no) + "&service_id=" + encodeURIComponent(service_id);
+    }
+
 </script>
 {% endblock %}       
 

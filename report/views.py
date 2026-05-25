@@ -9,16 +9,20 @@ from django.utils import timezone
 from django.utils import formats
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password, check_password
-from django.db.models import Count, Subquery, OuterRef, Exists
+from django.db.models import Count, Max, Subquery, OuterRef, Exists
+from datetime import datetime, timedelta
+from django.db.models.functions import Coalesce
 from django.db.models import Sum
 from collections import defaultdict
-
+import json
 import logging
 import threading
 
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db import transaction
+from collections import OrderedDict
+from django.shortcuts import render
 
 logger = logging.getLogger(__name__)
 
@@ -27,8 +31,20 @@ from ecs_admin.models import t_competant_authority_master, t_file_attachment, t_
 
 from ecs_main.models import t_application_history, t_inspection_monitoring_t1
 from proponent.models import t_ec_application_t2, t_ec_application_t1, t_ec_compliance, t_payment_details, \
-    t_workflow_dtls, t_ec_t1, t_ec_t2, t_ec_additional_information, t_ec_ai_remainder
+    t_workflow_dtls, t_ec_t1, t_ec_t2, t_ec_additional_information, t_ec_ai_remainder, t_ec_notification_log
 
+STATUS_LABELS = OrderedDict([
+    ("P",   "Pending"),
+    ("R",   "Application Under Review"),
+    ("ALR", "Awaiting Additional Information"),
+    ("ALS", "Additional Information Submitted"),
+    ("LU",  "Awaiting Legal Undertaking"),
+    ("LUS", "Legal Undertaking Submitted"),
+    ("DEC", "Draft EC Forwarded to Verifier"),
+    ("AP",  "Additional Payment Pending"),
+    ("A",   "Approved"),
+    ("RJ",  "Application Rejected"),
+])
 
 def ec_report_form(request):
     dzongkhag_list = t_dzongkhag_master.objects.all() 
@@ -495,87 +511,93 @@ def revenue_report(request):
 #Application Status
 def application_status_list(request):
     login_type = request.session.get('login_type', None)
-    login_id = request.session['login_id']
-    ca_list = t_competant_authority_master.objects.all()
+    login_id   = request.session['login_id']
+
+    ca_list        = t_competant_authority_master.objects.all()
     dzongkhag_list = t_dzongkhag_master.objects.all()
-    application_list = []
-    ec_renewal_count = 0
-    v_application_count = 0
-    r_application_count = 0
-    p_application_count = 0
-    draft_count = 0
-    app_hist_count = 0
-    cl_application_count = 0
-    tor_application_count = 0
+
+    application_list        = []
+    ec_renewal_count        = 0
+    v_application_count     = 0
+    r_application_count     = 0
+    p_application_count     = 0
+    draft_count             = 0
+    app_hist_count          = 0
+    cl_application_count    = 0
+    tor_application_count   = 0
+    role                    = None   # ← initialize so it's always defined
+    ca_authority            = None   # ← initialize so it's always defined
+
     applicant_id = request.session.get('email', None)
-    client_application_count = t_user_master.objects.filter(accept_reject__isnull=True, login_type='C').count()
-    
-    if login_type == 'C': # 'C' is client OR Proponent
-        app_hist_count = t_application_history.objects.filter(
-            applicant_id=request.session['email']
-        ).distinct('application_no').count()
 
+    client_application_count = t_user_master.objects.filter(
+        accept_reject__isnull=True,
+        login_type='C'
+    ).count()
+
+    # ------------------------------------------------------------------
+    # CLIENT (Proponent)
+    # ------------------------------------------------------------------
+    if login_type == 'C':
         email_id = request.session['email']
-       # login_id = request.session['login_id']
 
-        # Get application history count
-        oc_application_count = t_ec_application_t1.objects.filter(
-            applicant_id=email_id, application_type='OC', application_status='OC'
-        ).distinct('application_no').count()
-
-        # Get application history count
         app_hist_count = t_application_history.objects.filter(
             applicant_id=email_id
         ).distinct('application_no').count()
 
-        # Get assigned applications count
+        oc_application_count = t_ec_application_t1.objects.filter(
+            applicant_id=email_id,
+            application_type='OC',
+            application_status='OC'
+        ).distinct('application_no').count()
+
         cl_application_count = t_workflow_dtls.objects.filter(
             assigned_user_id=login_id
         ).count()
 
-        # Get pending payments
         payment_count = t_payment_details.objects.filter(
             payment_advice_amount_paid__isnull=True
         ).count()
 
-        # Get draft applications
         draft_count = t_ec_application_t1.objects.filter(
             applicant_id=email_id,
             application_status='P',
             service_type__in=["Main Activity", "TC", "PC", "CC", "AC", "LC"],
             action_date__isnull=True
         ).count()
+
         expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-        # Check for pending renewals
+
         pending_renewal_exists = t_ec_application_t1.objects.filter(
             ec_reference_no=OuterRef('ec_reference_no')
         ).exclude(application_status='A')
+
         non_updated_renewals = (
             t_ec_t1.objects
             .filter(
-                applicant_id=request.session['email'],
+                applicant_id=email_id,
                 service_type__in=["Main Activity", "Old EC"],
                 ec_expiry_date__lt=expiry_date_threshold,
                 ec_expiry_date__isnull=False,
                 ec_reference_no__isnull=False,
                 status='A',
-
             )
             .exclude(ec_reference_no='')
             .annotate(has_pending_renewal=Exists(pending_renewal_exists))
             .filter(has_pending_renewal=False)
         )
         ec_renewal_count = non_updated_renewals.count()
-        # Get old EC draft count
+
         old_ec_draft_count = t_ec_application_t1.objects.filter(
-            applicant_id=request.session['email'],
+            applicant_id=email_id,
             application_type='Old_EC',
             application_status__in=['P', 'RS']
         ).count()
-        # Get TOR applications count
+
         t1_general_subquery = t_ec_application_t1.objects.filter(
             tor_application_no=OuterRef('application_no')
         ).values('tor_application_no')
+
         tor_application_count = t_ec_application_t1.objects.filter(
             application_status='A',
             application_no__contains='TOR',
@@ -583,7 +605,7 @@ def application_status_list(request):
         ).exclude(
             application_no__in=Subquery(t1_general_subquery)
         ).count()
-        # Get download forms
+
         download_forms = t_file_attachment.objects.filter(
             attachment_type='F',
             document_id__in=t_other_details.objects.filter(
@@ -591,76 +613,118 @@ def application_status_list(request):
                 is_deleted='N'
             ).values('document_id')
         )
-    
-    elif login_type == 'I':  # 'I' is Internal OR Competent Authority
-        role = request.session['role']
+
+    # ------------------------------------------------------------------
+    # INTERNAL (Competent Authority)
+    # ------------------------------------------------------------------
+    elif login_type == 'I':
+        role         = request.session['role']
         ca_authority = request.session.get('ca_authority', None)
+
         if ca_authority is not None:
             v_application_count = t_workflow_dtls.objects.filter(
                 assigned_role_id='2',
                 assigned_role_name='Verifier',
                 action_date__isnull=False,
                 application_status__in=['P', 'DEC', 'AL', 'FT', 'V', 'RRJ'],
-                ca_authority=request.session['ca_authority']).count()
+                ca_authority=ca_authority
+            ).count()
 
-            # Reviewer application count
             r_application_count = t_workflow_dtls.objects.filter(
                 assigned_role_id='3',
                 assigned_user_id=login_id,
                 assigned_role_name='Reviewer',
                 ca_authority=ca_authority
             ).count()
-            # Reviewer application count Payment List
+
             p_application_count = t_workflow_dtls.objects.filter(
                 assigned_role_id='3',
                 ca_authority=ca_authority,
-                assigned_user_id__isnull=True,  # assigned_user_id is null
-                action_date__isnull=False  # action_date is not null
-            ).exclude(
-                ca_authority=1  # Exclude ca_authority = 1
-            ).count()
-            # print(p_application_count)
+                assigned_user_id__isnull=True,
+                action_date__isnull=False
+            ).exclude(ca_authority=1).count()
 
             expiry_date_threshold = datetime.now().date() + timedelta(days=60)
-            ec_renewal_count = t_ec_t1.objects.filter(ca_authority=request.session['ca_authority'], status='A', ec_expiry_date__lt=expiry_date_threshold).count()
+            ec_renewal_count = t_ec_t1.objects.filter(
+                ca_authority=ca_authority,
+                status='A',
+                ec_expiry_date__lt=expiry_date_threshold
+            ).count()
 
-    # FIX: Use distinct() and order by application date to get unique records
+    # ------------------------------------------------------------------
+    # Build application_list based on role
+    # ------------------------------------------------------------------
     if login_type == 'C':
         application_list = t_ec_application_t1.objects.filter(
-            applicant_id=applicant_id, application_type='New'
+            applicant_id=applicant_id,
+            application_type='New'
         ).order_by('application_no', '-application_date').distinct('application_no')
-    elif login_type == 'I' and (role == 'Admin' or role == 'NECS Head'):
-        application_list = t_ec_application_t1.objects.all().order_by('application_no', '-application_date').distinct('application_no')
-    elif login_type == 'I' and (role == 'Verifier' or role == 'Reviewer'):
+
+    elif login_type == 'I' and role in ('Admin', 'NECS Head'):
+        application_list = t_ec_application_t1.objects.all(
+        ).order_by('application_no', '-application_date').distinct('application_no')
+
+    elif login_type == 'I' and role in ('Verifier', 'Reviewer'):
         application_list = t_ec_application_t1.objects.filter(
             ca_authority=ca_authority
         ).order_by('application_no', '-application_date').distinct('application_no')
-    
-    # If distinct with field doesn't work, use values() with distinct
-    # application_list = t_ec_application_t1.objects.filter(
-    #     applicant_id=applicant_id
-    # ).values('application_no', 'application_date', 'applicant_name', 'project_name', 
-    #          'address', 'ec_reference_no', 'ec_approve_date', 'application_status',
-    #          'service_id', 'application_source').distinct()
 
+    # ------------------------------------------------------------------
+    # ✅ Group applications by status  ← THIS WAS THE MISSING PIECE
+    # ------------------------------------------------------------------
+    grouped_dict = OrderedDict()
+
+    # Pre-populate all known statuses to keep ordering consistent
+    for code, label in STATUS_LABELS.items():
+        grouped_dict[code] = {
+            "code": code,
+            "label": label,
+            "applications": [],
+            "count": 0,
+        }
+
+    # ✅ Loop through each application and assign to correct group
+    for application in application_list:
+        status_code = application.application_status or "UNKNOWN"
+
+        # Handle any unexpected/unknown status codes gracefully
+        if status_code not in grouped_dict:
+            grouped_dict[status_code] = {
+                "code": status_code,
+                "label": "None",
+                "applications": [],
+                "count": 0,
+            }
+
+        grouped_dict[status_code]["applications"].append(application)
+        grouped_dict[status_code]["count"] += 1
+
+    # Only pass groups that actually have applications
+    grouped_application_list = [
+        group for group in grouped_dict.values() if group["count"] > 0
+    ]
+
+    # ------------------------------------------------------------------
+    # Render
+    # ------------------------------------------------------------------
     response = render(request, 'application_status_list.html', {
         'client_application_count': client_application_count,
-        'ca_list': ca_list, 
-        'ec_renewal_count': ec_renewal_count, 
-        'dzongkhag_list': dzongkhag_list, 
-        'v_application_count': v_application_count, 
-        'r_application_count': r_application_count,
-        'p_application_count': p_application_count,
-        'application_list': application_list, 
-        'app_hist_count': app_hist_count, 
-        'cl_application_count': cl_application_count,
-        'draft_count': draft_count,
-        'tor_application_count': tor_application_count
+        'ca_list':                  ca_list,
+        'ec_renewal_count':         ec_renewal_count,
+        'dzongkhag_list':           dzongkhag_list,
+        'v_application_count':      v_application_count,
+        'r_application_count':      r_application_count,
+        'p_application_count':      p_application_count,
+        'grouped_application_list': grouped_application_list,
+        'app_hist_count':           app_hist_count,
+        'cl_application_count':     cl_application_count,
+        'draft_count':              draft_count,
+        'tor_application_count':    tor_application_count,
     })
 
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response['Pragma'] = 'no-cache'
-    response['Expires'] = '0'
+    response['Pragma']        = 'no-cache'
+    response['Expires']       = '0'
     return response
 
 def application_history(request):
@@ -833,30 +897,36 @@ def client_application_details(request):
         file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='TOR')
         tor_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RTOR')
         tor_attach_count = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RTOR').count()
-        return render(request, 'application_details/tor_details.html', {'application_details':application_details,'file_attach':file_attach,'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'thromde':thromde, 'tor_attach':tor_attach, 'tor_attach_count':tor_attach_count, 'attachments':attachments})
+        return render(request, 'application_details/tor_status_details.html', {'application_details':application_details,'file_attach':file_attach,'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village, 'thromde':thromde, 'tor_attach':tor_attach, 'tor_attach_count':tor_attach_count, 'attachments':attachments})
     else:
         #if service_id != '10':
         application_details = t_ec_application_t1.objects.filter(application_no=application_no,service_type='Main Activity')
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        thromde = t_thromde_master.objects.all()
         file_attach = t_file_attachment.objects.filter(
             application_no=application_no
         ).exclude(
             attachment_type__in=['EATC', 'LU', 'RLU', 'AI', 'ECNC', 'ENOC', 'ECR', 'REPORT', 'RRJ', 'RTOR', 'TOR']
         )
         ec_details = t_ec_application_t2.objects.filter(application_no=application_no)
+        additional_info = t_ec_additional_information.objects.filter(application_no=application_no)
+        payment_details = t_payment_details.objects.filter(ref_no=application_no)
         reviewer_list = t_user_master.objects.filter(role_id='3',agency_code=ca_auth)
         eatc_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='EATC')
         lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='LU')
         rev_lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RLU')
+        ai_attach = t_file_attachment.objects.filter(application_no=application_no, attachment_type='AI')
         app_hist_count = t_application_history.objects.filter(
             applicant_id=request.session['login_id']
         ).distinct('application_no').count()
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=request.session['login_id']).count()
-        return render(request, 'application_details/application_details.html',{'reviewer_list':reviewer_list,'application_details':application_details,'status':status,
-                                                    'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,'file_attach':file_attach,'file_attach':file_attach,
-                                                    'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'ec_details':ec_details,'eatc_attach':eatc_attach, 'lu_attach':lu_attach, 'rev_lu_attach':rev_lu_attach, 'attachments':attachments})
+        return render(request, 'application_details/application_status_details.html',{'reviewer_list':reviewer_list,'application_details':application_details,
+                                                                          'status':status, 'application_no':application_no, 'dzongkhag':dzongkhag, 'gewog':gewog, 'village':village,
+                                                                          'thromde':thromde, 'file_attach':file_attach,'additional_info':additional_info, 'app_hist_count':app_hist_count,
+                                                                          'cl_application_count':cl_application_count,'ec_details':ec_details, 'payment_details':payment_details,
+                                                                          'eatc_attach':eatc_attach, 'lu_attach':lu_attach, 'rev_lu_attach':rev_lu_attach, 'ai_attach':ai_attach, 'attachments':attachments})
         #elif service_id == '10':
         #    renewal_details_one = t_ec_renewal_t1.objects.filter(application_no=application_no)
        #     for renewal_details_one in renewal_details_one:
@@ -876,66 +946,183 @@ def client_application_details(request):
        #     return render(request, 'application_details/renewal_application_details.html',{'application_details':application_details,'renewal_details_one':renewal_details_one,'status':status,
        #                                                             'dzongkhag':dzongkhag,'gewog':gewog,'village':village,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'renewal_details_two':renewal_details_two,'reviewer_list':reviewer_list,'file_attach':file_attach ,'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach,'attachments':attachments})
 
-#EC Renewal Notifications
+# EC Renewal Notifications
 def ec_renewal_list(request):
-    ca_authority = request.session.get('ca_authority', None)
-    ec_renewal_count = 0
-    dzongkhag_list = t_dzongkhag_master.objects.all()
-    ca_list = t_competant_authority_master.objects.all()
-    ec_list = []  # Initialize ec_list with an empty list
 
+    ca_auth = request.session.get('ca_authority')
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
 
-    if ca_authority is not None:
-        ec_list = t_ec_t1.objects.filter(
-            ca_authority=ca_authority,
+    v_application_count = t_workflow_dtls.objects.filter(
+        assigned_role_id='2',
+        assigned_role_name='Verifier',
+        application_status__in=['P', 'DEC', 'AL', 'FT', 'V', 'RRJ'],
+        ca_authority=ca_auth,
+        action_date__isnull=False
+    ).count()
+
+    v_old_ec_count = t_ec_application_t1.objects.filter(
+        ca_authority=ca_auth,
+        application_status='SM',
+        application_type='Old_EC'
+    ).count()
+
+    # Get EC list
+    ec_list = list(
+        t_ec_t1.objects.filter(
+            ca_authority=ca_auth,
             status='A',
             ec_expiry_date__lt=expiry_date_threshold
-        ).values()
-        ec_renewal_count = t_ec_t1.objects.filter(
-            ca_authority=ca_authority,
-            status='A',
-            ec_expiry_date__lt=expiry_date_threshold
-        ).count()
+        ).values(
+            'ec_reference_no',
+            'applicant_id',
+            'ec_approve_date',
+            'ec_expiry_date',
+            'applicant_name',
+            'project_name',
+            'address'
+        )
+    )
 
-    response = render(request, 'ec_renewal_list.html',
-                    {'dzongkhag_list': dzongkhag_list, 'ec_renewal_count': ec_renewal_count, 'ec_list': ec_list,
-                    'ca_list': ca_list})
+    # Get all ec_reference_no from the list
+    ec_ref_nos = [ec['ec_reference_no'] for ec in ec_list]
 
-    # Set cache-control headers to prevent caching
-    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response['Pragma'] = 'no-cache'
-    response['Expires'] = '0'
-    return response
+    # Aggregate notification data per ec_reference_no
 
+    notification_agg = (
+        t_ec_notification_log.objects
+        .filter(
+            ec_reference_no__in=ec_ref_nos,
+            ca_authority=ca_auth
+        )
+        .values('ec_reference_no')
+        .annotate(
+            notification_count=Count('record_id'),
+            last_sent_at=Max('sent_at')
+        )
+    )
+
+    # Build a lookup dictionary: {ec_reference_no: {count: X, last_sent_at: Y}}
+    notification_map = {}
+    for item in notification_agg:
+        notification_map[item['ec_reference_no']] = {
+            'notification_count': item['notification_count'],
+            'last_sent_at': item['last_sent_at']
+        }
+
+    # Merge notification data into ec_list
+    for ec in ec_list:
+        ref_no = ec['ec_reference_no']
+        notif_data = notification_map.get(ref_no, {
+            'notification_count': 0,
+            'last_sent_at': None
+        })
+        ec['notification_count'] = notif_data['notification_count']
+        ec['last_sent_at'] = notif_data['last_sent_at']
+
+    # Full notification log list grouped by ec_reference_no
+    notification_logs = {}
+    logs = t_ec_notification_log.objects.filter(
+        ca_authority=ca_auth
+    ).values(
+        'record_id',
+        'ec_reference_no',
+        'recipient_email',
+        'sent_at',
+        'status',
+        'remarks'
+    ).order_by('-sent_at')
+
+    for log in logs:
+        ref_no = log['ec_reference_no']
+        if ref_no not in notification_logs:
+            notification_logs[ref_no] = []
+        notification_logs[ref_no].append(log)
+
+    return render(request, 'ec_renewal_list.html', {
+        'ec_list': ec_list,
+        'notification_logs': notification_logs,
+        'v_application_count': v_application_count,
+        'v_old_ec_count': v_old_ec_count,
+        'ec_renewal_count': len(ec_list),
+    })
 
 def send_notification(request):
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
+
+    ca_authority = request.session.get('ca_authority')
+    if not ca_authority:
+        return JsonResponse({'status': 'error', 'message': 'Session expired.'}, status=403)
+
     try:
-        ca_authority          = request.session['ca_authority']
-        expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+        selected_refs_raw = request.POST.get('selected_refs', '[]')
+        selected_refs     = json.loads(selected_refs_raw)
+
+        if not selected_refs:
+            return JsonResponse({'status': 'error', 'message': 'No records selected.'}, status=400)
 
         ec_list = t_ec_t1.objects.filter(
-            ca_authority       = ca_authority,
-            status = 'A',
-            ec_expiry_date__lt = expiry_date_threshold
+            ca_authority        = ca_authority,
+            status              = 'A',
+            ec_reference_no__in = selected_refs
         ).values('ec_reference_no', 'applicant_id')
+
+        sent_count  = 0
+        failed_list = []
 
         for ec in ec_list:
             ec_reference_no = ec['ec_reference_no']
-            email           = ec['applicant_id']  # plain string — list wrapping done in send_notification_mail
+            email           = ec['applicant_id']
 
-            with transaction.atomic():
-                transaction.on_commit(lambda ec_ref=ec_reference_no, em=email: threading.Thread(
-                    target=_send_notification_mail_in_background,
-                    args=(em, ec_ref),
-                    daemon=True
-                ).start())
+            try:
+                with transaction.atomic():
+                    # ── Fix: model field names match your actual model ──
+                    t_ec_notification_log.objects.create(
+                        ec_reference_no = ec_reference_no,
+                        recipient_email = email,
+                        ca_authority    = ca_authority,    # IntegerField — session value must be int
+                        status          = 'sent',
+                        remarks         = 'Renewal notification dispatched.'
+                    )
 
-        return redirect('ec_renewal_list')
+                    transaction.on_commit(
+                        lambda ec_ref=ec_reference_no, em=email: threading.Thread(
+                            target=_send_notification_mail_in_background,
+                            args=(em, ec_ref),
+                            daemon=True
+                        ).start()
+                    )
+
+                sent_count += 1
+
+            except Exception as row_exc:
+                logger.exception("Failed for EC=%s", ec_reference_no)
+
+                # Log the failure
+                try:
+                    t_ec_notification_log.objects.create(
+                        ec_reference_no = ec_reference_no,
+                        recipient_email = email,
+                        ca_authority    = ca_authority,
+                        status          = 'failed',
+                        remarks         = str(row_exc)
+                    )
+                except Exception:
+                    pass  # Don't let logging failure crash the whole response
+
+                failed_list.append(ec_reference_no)
+
+        return JsonResponse({
+            'status'     : 'success',
+            'sent_count' : sent_count,
+            'failed_list': failed_list,
+            'message'    : f'{sent_count} notification(s) sent successfully.'
+        })
 
     except Exception as exc:
         logger.exception("send_notification failed for ca_authority=%s", ca_authority)
-        return redirect('ec_renewal_list')
+        return JsonResponse({'status': 'error', 'message': str(exc)}, status=500)
+
 
 
 def _send_notification_mail_in_background(email, ec_reference_no):

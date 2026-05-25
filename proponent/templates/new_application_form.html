@@ -120,6 +120,12 @@
                                         </div>
                                         <div id="project_descriptionErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Remarks (Any Other Details)</label>
+                                            <textarea class="form-control" name="app_remarks" id="app_remarks" rows="3"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="alert custom-bg border-0" role="alert">
                                     <h5 class="mb-0">Project Location</h5>
@@ -456,6 +462,7 @@
         let village_code = $('#vil_chiwog').val();
         let project_site = $('#project_site').val();
         let project_description = $('#project_description').val();
+        let app_remarks = $('#app_remarks').val();
 
         if (project_name === "") {
             showErrorAndFocus('#project_nameErrorMsg', 'Enter Name of Project', '#project_name');

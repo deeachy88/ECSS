@@ -3,7 +3,7 @@
 <div id="application_details">
     <div class="card mt-1">
         <div class="card-body">
-            <h5 class="card-title mb-0 text-right">TOR Application List</h5>
+            <h5 class="card-title mb-0 text-right">Lis of Approved TOR</h5>
             <div class="alert alert-success" id="manage_about_us_success_msg" role="alert" style="display:none;">
                 <i class="ri-check-line me-2"></i>
             </div>
@@ -14,7 +14,7 @@
                             <th scope="col">#</th>
                             <th scope="col">Application No</th>
                             <th scope="col">Service Name</th>
-                            <th scope="col">Application Source</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -27,7 +27,10 @@
                                         <td>{{service_details.service_name}}</td>
                                     {% endif %}
                                 {% endfor %}
+                                <td><span style="font-style: italic; color: #ff72aa;">Click Application Number to submit for EC Clearance</span></td>
+                                <!--
                                 <td>{{application_details.application_source}}</td>
+                                -->
                             </tr>
                             {% empty %}
                             <tr>

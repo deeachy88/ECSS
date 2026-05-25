@@ -23,10 +23,25 @@ from django.db.models import Prefetch, Count, Q, Case, When, Value, BooleanField
 from django.db import connection
 from collections import defaultdict
 from django.conf import settings
+from collections import OrderedDict
 
 from proponent.models import t_ec_additional_information, t_ec_application_t2, t_ec_application_t1, t_ec_compliance, t_fines_penalties, t_payment_details, t_workflow_dtls, t_ec_t1, t_ec_t2, t_ec_t1_history, t_ec_t2_history
 
 logger = logging.getLogger(__name__)
+
+# Status configuration - centralized for easy maintenance
+STATUS_LABELS = OrderedDict([
+    ("P",   "Pending"),
+    ("R",   "Application Under Review"),
+    ("ALR", "Additional Information"),
+    ("ALS", "Additional Information Submitted"),
+    ("LU",  "Legal Undertaking"),
+    ("LUS", "Legal Undertaking Submitted"),
+    ("DEC", "Draft EC Forwarded to Verifier"),
+    ("AP",  "Additional Payment Pending"),
+    ("A",   "Approved"),
+    ("RJ",  "Application Rejected"),
+])
 
 def verify_application_list(request):
     """
@@ -34,13 +49,13 @@ def verify_application_list(request):
     """
     ca_authority = request.session.get('ca_authority')
     login_id = request.session.get('login_id')
-    
+
     if not ca_authority or not login_id:
         return render(request, 'application_list.html', {
             'application_data': [],
             'error': 'Invalid session data'
         })
-    
+
     try:
         # Get application list
         application_list = t_workflow_dtls.objects.filter(
@@ -49,24 +64,22 @@ def verify_application_list(request):
             ca_authority=ca_authority,
             application_status__in=['P', 'DEC', 'AL', 'FT', 'V', 'RRJ']
         ).order_by('-action_date')
-        
-        #print(f"DEBUG: Applications found: {application_list.count()}")
 
-        # EC Renewal List ( Due for renewal)
+        # EC Renewal List (Due for renewal)
         expiry_date_threshold = datetime.now().date() + timedelta(days=60)
         ec_renewal_count = t_ec_t1.objects.filter(
             ca_authority=ca_authority,
             status='A',
             ec_expiry_date__lt=expiry_date_threshold
         ).count()
-        
+
         # Get application numbers for efficient lookup
         application_nos = [app.application_no for app in application_list]
-        
+
         # OPTIMIZED: Get payment receipts only for applications in our list
         payment_receipt_lookup = {}
         payments = t_payment_details.objects.filter(ref_no__in=application_nos)
-        
+
         # Group payments by ref_no
         payments_by_ref = {}
         for payment in payments:
@@ -74,14 +87,14 @@ def verify_application_list(request):
                 if payment.application_no not in payments_by_ref:
                     payments_by_ref[payment.application_no] = []
                 payments_by_ref[payment.application_no].append(payment)
-        
+
         # Check for each ref_no if ALL entries have receipt_no
         for application_no, payment_list in payments_by_ref.items():
             # Check if ALL payments for this ref_no have non-null receipt_no
-            all_have_receipt = all(payment.receipt_no is not None and payment.receipt_no != '' 
-                                 for payment in payment_list)
+            all_have_receipt = all(payment.receipt_no is not None and payment.receipt_no != ''
+                                   for payment in payment_list)
             payment_receipt_lookup[application_no] = all_have_receipt
-        
+
         # Get service names
         service_lookup = dict(t_service_master.objects.values_list('service_id', 'service_name'))
 
@@ -138,12 +151,16 @@ def verify_application_list(request):
         # Process data
         application_data = []
         for app in application_list:
+            # Convert status code to human-readable label
+            status_label = STATUS_LABELS.get(app.application_status, app.application_status)
+
             # Check if application has payments AND all payments have receipts
             has_payments = app.application_no in payment_receipt_lookup
             all_payments_have_receipt = payment_receipt_lookup.get(app.application_no, False)
-            
+
             is_clickable = has_payments and all_payments_have_receipt
             industry_data = industry_lookup.get(app.application_no, {})
+
             application_data.append({
                 'application_no': app.application_no,
                 'service_id': app.service_id,
@@ -151,11 +168,12 @@ def verify_application_list(request):
                 'action_date': app.action_date,
                 'application_source': app.application_source,
                 'is_clickable': is_clickable,  # Only clickable if ALL receipts exist
-                'application_status': app.application_status,
+                'application_status': status_label,  # Human-readable status
+                'status_code': app.application_status,  # Keep original code if needed
                 'project_name': industry_data.get('project_name', ''),
                 'activity': industry_data.get('activity', '')
             })
-        
+
         # Get counts
         v_application_count = (application_list.filter(
             application_status__in=['P', 'DEC', 'AL', 'FT', 'V', 'RRJ'],
@@ -167,16 +185,16 @@ def verify_application_list(request):
             'v_application_count': v_application_count,
             'ec_renewal_count': ec_renewal_count,
         }
-        
+
     except Exception as e:
         print(f"Error: {str(e)}")
         context = {
             'application_data': [],
             'error': str(e)
         }
-    
+
     return render(request, 'application_list.html', context)
-    
+
 
 def client_application_list(request):
     """
@@ -185,7 +203,7 @@ def client_application_list(request):
     # Get session data
     login_id = request.session.get('login_id')
     applicant_id = request.session.get('email')
-    
+
     # Validate session data
     if not login_id or not applicant_id:
         context = {
@@ -193,42 +211,44 @@ def client_application_list(request):
             'cl_application_count': 0,
             'app_hist_count': 0,
             'tor_application_count': 0,
+            'draft_count': 0,
+            'ec_renewal_count': 0,
             'error': 'Invalid session data'
         }
         return render(request, 'application_list.html', context)
-    
+
     try:
         # Base query filters
         base_filters = {
             'action_date__isnull': False,
             'assigned_user_id': login_id
         }
-        
-        # Application status query using Q objects (more efficient)
+
+        # Application status query using Q objects
         status_query = (
-            Q(application_status='ALR') | 
-            Q(application_status='EATC') | 
-            Q(application_status='RS') | 
-            Q(application_status='LU') | 
-            Q(application_status='ALA')
+                Q(application_status='ALR') |
+                Q(application_status='EATC') |
+                Q(application_status='RS') |
+                Q(application_status='LU') |
+                Q(application_status='ALA')
         )
-        
-        # Get applications - single query instead of multiple OR queries
+
+        # Get applications - single query
         application_list = t_workflow_dtls.objects.filter(
             Q(**base_filters) & status_query
         )
-        
+
         # Prefetch all related data in single queries
         # 1. Services lookup
         service_lookup = {
-            service.service_id: service.service_name 
+            service.service_id: service.service_name
             for service in t_service_master.objects.all()
         }
-        
+
         # 2. Payments lookup - check if ALL entries for each ref_no have receipt_no
         payment_receipt_lookup = {}
         payments = t_payment_details.objects.all()
-        
+
         # Group payments by ref_no
         payments_by_ref = {}
         for payment in payments:
@@ -236,14 +256,13 @@ def client_application_list(request):
                 if payment.ref_no not in payments_by_ref:
                     payments_by_ref[payment.ref_no] = []
                 payments_by_ref[payment.ref_no].append(payment)
-        
+
         # Check for each ref_no if ALL entries have receipt_no
         for ref_no, payment_list in payments_by_ref.items():
-            # Check if ALL payments for this ref_no have non-null receipt_no
-            all_have_receipt = all(payment.receipt_no is not None and payment.receipt_no != '' 
-                                 for payment in payment_list)
+            all_have_receipt = all(payment.receipt_no is not None and payment.receipt_no != ''
+                                   for payment in payment_list)
             payment_receipt_lookup[ref_no] = all_have_receipt
-        
+
         # 3. Application history count
         app_hist_count = (
             t_application_history.objects.filter(
@@ -252,6 +271,7 @@ def client_application_list(request):
             .distinct()
             .count()
         )
+
         # 4. Client application count
         cl_application_count = t_workflow_dtls.objects.filter(assigned_user_id=login_id).count()
 
@@ -280,8 +300,8 @@ def client_application_list(request):
         )
 
         ec_renewal_count = non_updated_renewals.count()
-        
-        # 5. TOR application count (optimized)
+
+        # 5. TOR application count
         t1_general_subquery = t_ec_application_t1.objects.filter(
             tor_application_no=OuterRef('application_no')
         ).values('tor_application_no')
@@ -302,25 +322,20 @@ def client_application_list(request):
         ).count()
 
         # Industry details lookup (project_name and activity)
-        # Step 1: Get all application numbers from workflow
         app_numbers = [app.application_no for app in application_list]
 
-        # Step 2: Check which are renewal applications
         # Get renewal applications and their ec_reference_no
         renewal_apps = t_ec_application_t1.objects.filter(
             application_no__in=app_numbers
         ).values('application_no', 'ec_reference_no')
 
-        # Create mapping: renewal_application_no -> ec_reference_no
         renewal_mapping = {r['application_no']: r['ec_reference_no'] for r in renewal_apps}
 
-        # Step 3: Get project_name and activity for ALL applications
-        # First, get direct matches (new applications)
+        # Get project_name and activity for ALL applications
         direct_matches = t_ec_application_t1.objects.filter(
             application_no__in=app_numbers
         ).values('application_no', 'project_name', 'activity')
 
-        # Create lookup for direct matches
         industry_lookup = {}
         for match in direct_matches:
             industry_lookup[match['application_no']] = {
@@ -328,17 +343,14 @@ def client_application_list(request):
                 'activity': match['activity'] or 'N/A'
             }
 
-        # Step 4: Get project_name and activity for renewal applications
-        # Get ec_reference_no values from renewal applications
+        # Get project_name and activity for renewal applications
         renewal_ref_nos = list(renewal_mapping.values())
 
         if renewal_ref_nos:
-            # Get original applications for renewal references
             renewal_original_apps = t_ec_application_t1.objects.filter(
                 ec_reference_no__in=renewal_ref_nos
             ).values('ec_reference_no', 'project_name', 'activity')
 
-            # Create mapping: ec_reference_no -> project/activity
             renewal_original_lookup = {}
             for app in renewal_original_apps:
                 renewal_original_lookup[app['ec_reference_no']] = {
@@ -346,7 +358,6 @@ def client_application_list(request):
                     'activity': app['activity'] or 'N/A'
                 }
 
-            # Now map renewal application_no to project/activity
             for renewal_app_no, ec_ref_no in renewal_mapping.items():
                 if ec_ref_no in renewal_original_lookup:
                     industry_lookup[renewal_app_no] = renewal_original_lookup[ec_ref_no]
@@ -354,11 +365,13 @@ def client_application_list(request):
         # Process application data
         application_data = []
         for app in application_list:
+            # Convert status code to human-readable label
+            status_label = STATUS_LABELS.get(app.application_status, app.application_status)
+
             # Determine clickability
-            # Check if service_id is 0 OR if application has payments AND all payments have receipts
             has_payments = app.application_no in payment_receipt_lookup
             all_payments_have_receipt = payment_receipt_lookup.get(app.application_no, False)
-            
+
             is_clickable = (app.service_id == 0) or (has_payments and all_payments_have_receipt)
             industry_data = industry_lookup.get(app.application_no, {})
 
@@ -369,15 +382,15 @@ def client_application_list(request):
                 'action_date': app.action_date,
                 'application_source': app.application_source,
                 'is_clickable': is_clickable,
-                'application_status': app.application_status,
+                'application_status': status_label,  # Human-readable status
+                'status_code': app.application_status,  # Keep original code if needed
                 'project_name': industry_data.get('project_name', ''),
                 'activity': industry_data.get('activity', '')
-
             })
-        
+
         # Sort by action date (newest first)
         application_data.sort(key=lambda x: x['action_date'], reverse=True)
-        
+
         context = {
             'application_data': application_data,
             'cl_application_count': cl_application_count,
@@ -386,7 +399,7 @@ def client_application_list(request):
             'draft_count': draft_count,
             'ec_renewal_count': ec_renewal_count
         }
-        
+
     except Exception as e:
         # Log the error
         print(f"Error in client_application_list: {e}")
@@ -396,9 +409,10 @@ def client_application_list(request):
             'app_hist_count': 0,
             'tor_application_count': 0,
             'ec_renewal_count': 0,
+            'draft_count': 0,
             'error': 'An error occurred while loading applications'
         }
-    
+
     response = render(request, 'application_list.html', context)
     # Add cache control
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -641,7 +655,7 @@ def reviewer_application_list(request):
         # Base query filters
         base_filters = {
             'assigned_role_id': '3',
-            'assigned_user_id' : login_id,
+            'assigned_user_id': login_id,
             'action_date__isnull': False,
             'ca_authority': ca_authority
         }
@@ -650,14 +664,14 @@ def reviewer_application_list(request):
         STATUSES = ['ALS', 'FEATC', 'RSS', 'LUS', 'APP', 'AP', 'P']
 
         status_query = (
-            Q(application_status='R', assigned_role_id='3') |
-            Q(application_status='ALS') |
-            Q(application_status='FEATC') |
-            Q(application_status='RSS') |
-            Q(application_status='LUS') |
-            Q(application_status='APP') |
-            Q(application_status='AP') |
-            Q(application_status='P')
+                Q(application_status='R', assigned_role_id='3') |
+                Q(application_status='ALS') |
+                Q(application_status='FEATC') |
+                Q(application_status='RSS') |
+                Q(application_status='LUS') |
+                Q(application_status='APP') |
+                Q(application_status='AP') |
+                Q(application_status='P')
         )
 
         # application_status (R: Forwarded to REVIEWER)
@@ -695,8 +709,8 @@ def reviewer_application_list(request):
                     existing_entry['payments'].append(payment)
                     # Update all_have_receipt: must be True for all payments
                     existing_entry['all_have_receipt'] = (
-                        existing_entry['all_have_receipt'] and
-                        (payment.receipt_no is not None and payment.receipt_no != '')
+                            existing_entry['all_have_receipt'] and
+                            (payment.receipt_no is not None and payment.receipt_no != '')
                     )
 
             # Also check by ref_no if it exists and is different from application_no
@@ -710,8 +724,8 @@ def reviewer_application_list(request):
                     existing_entry = payment_receipt_lookup[payment.ref_no]
                     existing_entry['payments'].append(payment)
                     existing_entry['all_have_receipt'] = (
-                        existing_entry['all_have_receipt'] and
-                        (payment.receipt_no is not None and payment.receipt_no != '')
+                            existing_entry['all_have_receipt'] and
+                            (payment.receipt_no is not None and payment.receipt_no != '')
                     )
 
         # 3. Reviewer application count
@@ -787,6 +801,9 @@ def reviewer_application_list(request):
         # Process application data
         application_data = []
         for app in application_list:
+            # Convert status code to human-readable label
+            status_label = STATUS_LABELS.get(app.application_status, app.application_status)
+
             # Determine clickability - applications with status 'P' are always clickable
             if app.application_status == 'P':
                 is_clickable = True
@@ -812,10 +829,10 @@ def reviewer_application_list(request):
                 'action_date': app.action_date,
                 'application_source': app.application_source,
                 'is_clickable': is_clickable,
-                'status': app.application_status,
+                'application_status': status_label,  # Human-readable status
+                'status_code': app.application_status,  # Keep original code if needed
                 'project_name': industry_data.get('project_name', ''),
                 'activity': industry_data.get('activity', '')
-
             })
 
         # Sort by action date (newest first)
@@ -1153,7 +1170,14 @@ def view_application_details(request):
         additional_info = t_ec_additional_information.objects.filter(application_no=application_no).order_by('-record_id')
         payment_details = t_payment_details.objects.filter(ref_no=application_no).order_by('-record_id')
         attachments = attachments
-        return render(request, 'tor_form_details.html', {'application_details':application_details,'file_attach':file_attach,'dzongkhag':dzongkhag,'additional_info':additional_info,'payment_details':payment_details,'gewog':gewog, 'village':village, 'thromde':thromde, 'reviewer_list':reviewer_list,'assigned_role_id':assigned_role_id, 'assigned_user_id':assigned_user_id,'status':status,'tor_attach':tor_attach,'pay_details':pay_details,'attachments': attachments})
+        return render(request, 'tor_form_details.html', {'application_details':application_details,
+                                                         'file_attach':file_attach,'dzongkhag':dzongkhag,
+                                                         'additional_info':additional_info,'payment_details':payment_details,
+                                                         'gewog':gewog, 'village':village, 'thromde':thromde,
+                                                         'reviewer_list':reviewer_list,'assigned_role_id':assigned_role_id,
+                                                         'assigned_user_id':assigned_user_id,'status':status,
+                                                         'tor_attach':tor_attach,'pay_details':pay_details,
+                                                         'attachments': attachments})
     else:
         if service_id == '10':
             #renewal_details_one = t_ec_application_t1.objects.filter(application_no=application_no)
@@ -1172,6 +1196,7 @@ def view_application_details(request):
             dzongkhag = t_dzongkhag_master.objects.all()
             gewog = t_gewog_master.objects.all()
             village = t_village_master.objects.all()
+            thromde = t_thromde_master.objects.all()
             lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='LU')
             rev_lu_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='RLU')
             ai_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='AI')
@@ -1182,15 +1207,24 @@ def view_application_details(request):
             additional_info = t_ec_additional_information.objects.filter(application_no=application_no).order_by('-record_id')
             payment_details = t_payment_details.objects.filter(ref_no=application_no).order_by('-record_id')
             attachments = attachments
-            return render(request, 'application_details_renewal.html',{'application_details':application_details,'assigned_role_name':assigned_role_name,'additional_info':additional_info,'payment_details':payment_details,'status':status,'pay_details':pay_details,
-                                                                    'dzongkhag':dzongkhag,'renewal_details':renewal_details,'ren_attach':ren_attach,'gewog':gewog,'village':village,'ai_attach':ai_attach,'app_hist_count':app_hist_count,'cl_application_count':cl_application_count,'renewal_details_two':renewal_details_two,
-                                                                       'ec_details':ec_details, 'reviewer_list':reviewer_list,'file_attach':file_attach,'reject_attach':reject_attach,'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach,'attachments': attachments})
+            return render(request, 'application_details_renewal.html',{'application_details':application_details,
+                                                                       'assigned_role_name':assigned_role_name,
+                                                                       'additional_info':additional_info,'payment_details':payment_details,
+                                                                       'status':status,'pay_details':pay_details,
+                                                                    'dzongkhag':dzongkhag,'renewal_details':renewal_details,
+                                                                       'ren_attach':ren_attach,'gewog':gewog,'village':village,
+                                                                       'thromde':thromde,'ai_attach':ai_attach,'app_hist_count':app_hist_count,
+                                                                       'cl_application_count':cl_application_count,'renewal_details_two':renewal_details_two,
+                                                                       'ec_details':ec_details, 'reviewer_list':reviewer_list,
+                                                                       'file_attach':file_attach,'reject_attach':reject_attach,
+                                                                       'lu_attach':lu_attach,'rev_lu_attach':rev_lu_attach,'attachments': attachments})
 
         elif service_id == '11':
             application_details = t_ec_application_t1.objects.filter(application_no=application_no)
             dzongkhag = t_dzongkhag_master.objects.all()
             gewog = t_gewog_master.objects.all()
             village = t_village_master.objects.all()
+            thromde = t_thromde_master.objects.all()
             file_attach = t_file_attachment.objects.filter(application_no=application_no, attachment_type='ECNC')
             ec_details = t_ec_application_t2.objects.filter(application_no=application_no).order_by('order','ec_type')
             reviewer_list = t_user_master.objects.filter(
@@ -1211,7 +1245,7 @@ def view_application_details(request):
                           {'reviewer_list': reviewer_list, 'assigned_role_name': assigned_role_name, 'status': status,
                            'ai_attach': ai_attach, 'application_details': application_details,
                            'application_no': application_no, 'dzongkhag': dzongkhag, 'gewog': gewog,
-                           'pay_details': pay_details, 'village': village, 'file_attach': file_attach,
+                           'pay_details': pay_details, 'village': village, 'thromde':thromde, 'file_attach': file_attach,
                            'app_hist_count': app_hist_count, 'cl_application_count': cl_application_count,
                            'ec_details': ec_details, 'eatc_attach': eatc_attach, 'reject_attach': reject_attach,
                            'lu_attach': lu_attach, 'rev_lu_attach': rev_lu_attach, 'additional_info': additional_info,
@@ -1222,6 +1256,7 @@ def view_application_details(request):
             dzongkhag = t_dzongkhag_master.objects.all()
             gewog = t_gewog_master.objects.all()
             village = t_village_master.objects.all()
+            thromde = t_thromde_master.objects.all()
             file_attach = t_file_attachment.objects.filter(application_no=application_no, attachment_type='ECOC')
             ec_details = t_ec_application_t2.objects.filter(application_no=application_no).order_by('order','ec_type')
             reviewer_list = t_user_master.objects.filter(
@@ -1243,7 +1278,7 @@ def view_application_details(request):
                           {'reviewer_list': reviewer_list, 'assigned_role_name': assigned_role_name, 'status': status,
                            'ai_attach': ai_attach, 'application_details': application_details,
                            'application_no': application_no, 'dzongkhag': dzongkhag, 'gewog': gewog,
-                           'pay_details': pay_details, 'village': village, 'file_attach': file_attach,
+                           'pay_details': pay_details, 'village': village, 'thromde':thromde, 'file_attach': file_attach,
                            'app_hist_count': app_hist_count, 'cl_application_count': cl_application_count,
                            'ec_details': ec_details, 'reject_attach': reject_attach,
                            'lu_attach': lu_attach, 'rev_lu_attach': rev_lu_attach, 'additional_info': additional_info,
@@ -1254,6 +1289,7 @@ def view_application_details(request):
             dzongkhag = t_dzongkhag_master.objects.all()
             gewog = t_gewog_master.objects.all()
             village = t_village_master.objects.all()
+            thromde = t_thromde_master.objects.all()
             #file_attach = t_file_attachment.objects.filter(application_no=application_no, attachment_type='GEN')
             file_attach = t_file_attachment.objects.filter(
                 application_no=application_no
@@ -1609,6 +1645,14 @@ def forward_application(request):
             payment_type = "TOR"
             service_type = "TOR"
             description = "TOR APPLICATION"
+        elif 'OC' in str(application_no):
+            payment_type = "MODIFICATION"
+            service_type = "Ownership Change"
+            description = "OWNERSHIP CHANGE"
+        elif 'NC' in str(application_no):
+            payment_type = "MODIFICATION"
+            service_type = "Name Change"
+            description = "NAME CHANGE"
         else:
             payment_type='NEW'
             service_type = "Main Activity"
@@ -1632,6 +1676,7 @@ def forward_application(request):
             data['redirect_to'] = "ibls_application_list"
         elif identifier == 'P':
             total_amount = request.POST.get('amount')
+            remarks = request.POST.get('remarks')
             workflow_details.update(actor_id=request.session['login_id'], actor_name=request.session['name'], assigned_role_id='2',assigned_role_name='Verifier')
             application_details.update(fee=total_amount)
             t_application_history.objects.create(application_no=application_no,
@@ -1643,7 +1688,7 @@ def forward_application(request):
                         remarks='To Verifier',
                         service_id=service_id)
             # CALLING THE PAYMENT FUNCTION
-            make_payment_request(request,application_no,total_amount,description,account_head,service_type)
+            make_payment_request(request,application_no,total_amount,remarks,description,account_head,service_type)
             
             # EMAIL FOR PAYMENT TO APPLICANTS
             # send_payment_mail11(applicant_name, email, application_no, total_amount)
@@ -1651,7 +1696,7 @@ def forward_application(request):
             transaction.on_commit(
                 lambda: threading.Thread(
                     target=_send_payment_mail_in_background,
-                    args=(applicant_name, email, application_no, total_amount),
+                    args=(applicant_name, email, application_no, total_amount, remarks),
                     daemon=True
                 ).start()
             )
@@ -1673,6 +1718,9 @@ def forward_application(request):
         elif identifier == 'AL': #Additional Information - Application forwarded to Verifier
             additional_info_letter = request.POST.get('additional_info_letter')
             due_date = request.POST.get('due_date')
+            ai_additional_payment_amount = request.POST.get('ai_additional_payment_amount')
+            ai_additional_payment_remarks = request.POST.get('ai_additional_payment_remarks')
+            ai_account_head = request.POST.get('ai_account_head')
 
             application_details.update(ai_date=date.today(), application_status='ALR')
             user_details = t_user_master.objects.filter(email_id=email)
@@ -1699,6 +1747,45 @@ def forward_application(request):
             name = app_obj.applicant_name
             emailId = app_obj.email
 
+
+            if (
+                    ai_account_head and str(ai_account_head).strip()
+                    and ai_additional_payment_amount and str(ai_additional_payment_amount).strip()
+            ):
+                description = "ADDITIONAL PAYMENT"
+
+                t_application_history.objects.create(
+                    application_status='AP',
+                    application_no=application_no,
+                    action_date=date.today(),
+                    actor_id=request.session['login_id'],
+                    actor_name=request.session['name'],
+                    applicant_id=applicant,
+                    remarks=ai_additional_payment_remarks or 'Additional Payment Required',
+                    service_id=service_id
+                )
+
+                make_payment_request(
+                    request,
+                    application_no,
+                    ai_additional_payment_amount,
+                    ai_additional_payment_remarks or 'Additional Payment Required',
+                    description,
+                    ai_account_head,
+                    service_type
+                )
+
+                app_obj = application_details.first()
+                name = app_obj.applicant_name
+                emailId = app_obj.email
+
+                transaction.on_commit(
+                    lambda: threading.Thread(
+                        target=_send_al_email_in_background,
+                        args=(name, emailId, application_no, additional_info_letter),
+                        daemon=True
+                    ).start()
+                )
             data['message'] = "success"
             data['redirect_to'] = "reviewer_application_list"
 
@@ -1709,6 +1796,7 @@ def forward_application(request):
                     daemon=True
                 ).start()
             )
+
         elif identifier == 'ALA': #Additional Information accepted- Application forwarded to Proponent
             application_details.update(ai_date=date.today(),application_status='ALA')
             user_details = t_user_master.objects.filter(email_id=email)
@@ -1815,13 +1903,16 @@ def forward_application(request):
             data['redirect_to'] = "client_application_list"
         elif identifier == 'AP': #Additional Payment Required - Application forwarded to Proponent
             additional_payment_amount = request.POST.get('additional_payment_amount')
+            additional_payment_remarks = request.POST.get('additional_payment_remarks')
+            ai_payment_account_head = request.POST.get('account_head')
+            description = "ADDITIONAL PAYMENT"
             application_details.update(application_status='AP')
             t_application_history.objects.create(application_status='AP',application_no=application_no,
                         action_date=date.today(),
                         actor_id=request.session['login_id'], 
                         actor_name=request.session['name'],
                         applicant_id=applicant,
-                        remarks='Additional Payment Required',
+                        remarks=additional_payment_remarks,
                         service_id=service_id)
             workflow_details.update(
                 action_date=date.today(),
@@ -1830,7 +1921,7 @@ def forward_application(request):
                 application_status='AP'
             )
     
-            make_payment_request(request,application_no,additional_payment_amount,'ADDITIONAL PAYMENT',account_head,service_type)
+            make_payment_request(request,application_no,additional_payment_amount,additional_payment_remarks,description,ai_payment_account_head,service_type)
 
             for work_details in workflow_details:
                 service_id = work_details.service_id
@@ -1843,7 +1934,7 @@ def forward_application(request):
                         transaction.on_commit(
                             lambda: threading.Thread(
                                 target=_send_ec_additional_payment_mail_in_background,
-                                args=(applicant_name, emailId, application_no, service_name, additional_payment_amount),
+                                args=(applicant_name, emailId, application_no, service_name, additional_payment_amount, additional_payment_remarks),
                                 daemon=True
                             ).start()
                         )
@@ -1877,9 +1968,16 @@ def forward_application(request):
                 service_id=service_id,
                 remarks='Legal Undertaking Request'
             )
-            
+            transaction.on_commit(
+                lambda: threading.Thread(
+                    target=_send_LU_mail_in_background,
+                    args=(applicant_name, email, application_no),
+                    daemon=True
+                ).start()
+            )
             data['message'] = "success"
             data['redirect_to'] = "reviewer_application_list"
+            
         elif identifier == 'LUS':
             for reviewer_details in application_details:
                 reviewer_id = reviewer_details.assigned_to
@@ -3078,7 +3176,7 @@ def get_random_tax_no(length):
     tax_no = ''.join(random.choice(digits) for i in range(length))
     return tax_no
 
-def make_payment_request(request, application_no, total_amount, description, service_code, service_type):
+def make_payment_request(request, application_no, total_amount, remarks, description, service_code, service_type):
     token = get_birms_token()
     new_app_no = generate_new_ap_no() if description == "ADDITIONAL PAYMENT" else application_no
 
@@ -3144,7 +3242,7 @@ def make_payment_request(request, application_no, total_amount, description, ser
         data = response.json()
         paymentAdviceNo = data.get('content', {}).get('paymentAdviceNo')
         print(paymentAdviceNo)
-        insert_app_payment_details(request, application_no, description, total_amount, service_type, paymentAdviceNo, new_app_no)
+        insert_app_payment_details(request, application_no, description, total_amount, remarks, service_type, paymentAdviceNo, new_app_no)
         print("Payment request successful:", data)
     except requests.exceptions.RequestException as e:
         print("Payment request failed:", e)
@@ -3183,22 +3281,23 @@ def save_lu_attachment(request):
 
     return JsonResponse(data)
 
-def _send_payment_mail_in_background(name, email, application_no, amount):
+def _send_payment_mail_in_background(name, email, application_no, amount, remarks):
     """
     Thread target: never uses request/session. Only uses passed primitives.
     """
     try:
-        send_payment_mail(name, email, application_no, amount)
+        send_payment_mail(name, email, application_no, amount, remarks)
     except Exception:
         # Don't crash the web request; just log the failure.
         logger.exception("Failed to send submit email for application_no=%s", application_no)
 
-def send_payment_mail(name, email, application_no, amount):
+def send_payment_mail(name, email, application_no, amount, remarks):
     subject = "Application Accepted"
     message = (
         f"Dear {name},\n\n"
         f"Your application registered under the application number : {application_no} is accepted.\n"
         f"You are required to make a payment of Nu.: {amount}\n"
+        f"Remarks: {remarks}\n"
     )
     send_mail(
         subject=subject,
@@ -3208,22 +3307,52 @@ def send_payment_mail(name, email, application_no, amount):
         fail_silently=False,
     )
 
-def _send_ec_additional_payment_mail_in_background(name, email, application_no, service_name, additional_payment_amount):
+def _send_LU_mail_in_background(name, email, application_no):
     """
     Thread target: never uses request/session. Only uses passed primitives.
     """
     try:
-        send_additional_payment_mail(name, email, application_no, service_name, additional_payment_amount)
+        send_LU_mail(name, email, application_no)
     except Exception:
         # Don't crash the web request; just log the failure.
         logger.exception("Failed to send submit email for application_no=%s", application_no)
 
-def send_additional_payment_mail(name, email, application_no, service_name, additional_payment_amount):
+def send_LU_mail(name, email, application_no):
+    subject = "Draft Legal Undertaking"
+    message = (
+        f"Dear {name},\n\n"
+        f"A Draft Legal Undertaking has been uploaded for your application number: {application_no}.\n"
+        f"Please log in to the ECSS system to complete the following steps:\n"
+        f"1. View your application and download the Draft Legal Undertaking.\n"
+        f"2. Print, sign, and seal the document.\n"
+        f"3. Upload the signed and sealed copy back into the ECSS system for final approval.\n"
+
+    )
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=getattr(settings, "DEFAULT_FROM_EMAIL", None),
+        recipient_list=[email],
+        fail_silently=False,
+    )
+
+def _send_ec_additional_payment_mail_in_background(name, email, application_no, service_name, additional_payment_amount, remarks):
+    """
+    Thread target: never uses request/session. Only uses passed primitives.
+    """
+    try:
+        send_additional_payment_mail(name, email, application_no, service_name, additional_payment_amount, remarks)
+    except Exception:
+        # Don't crash the web request; just log the failure.
+        logger.exception("Failed to send submit email for application_no=%s", application_no)
+
+def send_additional_payment_mail(name, email, application_no, service_name, additional_payment_amount, remarks):
     subject = "ADDITIONAL PAYMENT"
     message = (
         f"Dear Sir {name},\n\n"
         f"Your EC application number: {application_no} for : {service_name} has additional payment.\n"
         f"You are required to make an additional payment of Nu.: {additional_payment_amount}\n\n"
+        f"Remarks: {remarks}\n\n"
         f"Thanking You\n"
     )
     send_mail(
@@ -4087,7 +4216,7 @@ def get_application_no_fp():
 
     return new_no
 
-def insert_app_payment_details(request, application_no, description, total_amount, service_type, paymentAdviceNo, new_app_no):
+def insert_app_payment_details(request, application_no, description, total_amount, remarks, service_type, paymentAdviceNo, new_app_no):
     #print("insert_app_payment_details")
     cid_no = None
     mob_no = None
@@ -4111,6 +4240,12 @@ def insert_app_payment_details(request, application_no, description, total_amoun
     if description == "NEW APPLICATION":
         identifier = "new_application"
         payment_type = "Application Fee"
+    elif description == "NAME CHANGE":
+        identifier = "name_change"
+        payment_type = "Modification Fee"
+    elif description == "OWNERSHIP CHANGE":
+        identifier = "ownership_change"
+        payment_type = "Modification Fee"
     elif description == "ADDITIONAL PAYMENT":
         identifier = "additional_payment"
         payment_type = "Additional Payment"
@@ -4127,7 +4262,7 @@ def insert_app_payment_details(request, application_no, description, total_amoun
         email_id = app_det.applicant_id
         ca_authority = app_det.ca_authority
 
-    if 'new' in identifier or 'tor' in identifier or 'renewal' in identifier or 'fines' in identifier or 'additional' in identifier:
+    if 'new' in identifier or 'ownership' in identifier or 'name' in identifier or 'tor' in identifier or 'renewal' in identifier or 'fines' in identifier or 'additional' in identifier:
         t_payment_details.objects.create(
             ref_no=application_no,
             payment_request_date=date.today(),
@@ -4138,6 +4273,7 @@ def insert_app_payment_details(request, application_no, description, total_amoun
             payer_email=email_id,
             description=identifier,
             total_payable_amount=total_amount,
+            remarks=remarks,
             service_type=service_type,
             payment_advice_no=paymentAdviceNo,
             application_no=new_app_no,

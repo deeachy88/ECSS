@@ -1,5 +1,6 @@
 from django.core.files.storage import FileSystemStorage
 from django.db import models
+from django.utils import timezone
 
 fs = FileSystemStorage()
 
@@ -65,6 +66,7 @@ class t_ec_application_t1(models.Model):
     new_project_name = models.TextField(default=None, blank=True, null=True)
     fmfsr_no = models.CharField(max_length=100, default=None, blank=True, null=True)
     mas_integration = models.CharField(max_length=3, default=None, blank=True, null=True)
+    app_remarks = models.TextField(default=None, blank=True, null=True)
     
 class t_ec_application_t2(models.Model):
     record_id = models.AutoField(primary_key=True)
@@ -94,12 +96,18 @@ class t_ec_ai_remainder(models.Model):
     reminder_sent = models.DateField(default=None, blank=True, null=True)
     precord_id = models.IntegerField(default=None, blank=True, null=True)
 
-    class Meta:
-        db_table = 'proponent_t_ec_ai_remainder'  # Explicit table name
-
-    def __str__(self):
-        return f"App: {self.application_no} | To: {self.applicant_id} | Date: {self.reminder_sent}"
-
+class t_ec_notification_log(models.Model):
+    record_id       = models.AutoField(primary_key=True)
+    ec_reference_no = models.CharField(max_length=250,default=None, blank=True, null=True)
+    recipient_email = models.CharField(max_length=100,default=None, blank=True, null=True)
+    ca_authority    = models.IntegerField(default=None, blank=True, null=True)
+    sent_at         = models.DateTimeField(default=timezone.now)
+    status          = models.CharField(
+                          max_length=20,
+                          choices=[('sent', 'Sent'), ('failed', 'Failed')],
+                          default='sent'
+                      )
+    remarks         = models.TextField(blank=True, null=True)
 
 class t_ec_compliance(models.Model):
     record_id = models.AutoField(primary_key=True)
@@ -196,6 +204,7 @@ class t_ec_t1_history(models.Model):
     history_action = models.CharField(max_length=50, default=None, blank=True, null=True)
     fmfsr_no = models.CharField(max_length=100, default=None, blank=True, null=True)
     mas_integration = models.CharField(max_length=3, default=None, blank=True, null=True)
+    app_remarks = models.TextField(default=None, blank=True, null=True)
 
 class t_ec_t2_history(models.Model):
     record_id = models.AutoField(primary_key=True)

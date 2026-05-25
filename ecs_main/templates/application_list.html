@@ -20,8 +20,7 @@
                                             <th scope="col">Project Name</th>
                                             <th scope="col">Activity</th>
                                             <th scope="col">Application Date</th>
-                                            <!--<th scope="col">Application Source</th>
-                                            -->
+                                            <th scope="col">Application Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -42,8 +41,11 @@
                                                 <td>{{app.project_name}}</td>
                                                 <td>{{app.activity}}</td>
                                                 <td>{{app.action_date|date:"d-m-Y"}}</td>
-                                               <!-- <td>{{app.application_source}}</td>
-                                               -->
+                                                 <td>
+                                                    <span style="font-style: italic; color: #ff72aa;">
+                                                        {{ app.application_status }}
+                                                    </span>
+                                                </td>
                                             </tr>
                                         {% empty %}
                                             <tr>

@@ -1,275 +1,286 @@
 {% for application_details in application_details %}
-<div class="row">
-    <div class="col-xl-12">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title mb-0 text-right">
-                    <span style="color: #d9534f; font-weight: bold;">
-                        {% if application_details.application_type == 'New' %}New EC
-                        {% elif application_details.application_type == 'AC' %}Area Change
-                        {% elif application_details.application_type == 'CC' %}Capacity Change
-                        {% elif application_details.application_type == 'PC' %}Product Change
-                        {% elif application_details.application_type == 'TC' %}Technology Change
-                        {% elif application_details.application_type == 'LC' %}Location Change
-                        {% else %}Other Modification
-                        {% endif %}:
-                    </span>
-                    Application Number:- {{ application_details.application_no }}
-                </h5>
+<div id="application_details">
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title mb-0 text-right">
+                        <span style="color: #d9534f; font-weight: bold;">
+                            {% if application_details.application_type == 'New' %}New EC
+                            {% elif application_details.application_type == 'AC' %}Area Change
+                            {% elif application_details.application_type == 'CC' %}Capacity Change
+                            {% elif application_details.application_type == 'PC' %}Product Change
+                            {% elif application_details.application_type == 'TC' %}Technology Change
+                            {% elif application_details.application_type == 'LC' %}Location Change
+                            {% else %}Other Modification
+                            {% endif %}:
+                        </span>
+                        Application Number:- {{ application_details.application_no }}
+                    </h5>
 
-                {% if application_details.service_id == 1 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Industry Projects</h4>
-                {% elif application_details.service_id == 2 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Energy Projects</h4>
-                {% elif application_details.service_id == 3 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Road Projects</h4>
-                {% elif application_details.service_id == 4 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Transmission Projects</h4>
-                {% elif application_details.service_id == 5 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Tourism Projects</h4>
-                {% elif application_details.service_id == 6 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Ground Water Projects</h4>
-                {% elif application_details.service_id == 7 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Forest Projects</h4>
-                {% elif application_details.service_id == 8 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Quarry Projects</h4>
-                {% elif application_details.service_id == 9 %}
-                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for General Projects</h4>
-                {% endif %}
+                    {% if application_details.service_id == 1 %}
+                        <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Industry Projects</h4>
+                    {% elif application_details.service_id == 2 %}
+                        <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Energy Projects</h4>
+                    {% elif application_details.service_id == 3 %}
+                        <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Road Projects</h4>
+                    {% elif application_details.service_id == 4 %}
+                        <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Transmission Projects</h4>
+                    {% elif application_details.service_id == 5 %}
+                        <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Tourism Projects</h4>
+                    {% elif application_details.service_id == 6 %}
+                        <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Ground Water Projects</h4>
+                    {% elif application_details.service_id == 7 %}
+                        <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Forest Projects</h4>
+                    {% elif application_details.service_id == 8 %}
+                        <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Quarry Projects</h4>
+                    {% elif application_details.service_id == 9 %}
+                        <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for General Projects</h4>
+                    {% endif %}
 
-                <div id="rootwizard">
-                    <ul class="nav nav-pills nav-justified form-wizard-header mb-3">
-                        <li class="nav-item">
-                            <a href="#first" data-bs-toggle="tab" class="nav-link rounded-0 py-2 active">
-                                <i class="mdi mdi-account-circle font-18 align-middle me-1"></i>
-                                <span class="d-none d-sm-inline">General Information</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#second" data-bs-toggle="tab" class="nav-link rounded-0 py-2">
-                                <i class="mdi mdi-face-man-profile font-18 align-middle me-1"></i>
-                                <span class="d-none d-sm-inline">File Attachment</span>
-                            </a>
-                        </li>
-                    </ul>
+                    <div id="rootwizard">
+                        <ul class="nav nav-pills nav-justified form-wizard-header mb-3">
+                            <li class="nav-item">
+                                <a href="#first" data-bs-toggle="tab" class="nav-link rounded-0 py-2 active">
+                                    <i class="mdi mdi-account-circle font-18 align-middle me-1"></i>
+                                    <span class="d-none d-sm-inline">General Information</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#second" data-bs-toggle="tab" class="nav-link rounded-0 py-2">
+                                    <i class="mdi mdi-face-man-profile font-18 align-middle me-1"></i>
+                                    <span class="d-none d-sm-inline">File Attachment</span>
+                                </a>
+                            </li>
+                        </ul>
 
-                    <div class="tab-content mb-0 b-0">
-                        <!-- FIRST TAB -->
-                        <div class="tab-pane active show" id="first">
-                            <input type="text" value="{{status}}" id="status" name="status" style="display:none;">
-                            <input type="text" value="{{assigned_role_name}}" id="assigned_role_name" name="assigned_role_name" style="display:none;">
-                            <input type="text" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
+                        <div class="tab-content mb-0 b-0">
+                            <!-- FIRST TAB -->
+                            <div class="tab-pane active show" id="first">
+                                <input type="text" value="{{status}}" id="status" name="status" style="display:none;">
+                                <input type="text" value="{{assigned_role_name}}" id="assigned_role_name" name="assigned_role_name" style="display:none;">
+                                <input type="text" value="{{application_details.application_no}}" name="application_no" id="application_no" style="display:none;">
 
-                            <div class="row justify-content-left">
-                                <div class="col-lg-12">
-                                    <label class="form-label fw-bold">Activity</label>
-                                    <p class="distinct-activity">{{application_details.activity}}</p>
-                                </div>
-                            </div>
-
-                            {% if application_details.fmfsr_no %}
-                            <div class="row" style="margin-bottom: -15px;">
-                                <div class="col-lg-4">
-                                    <label class="form-label fw-bold text-primary">
-                                        <i class="fas fa-link me-1"></i> Application integrated with MAS
-                                    </label>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="mb-5">
-                                        <label class="form-label fw-bold text-primary">FMFSR No:</label>
-                                        <input type="text" class="form-control" value="{{ application_details.fmfsr_no }}" readonly>
+                                <div class="row justify-content-left">
+                                    <div class="col-lg-12">
+                                        <label class="form-label fw-bold">Activity</label>
+                                        <p class="distinct-activity">{{application_details.activity}}</p>
                                     </div>
                                 </div>
-                            </div>
-                            {% endif %}
 
-                            <div class="row" style="margin-bottom: -15px;">
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Name of the Applicant</label>
-                                        <input type="text" class="form-control" value="{{application_details.applicant_name}}" disabled>
+                                {% if application_details.fmfsr_no %}
+                                <div class="row" style="margin-bottom: -15px;">
+                                    <div class="col-lg-4">
+                                        <label class="form-label fw-bold text-primary">
+                                            <i class="fas fa-link me-1"></i> Application integrated with MAS
+                                        </label>
                                     </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Address</label>
-                                        <input type="text" class="form-control" value="{{application_details.address}}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Contact No</label>
-                                        <input type="number" class="form-control" value="{{application_details.contact_no}}" disabled>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row" style="margin-bottom: -15px;">
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Email</label>
-                                        <input type="email" class="form-control" value="{{application_details.email}}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Name of the Project</label>
-                                        <input type="text" class="form-control" value="{{application_details.project_name}}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Environmental Focal Person</label>
-                                        <input type="text" class="form-control" value="{{application_details.focal_person}}" disabled>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row" style="margin-bottom: -15px;">
-                                <div class="col-lg-12">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Brief Description of the Project</label>
-                                        <textarea class="form-control" disabled>{{application_details.project_description}}</textarea>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="alert custom-bg border-0" role="alert">
-                                <h5 class="mb-0">Project Location</h5>
-                            </div>
-
-                            <div class="row" style="margin-bottom: -15px;">
-                                <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Site</label>
-                                        <div class="mt-2">
-                                            <div class="form-check form-check-inline">
-                                                <input type="radio" class="form-check-input" {% if application_details.dzongkhag_throm == 'Dzongkhag' %}checked{% endif %} disabled>
-                                                <label class="form-check-label">Dzongkhag</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input type="radio" class="form-check-input" {% if application_details.dzongkhag_throm == 'Thromde' %}checked{% endif %} disabled>
-                                                <label class="form-check-label">Thromde</label>
-                                            </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-5">
+                                            <label class="form-label fw-bold text-primary">FMFSR No:</label>
+                                            <input type="text" class="form-control" value="{{ application_details.fmfsr_no }}" readonly>
                                         </div>
                                     </div>
                                 </div>
-                                {% if application_details.dzongkhag_throm == 'Thromde' %}
-                                    <div class="col-lg-6 thromde_div">
+                                {% endif %}
+
+                                <div class="row" style="margin-bottom: -15px;">
+                                    <div class="col-lg-4">
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold">Thromde</label>
-                                            <select class="form-select" disabled>
-                                                {% for thromde in thromde %}
-                                                    <option value="{{thromde.thromde_id}}" {% if application_details.thromde_id == thromde.thromde_id %}selected{% endif %}>
-                                                        {{ thromde.thromde_name }}
-                                                    </option>
-                                                {% endfor %}
-                                            </select>
+                                            <label class="form-label fw-bold">Name of the Applicant</label>
+                                            <input type="text" class="form-control" value="{{application_details.applicant_name}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Address</label>
+                                            <input type="text" class="form-control" value="{{application_details.address}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Contact No</label>
+                                            <input type="number" class="form-control" value="{{application_details.contact_no}}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row" style="margin-bottom: -15px;">
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Email</label>
+                                            <input type="email" class="form-control" value="{{application_details.email}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Name of the Project</label>
+                                            <input type="text" class="form-control" value="{{application_details.project_name}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Environmental Focal Person</label>
+                                            <input type="text" class="form-control" value="{{application_details.focal_person}}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row" style="margin-bottom: -15px;">
+                                    <div class="col-lg-8">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Brief Description of the Project</label>
+                                            <textarea class="form-control" disabled>{{application_details.project_description}}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Remarks(Any Other Details)</label>
+                                            <textarea class="form-control" disabled>{{application_details.app_remarks}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert custom-bg border-0" role="alert">
+                                    <h5 class="mb-0">Project Location</h5>
+                                </div>
+                                <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Site</label>
+                                            <div class="mt-2">
+                                                {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" class="form-check-input" checked disabled>
+                                                        <label class="form-check-label">Dzongkhag</label>
+                                                    </div>
+                                                {% elif application_details.dzongkhag_throm == 'Thromde' %}
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" class="form-check-input" checked disabled>
+                                                        <label class="form-check-label">Thromde</label>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% if application_details.dzongkhag_throm == 'Thromde' %}
+                                        <div class="col-lg-4 thromde_div">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Thromde</label>
+                                                <select class="form-select" disabled>
+                                                    {% for thromde in thromde %}
+                                                        <option value="{{thromde.thromde_id}}"{% if application_details.thromde_id == thromde.thromde_id %}selected{% endif %}>
+                                                            {{ thromde.thromde_name }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div id="thromdeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+                                    {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
+                                        <div class="col-lg-4 dzongkhag_div">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Dzongkhag</label>
+                                                <select class="form-select" disabled>
+                                                    {% for dzongkhag in dzongkhag %}
+                                                        <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
+                                                            {{ dzongkhag.dzongkhag_name }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Gewog</label>
+                                                <select class="form-select" disabled>
+                                                    {% for gewog in gewog %}
+                                                        <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
+                                                            {{ gewog.gewog_name }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Village/Chiwog</label>
+                                                <select class="form-select" disabled>
+                                                    {% for village in village %}
+                                                        <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
+                                                            {{ village.village_name }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                         </div>
                                     </div>
                                 {% endif %}
+
+                                <div class="row" style="margin-bottom: -15px;">
+                                    <div class="col-lg-8">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Name of the Particular Project Site</label>
+                                            <input type="text" class="form-control" value="{{application_details.location_name}}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
-                            {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
-                            <div class="row" style="margin-bottom: -15px;">
-                                <div class="col-lg-4 dzongkhag_div">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Dzongkhag</label>
-                                        <select class="form-select" disabled>
-                                            {% for dzongkhag in dzongkhag %}
-                                                <option value="{{dzongkhag.dzongkhag_code}}" {% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
-                                                    {{ dzongkhag.dzongkhag_name }}
-                                                </option>
-                                            {% endfor %}
-                                        </select>
+                            <!-- SECOND TAB -->
+                            <div class="tab-pane fade" id="second">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <table class="table table-hover table-bordered table-centered mb-3">
+                                            <tbody id="attachments_tbody">
+                                                {{ attachments|safe }}
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Gewog</label>
-                                        <select class="form-select" disabled>
-                                            {% for gewog in gewog %}
-                                                <option value="{{gewog.gewog_code}}" {% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
-                                                    {{ gewog.gewog_name }}
-                                                </option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Village/Chiwog</label>
-                                        <select class="form-select" disabled>
-                                            {% for village in village %}
-                                                <option value="{{village.village_code}}" {% if application_details.village_code == village.village_code %}selected{% endif %}>
-                                                    {{ village.village_name }}
-                                                </option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endif %}
-
-                            <div class="row" style="margin-bottom: -15px;">
-                                <div class="col-lg-8">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Name of the Particular Project Site</label>
-                                        <input type="text" class="form-control" value="{{application_details.location_name}}" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- SECOND TAB -->
-                        <div class="tab-pane fade" id="second">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <table class="table table-hover table-bordered table-centered mb-3">
-                                        <tbody id="attachments_tbody">
-                                            {{ attachments|safe }}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h5 class="card-title mb-0">Attachments</h5>
-                                            <div class="pt-3">
-                                                <table class="table dt-responsive nowrap w-100">
-                                                    <thead>
-                                                        <tr>
-                                                            <th scope="col">#</th>
-                                                            <th scope="col">File</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {% for file_attach in file_attach %}
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title mb-0">Attachments</h5>
+                                                <div class="pt-3">
+                                                    <table class="table dt-responsive nowrap w-100">
+                                                        <thead>
                                                             <tr>
-                                                                <td>{{ forloop.counter }}</td>
-                                                                <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
+                                                                <th scope="col">#</th>
+                                                                <th scope="col">File</th>
                                                             </tr>
-                                                        {% empty %}
-                                                            <tr>
-                                                                <td colspan="2" class="text-center">No Data</td>
-                                                            </tr>
-                                                        {% endfor %}
-                                                    </tbody>
-                                                </table>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for file_attach in file_attach %}
+                                                                <tr>
+                                                                    <td>{{ forloop.counter }}</td>
+                                                                    <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
+                                                                </tr>
+                                                            {% empty %}
+                                                                <tr>
+                                                                    <td colspan="2" class="text-center">No Data</td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div> <!-- tab-content -->
-                </div> <!-- end #rootwizard-->
-            </div> <!-- end card-body -->
-        </div> <!-- end card-->
-    </div> <!-- end col -->
-</div> <!-- end main row -->
+                        </div> <!-- tab-content -->
+                    </div> <!-- end #rootwizard-->
+                </div> <!-- end card-body -->
+            </div> <!-- end card-->
+        </div> <!-- end col -->
+    </div> <!-- end main row -->
+</div>
 {% endfor %}
 <div class="card-body" id="reviewer_details_accordian" style="display:none;">
     <div class="row">
@@ -279,7 +290,60 @@
                     <div class="alert alert-primary">Action Taken</div>
                         <form method="post" id="reviewer_form">
                             {% csrf_token %}
+
+                            <div class="row payment_info" style="display: none;">
+                                <div class="col-lg-12">
+                                    <div class="card border-0 shadow-sm">
+                                        <label class="form-label fw-bold mb-3">Payment Information</label>
+                                        <div class="card-body p-0">
+                                            {% if payment_details %}
+                                                <div class="table-responsive">
+                                                    <table class="table table-sm mb-0">
+                                                        <thead class="bg-light">
+                                                            <tr>
+                                                                <th scope="col" class="text-center border-0 py-2">#</th>
+                                                                <th scope="col" class="border-0 py-2">Type</th>
+                                                                <th scope="col" class="border-0 py-2 text-end">Amount</th>
+                                                                <th scope="col" class="border-0 py-2">Receipt</th>
+                                                                <th scope="col" class="border-0 py-2">Date</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for payment in payment_details %}
+                                                            <tr class="border-bottom">
+                                                                <td>{{ forloop.counter }}</td>
+                                                                <td class="py-2">{{ payment.payment_type }}</td>
+                                                                <td class="py-2 text-end fw-bold text-success">
+                                                                    Nu. {{ payment.payment_advice_amount_paid|floatformat:2 }}
+                                                                </td>
+                                                                <td class="py-2">
+                                                                    <code class="bg-light text-dark px-2 py-1 rounded">{{ payment.receipt_no }}</code>
+                                                                </td>
+                                                                <td class="py-2 text-muted">{{ payment.receipt_date|date:"d/m/Y" }}</td>
+                                                            </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            {% else %}
+                                                <div class="p-4 text-center text-muted">
+                                                    <i class="fas fa-receipt fa-2x mb-2 opacity-50"></i>
+                                                    <p class="mb-0">No Payment Details Available</p>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
                             {% if additional_info %}
+                            <!-- Add spacing after the above section -->
+                            <div class="row mt-2 mb-2">
+                                <div class="col-lg-12">
+                                    <hr class="my-2">
+                                </div>
+                            </div>
                             <div class="row additional_info" style="display: none;">
                                 <div class="col-lg-12">
                                     <label class="form-label fw-bold mb-3">Additional Information</label>
@@ -376,57 +440,7 @@
                                 </div>
                                 -->
                             {% endif %}
-                            <!-- Add spacing after the above section -->
-                            <div class="row mt-2 mb-2">
-                                <div class="col-lg-12">
-                                    <hr class="my-2">
-                                </div>
-                            </div>
-                            <div class="row payment_info" style="display: none;">
-                                <div class="col-lg-12">
-                                    <div class="card border-0 shadow-sm">
-                                        <label class="form-label fw-bold mb-3">Payment Information</label>
-                                        <div class="card-body p-0">
-                                            {% if payment_details %}
-                                                <div class="table-responsive">
-                                                    <table class="table table-sm mb-0">
-                                                        <thead class="bg-light">
-                                                            <tr>
-                                                                <th scope="col" class="text-center border-0 py-2">#</th>
-                                                                <th scope="col" class="border-0 py-2">Type</th>
-                                                                <th scope="col" class="border-0 py-2 text-end">Amount</th>
-                                                                <th scope="col" class="border-0 py-2">Receipt</th>
-                                                                <th scope="col" class="border-0 py-2">Date</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {% for payment in payment_details %}
-                                                            <tr class="border-bottom">
-                                                                <td>{{ forloop.counter }}</td>
-                                                                <td class="py-2">{{ payment.payment_type }}</td>
-                                                                <td class="py-2 text-end fw-bold text-success">
-                                                                    Nu. {{ payment.payment_advice_amount_paid|floatformat:2 }}
-                                                                </td>
-                                                                <td class="py-2">
-                                                                    <code class="bg-light text-dark px-2 py-1 rounded">{{ payment.receipt_no }}</code>
-                                                                </td>
-                                                                <td class="py-2 text-muted">{{ payment.receipt_date|date:"d/m/Y" }}</td>
-                                                            </tr>
-                                                            {% endfor %}
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            {% else %}
-                                                <div class="p-4 text-center text-muted">
-                                                    <i class="fas fa-receipt fa-2x mb-2 opacity-50"></i>
-                                                    <p class="mb-0">No Payment Details Available</p>
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
 
-                                </div>
-                            </div>
                             <!-- Add spacing after the above section -->
                             <div class="row mt-2 mb-2">
                                 <div class="col-lg-12">
@@ -452,22 +466,70 @@
                                     <div id="informationErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                 </div>
                                 <div class="row additional_info_letter" style="display: none;">
-                                    <div class="col-lg-12">
-                                        <div class="mb-3">
+                                    <div class="col-lg-9">
+                                        <div class="mb-4">
                                             <label class="form-label fw-bold">Additional Information Letter</label>
                                             <textarea class="form-control" id="additional_info_letter" name="additional_info_letter" rows="2"></textarea>
                                         </div>
                                     </div>
                                     <div id="additional_infoErrorMsg" class="alert alert-danger" style="display: none;"></div>
-                                </div>
-                                <div class="row additional_info_due_date" style="display: none;">
                                     <div class="col-lg-3">
-                                        <div class="mb-3">
+                                        <div class="mb-4">
                                             <label class="form-label fw-bold">Additional Information Due Date</label>
                                             <input type="date" name="due_date" class="form-control" id="due_date">
                                         </div>
                                     </div>
                                     <div id="due_dateErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                                <div class="row ai_additional_payment_div" style="display: none;">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Is There Additional Payment?</label>
+                                            <div class="mt-2">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="customRadio5" name="ai_additional_payment" class="form-check-input"  value="Yes" onclick="check_ai_additional_payment(this.value)">
+                                                    <label class="form-check-label" for="customRadio3">Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="customRadio6" name="ai_additional_payment" class="form-check-input"  value="No" onclick="check_ai_additional_payment(this.value)" checked>
+                                                    <label class="form-check-label" for="customRadio4">No</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="ai_additional_paymentErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                                <div class="col-md-12 ai_additional_payment_details_div" style="display: none;">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Account Head</label>
+                                                    <select class="form-select" name="ai_account_head"  id="ai_account_head">
+                                                        <option value="">--SELECT--</option>
+                                                        {% for payment_details in pay_details %}
+                                                            <option value="{{ payment_details.account_head_code }}">{{ payment_details.account_head_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">Additional Payable Amount</label>
+                                                        <input type="number" name="ai_additional_payment_amount" class="form-control" id="ai_additional_payment_amount">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">Remarks</label>
+                                                        <textarea class="form-control" id="ai_additional_payment_remarks" name="additional_payment_remarks" rows="2"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="ai_additional_payment_amountErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                 </div>
                                 <div class="row additional_payment_info" style="display: none;">
                                     <div class="col-lg-6">
@@ -501,10 +563,18 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Additional Payable Amount</label>
-                                                    <input type="number" name="additional_payment_amount" class="form-control" id="additional_payment_amount">
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">Additional Payable Amount</label>
+                                                        <input type="number" name="additional_payment_amount" class="form-control" id="additional_payment_amount">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">Remarks</label>
+                                                        <textarea class="form-control" id="additional_payment_remarks" name="additional_payment_remarks" rows="2"></textarea>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -700,6 +770,11 @@
                                                     {% include 'ec_draft_details.html' %}
                                                 </div>
                                             </div>
+                                            <div class="card-widgets">
+                                                <button type="button" onclick="view_draft_ec_details()" title="Print Preview">
+                                                    <i class="uil uil-file-search-alt font-16"></i> Print Preview
+                                                </button>
+                                            </div>
                                         </div>
                                         <div id="ecDraftErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
@@ -759,7 +834,6 @@
                                         <a href="#" class="btn btn-success" onclick="forwardApplication('LU')">
                                             <i class="mdi mdi-arrow-right-top-bold me-1"></i> Submit </a>
                                     </div>
-                                </div>
                             </div>
                             <div class="row mt-3 rectification_button" style="display:none;">
                                 <div class="mb-3">
@@ -988,12 +1062,19 @@
                         <form method="post" id="verifier_form">
                             {% csrf_token %}
                             <div class="row verifierDiv" style="display: none;">
-                                <div class="col-lg-6">
+                                <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Application Fees</label>
                                         <input type="number" class="form-control" id="amount" name="amount">
                                     </div>
                                     <div id="amount_ErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                                <div class="col-lg-8">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Remarks</label>
+                                        <input type="text" class="form-control" id="remarks" name="remarks">
+                                    </div>
+                                    <div id="payment_remarksErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                 </div>
                             </div>
                             <div class="row forwardTo" style="display: none;">
@@ -1739,7 +1820,10 @@ $(document).ready(function() {
     // Initially disable the input, clear its value, and hide the div
     $('#additional_payment_amount').prop('disabled', true);
     $('#additional_payment_amount').val('');  // Clear the value on page load
+    $('#ai_additional_payment_amount').prop('disabled', true);
+    $('#ai_additional_payment_amount').val('');  // Clear the value on page load
     $('.additional_payment_div').hide();
+    $('#additional_payment_remarks').val('');  // Clear the value on page load
 
     // Listen for changes in the account_head select
     $('#account_head').change(function() {
@@ -1750,6 +1834,15 @@ $(document).ready(function() {
             $('#additional_payment_amount').prop('disabled', true);  // Disable the input
             $('#additional_payment_amount').val('');  // Clear the input value
             $('.additional_payment_div').show();  // Hide the div
+        }
+    });
+
+    $('#ai_account_head').change(function() {
+        if ($(this).val() !== '') {  // If a valid option is selected
+            $('#ai_additional_payment_amount').prop('disabled', false);  // Enable the input
+        } else {  // If the default "--SELECT--" is selected
+            $('#ai_additional_payment_amount').prop('disabled', true);  // Disable the input
+            $('#ai_additional_payment_amount').val('');  // Clear the input value
         }
     });
 });
@@ -1896,16 +1989,25 @@ function forwardApplication(identifier) {
     let ec_expiry_date_r = $('#ec_expiry_date_r').val();
     let ec_expiry_date_v = $('#ec_expiry_date_v').val();
     let additional_payment_amount = $('#additional_payment_amount').val();
+    let additional_payment_remarks = $('#additional_payment_remarks').val();
     let account_head = $('#account_head').val();
+    let ai_additional_payment_amount = $('#ai_additional_payment_amount').val();
+    let ai_additional_payment_remarks = $('#ai_additional_payment_remarks').val();
+    let ai_account_head = $('#ai_account_head').val();
+    let ai_additional_payment = $('input[name="ai_additional_payment"]:checked').val();
+
     let tat = $('#tat').val();
     let forward_to = $('#forward_to').val();
     let amount = $('#amount').val();
+    let remarks = $('#remarks').val();
     let record_id = $('#record_id').val();
     let reject_remarks = $('#reject_remarks').val();
     let reject_reason = $('#reject_reason').val();
     let applicant_id = $('#email').val();
+    alert(ai_additional_payment);
     const isInformationChecked = $('input[name="information"]:checked').length > 0;
     const isAddPaymentChecked = $('input[name="additional_payment"]:checked').length > 0;
+    const isAIAddPaymentChecked = $('input[name="ai_additional_payment"]:checked').length > 0;
     const isDecisionChecked = $('input[name="decision"]:checked').length > 0;
 
     //alert(amount);
@@ -1942,6 +2044,13 @@ function forwardApplication(identifier) {
         $('#due_dateErrorMsg').show();
         $('#due_dateErrorMsg').delay(2000).fadeOut('slow');
         $('#due_date').focus();
+        return; // stop execution here
+    }
+    if (identifier === 'AL' && isAIAddPaymentChecked && ai_additional_payment_amount ==="") {
+        $('#ai_additional_paymentErrorMsg').html("Please Enter Additional Payment Amount.");
+        $('#ai_additional_paymentErrorMsg').show();
+        $('#ai_additional_paymentErrorMsg').delay(2000).fadeOut('slow');
+        $('#ai_additional_paymentErrorMsg').focus();
         return; // stop execution here
     }
 
@@ -2094,8 +2203,13 @@ function forwardApplication(identifier) {
             'ec_expiry_date_v': ec_expiry_date_v,
             'tat_days': tat_days,
             'additional_payment_amount': additional_payment_amount,
+            'additional_payment_remarks': additional_payment_remarks,
+            'ai_additional_payment_amount': ai_additional_payment_amount,
+            'ai_additional_payment_remarks': ai_additional_payment_remarks,
             'account_head':account_head,
+            'ai_account_head':ai_account_head,
             'amount':amount,
+            'remarks':remarks,
             'reject_remarks': reject_remarks,
             'reject_reason': reject_reason,
             'tat_v': tat_v,
@@ -2187,7 +2301,7 @@ function check_information_radio(value)
     {
         $('.additional_payment_info').show();
         $('.additional_info_letter').hide();
-        $('.additional_info_due_date').hide();
+        $('.ai_additional_payment_div').hide();
         $('.LU_button').show();
         $('.AL_button').hide();
         $('.decision_info').hide();
@@ -2195,13 +2309,15 @@ function check_information_radio(value)
         $('.reject_remarks_div').hide();
         $('.tat_div').hide();
         $('.reject_button').hide();
+        $('.ai_additional_payment_div').hide();
+        $('.ai_additional_payment_details_div').hide();
         $('input[name="decision"]').prop('checked', false);
     }
     else
     {
 
         $('.additional_info_letter').show();
-        $('.additional_info_due_date').show();
+        $('.ai_additional_payment_div').show();
         $('.additional_payment_info').hide();
         $('.LU_button').hide();
         $('.AL_button').show();
@@ -2215,6 +2331,8 @@ function check_information_radio(value)
         $('.reject_remarks_div').hide();
         $('.tat_div').hide();
         $('.reject_button').hide();
+        $('.ai_additional_payment_div').show();
+        $('.ai_additional_payment_details_div').hide();
         $('input[name="decision"]').prop('checked', false);
     }
 }
@@ -2235,6 +2353,8 @@ function check_eatc_additional_payment(value)
         $('.reject_remarks_div').hide();
         $('.tat_div').hide();
         $('.reject_button').hide();
+        $('.ai_additional_payment_div').hide();
+        $('.ai_additional_payment_details_div').hide();
     }
     else
     {
@@ -2244,10 +2364,24 @@ function check_eatc_additional_payment(value)
         $('.additional_payment_button').hide();
         $('.LU_button').show();
         $('.AL_button').hide();
+        $('.ai_additional_payment_div').hide();
+        $('.ai_additional_payment_details_div').hide();
 
         $('#account_head').val("");
         $('#additional_payment_amount').val("");
 
+    }
+}
+
+function check_ai_additional_payment(value)
+{
+    if(value == 'Yes')
+    {
+        $('.ai_additional_payment_details_div').show();
+    }
+    else
+    {
+        $('.ai_additional_payment_details_div').hide();
     }
 }
 
@@ -2878,6 +3012,21 @@ function check_edit_ec_draft_type(value)
         $('.edit_heading_div').hide();
         $('#edit_ec_heading').val("");
     }
+}
+
+// View Draft EC Function
+function view_draft_ec_details() {
+    let application_no = $('#application_no').val();
+
+    $.ajax({
+        type: "GET",
+        url: "{% url 'view_draft_ec_details' %}",
+        data: { 'application_no': application_no },
+        success: function(data) {
+            $('#application_details').html(data);
+            $('#application_details').show();
+        }
+    });
 }
 
 </script>

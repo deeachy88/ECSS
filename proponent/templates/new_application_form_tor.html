@@ -149,117 +149,88 @@
                                         </div>
                                         <div id="project_descriptionErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Remarks(Any Other Details)</label>
+                                            <textarea class="form-control" id="app_remarks" name="app_remarks" disabled>{{application_details.app_remarks}}</textarea>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="alert custom-bg border-0" role="alert">
                                     <h5 class="mb-0">Project Location</h5>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3 mt-2">
-
-                                            <!-- Thromde -->
-                                            <div class="form-check form-check-inline">
-                                                <input type="radio"
-                                                       name="dzongkhag_throm"
-                                                       class="form-check-input"
-                                                       value="Thromde"
-                                                       {% if dzongkhag_throm == "Thromde" %}checked{% endif %}
-                                                       {% if dzongkhag_throm == "Dzongkhag" %}disabled{% endif %}
-                                                       onchange="check_dzong_throm(this.value)">
-                                                <label class="form-label">Thromde</label>
+                                <!-- Show selected option as text or radio (optional) -->
+                                {% if dzongkhag_throm == "Thromde" %}
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="mb-3 mt-2">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Thromde" checked disabled>
+                                                    <label class="form-label">Thromde</label>
+                                                </div>
                                             </div>
-
-                                            <!-- Dzongkhag -->
-                                            <div class="form-check form-check-inline">
-                                                <input type="radio"
-                                                       name="dzongkhag_throm"
-                                                       class="form-check-input"
-                                                       value="Dzongkhag"
-                                                       {% if dzongkhag_throm == "Dzongkhag" %}checked{% endif %}
-                                                       {% if dzongkhag_throm == "Thromde" %}disabled{% endif %}
-                                                       onchange="check_dzong_throm(this.value)">
-                                                <label class="form-label">Dzongkhag</label>
-                                            </div>
-
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <label class="form-label fw-bold">Thromde</label>
+                                            <select class="form-select" name="thromde_id" id="thromde_id" disabled>
+                                                {% for item in thromde %}
+                                                    {% if thromde_id == item.thromde_id %}
+                                                        <option value="{{ item.thromde_id }}" selected>{{ item.thromde_name }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
                                         </div>
                                     </div>
-                                </div>
 
-                                <!-- Thromde Section -->
-                                <div class="row thromde_section"
-                                     {% if dzongkhag_throm != "Thromde" %}style="display:none;"{% endif %}>
-                                    <div class="col-lg-6">
-                                        <label class="form-label fw-bold">Thromde</label>
-                                        <select class="form-select"
-                                                name="thromde_id"
-                                                id="thromde_id"
-                                                disabled>
-                                            <option value="">--SELECT THROMDE--</option>
-                                            {% for thromde in thromde %}
-                                                <option value="{{ thromde.thromde_id }}"
-                                                    {% if thromde_id == thromde.thromde_id %}selected{% endif %}>
-                                                    {{ thromde.thromde_name }}
-                                                </option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
+                                {% endif %}
 
-                                <!-- Dzongkhag Section -->
-                                <div class="row dzongkhag_section"
-                                     {% if dzongkhag_throm != "Dzongkhag" %}style="display:none;"{% endif %}>
-
-                                    <div class="col-lg-4">
-                                        <label class="form-label fw-bold">Dzongkhag</label>
-                                        <select class="form-select"
-                                                name="dzongkhag"
-                                                id="dzongkhag"
-                                                onchange="getGewog(this.value)"
-                                                disabled>
-                                            <option value="">--SELECT DZONGKHAG--</option>
-                                            {% for dzongkhag in dzongkhag %}
-                                                <option value="{{ dzongkhag.dzongkhag_code }}"
-                                                    {% if dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
-                                                    {{ dzongkhag.dzongkhag_name }}
-                                                </option>
-                                            {% endfor %}
-                                        </select>
+                                {% if dzongkhag_throm == "Dzongkhag" %}
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3 mt-2">
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" name="dzongkhag_throm" class="form-check-input" value="Dzongkhag" checked disabled>
+                                                    <label class="form-label">Dzongkhag</label>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div class="col-lg-4">
-                                        <label class="form-label fw-bold">Gewog</label>
-                                        <select class="form-select"
-                                                name="gewog"
-                                                id="gewog"
-                                                onchange="getVillage(this.value)"
-                                                disabled>
-                                            <option value="">--SELECT GEWOG--</option>
-                                            {% for gewog in gewog %}
-                                                <option value="{{ gewog.gewog_code }}"
-                                                    {% if gewog_code == gewog.gewog_code %}selected{% endif %}>
-                                                    {{ gewog.gewog_name }}
-                                                </option>
-                                            {% endfor %}
-                                        </select>
+                                    <div class="row dzongkhag_section">
+                                        <div class="col-lg-4">
+                                            <label class="form-label fw-bold">Dzongkhag</label>
+                                            <select class="form-select" name="dzongkhag" id="dzongkhag" disabled>
+                                                {% for item in dzongkhag %}
+                                                    {% if dzongkhag_code == item.dzongkhag_code %}
+                                                        <option value="{{ item.dzongkhag_code }}" selected>{{ item.dzongkhag_name }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <label class="form-label fw-bold">Gewog</label>
+                                            <select class="form-select" name="gewog" id="gewog" disabled>
+                                                {% for item in gewog %}
+                                                    {% if gewog_code == item.gewog_code %}
+                                                        <option value="{{ item.gewog_code }}" selected>{{ item.gewog_name }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <label class="form-label fw-bold">Village/Chiwog</label>
+                                            <select class="form-select" name="vil_chiwog" id="vil_chiwog" disabled>
+                                                {% for item in village %}
+                                                    {% if village_code == item.village_code %}
+                                                        <option value="{{ item.village_code }}" selected>{{ item.village_name }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
                                     </div>
+                                {% endif %}
 
-                                    <div class="col-lg-4">
-                                        <label class="form-label fw-bold">Village/Chiwog</label>
-                                        <select class="form-select"
-                                                name="vil_chiwog"
-                                                id="vil_chiwog"
-                                                disabled>
-                                            <option value="">--SELECT VILLAGE--</option>
-                                            {% for village in village %}
-                                                <option value="{{ village.village_code }}"
-                                                    {% if village_code == village.village_code %}selected{% endif %}>
-                                                    {{ village.village_name }}
-                                                </option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
                                 <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
                                     <div class="col-lg-6">
                                         <div class="mb-3">

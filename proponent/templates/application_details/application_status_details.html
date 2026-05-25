@@ -1,0 +1,486 @@
+{% for application_details in application_details %}
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-0 text-right">
+                    <span style="color: #d9534f; font-weight: bold;">
+                        {% if application_details.application_type == 'New' %}New EC
+                        {% elif application_details.application_type == 'AC' %}Area Change
+                        {% elif application_details.application_type == 'CC' %}Capacity Change
+                        {% elif application_details.application_type == 'PC' %}Product Change
+                        {% elif application_details.application_type == 'TC' %}Technology Change
+                        {% elif application_details.application_type == 'LC' %}Location Change
+                        {% else %}Other Modification
+                        {% endif %}:
+                    </span>
+                    Application Number:- {{ application_details.application_no }}
+                </h5>
+
+                {% if application_details.service_id == 1 %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Industry Projects</h4>
+                {% elif application_details.service_id == 2 %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Energy Projects</h4>
+                {% elif application_details.service_id == 3 %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Road Projects</h4>
+                {% elif application_details.service_id == 4 %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Transmission Projects</h4>
+                {% elif application_details.service_id == 5 %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Tourism Projects</h4>
+                {% elif application_details.service_id == 6 %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Ground Water Projects</h4>
+                {% elif application_details.service_id == 7 %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Forest Projects</h4>
+                {% elif application_details.service_id == 8 %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for Quarry Projects</h4>
+                {% elif application_details.service_id == 9 %}
+                    <h4 class="header-title mb-3">Initial Environmental Examination (IEE) Form for General Projects</h4>
+                {% endif %}
+
+                <div id="rootwizard">
+                    <ul class="nav nav-pills nav-justified form-wizard-header mb-3">
+                        <li class="nav-item">
+                            <a href="#first" data-bs-toggle="tab" class="nav-link rounded-0 py-2 active">
+                                <i class="mdi mdi-account-circle font-18 align-middle me-1"></i>
+                                <span class="d-none d-sm-inline">General Information</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#second" data-bs-toggle="tab" class="nav-link rounded-0 py-2">
+                                <i class="mdi mdi-face-man-profile font-18 align-middle me-1"></i>
+                                <span class="d-none d-sm-inline">File Attachment</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content mb-0 b-0">
+                        <!-- FIRST TAB -->
+                        <div class="tab-pane active show" id="first">
+                            <div class="row justify-content-left">
+                                <div class="col-lg-12">
+                                    <label class="form-label fw-bold">Activity</label>
+                                    <p class="distinct-activity">{{application_details.activity}}</p>
+                                </div>
+                            </div>
+
+                            {% if application_details.fmfsr_no %}
+                            <div class="row" style="margin-bottom: -15px;">
+                                <div class="col-lg-4">
+                                    <label class="form-label fw-bold text-primary">
+                                        <i class="fas fa-link me-1"></i> Application integrated with MAS
+                                    </label>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-5">
+                                        <label class="form-label fw-bold text-primary">FMFSR No:</label>
+                                        <input type="text" class="form-control" value="{{ application_details.fmfsr_no }}" readonly disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <div class="row" style="margin-bottom: -15px;">
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Name of the Applicant</label>
+                                        <input type="text" class="form-control" value="{{application_details.applicant_name}}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Address</label>
+                                        <input type="text" class="form-control" value="{{application_details.address}}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Contact No</label>
+                                        <input type="text" class="form-control" value="{{application_details.contact_no}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-bottom: -15px;">
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Email</label>
+                                        <input type="email" class="form-control" value="{{application_details.email}}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Name of the Project</label>
+                                        <input type="text" class="form-control" value="{{application_details.project_name}}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Environmental Focal Person</label>
+                                        <input type="text" class="form-control" value="{{application_details.focal_person}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-bottom: -15px;">
+                                <div class="col-lg-8">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Brief Description of the Project</label>
+                                        <textarea class="form-control" disabled>{{application_details.project_description}}</textarea>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Remarks(Any Other Details)</label>
+                                        <textarea class="form-control" disabled>{{application_details.app_remarks}}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="alert custom-bg border-0" role="alert">
+                                <h5 class="mb-0">Project Location</h5>
+                            </div>
+                            <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Site</label>
+                                        <div class="mt-2">
+                                            {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" checked disabled>
+                                                    <label class="form-check-label">Dzongkhag</label>
+                                                </div>
+                                            {% elif application_details.dzongkhag_throm == 'Thromde' %}
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" checked disabled>
+                                                    <label class="form-check-label">Thromde</label>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% if application_details.dzongkhag_throm == 'Thromde' %}
+                                    <div class="col-lg-4 thromde_div">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Thromde</label>
+                                            <select class="form-select" disabled>
+                                                {% for thromde in thromde %}
+                                                    <option value="{{thromde.thromde_id}}"{% if application_details.thromde_id == thromde.thromde_id %}selected{% endif %}>
+                                                        {{ thromde.thromde_name }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div id="thromdeErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+                                {% if application_details.dzongkhag_throm == 'Dzongkhag' %}
+                                    <div class="col-lg-4 dzongkhag_div">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Dzongkhag</label>
+                                            <select class="form-select" disabled>
+                                                {% for dzongkhag in dzongkhag %}
+                                                    <option value="{{dzongkhag.dzongkhag_code}}"{% if application_details.dzongkhag_code == dzongkhag.dzongkhag_code %}selected{% endif %}>
+                                                        {{ dzongkhag.dzongkhag_name }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Gewog</label>
+                                            <select class="form-select" disabled>
+                                                {% for gewog in gewog %}
+                                                    <option value="{{gewog.gewog_code}}"{% if application_details.gewog_code == gewog.gewog_code %}selected{% endif %}>
+                                                        {{ gewog.gewog_name }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div id="gewogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Village/Chiwog</label>
+                                            <select class="form-select" disabled>
+                                                {% for village in village %}
+                                                    <option value="{{village.village_code}}"{% if application_details.village_code == village.village_code %}selected{% endif %}>
+                                                        {{ village.village_name }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div id="vil_chiwogErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <div class="row" style="margin-bottom: -15px;">
+                                <div class="col-lg-8">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Name of the Particular Project Site</label>
+                                        <input type="text" class="form-control" value="{{application_details.location_name}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SECOND TAB - Attachments with Download Links -->
+                        <div class="tab-pane fade" id="second">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title mb-0">Attachments</h5>
+                                            <div class="pt-3">
+                                                <table class="table dt-responsive nowrap w-100">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">#</th>
+                                                            <th scope="col">File Name</th>
+                                                            <th scope="col">Download</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for file_attach in file_attach %}
+                                                        <tr>
+                                                            <td>{{ forloop.counter }}</td>
+                                                            <td>{{ file_attach.attachment }}</td>
+                                                            <td>
+                                                                <a href="{{ file_attach.file_path }}" class="btn btn-sm btn-primary" target="_blank">
+                                                                    <i class="mdi mdi-download"></i> Download
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                        {% empty %}
+                                                        <tr>
+                                                            <td colspan="3" class="text-center">No Data</td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Taken Section -->
+                <div class="alert alert-primary">Verification Section</div>
+
+                <!-- Payment Information Section -->
+                <div class="row payment_info">
+                    <div class="col-lg-12">
+                        <div class="card border-0 shadow-sm">
+                            <label class="form-label fw-bold mb-3">Payment Information</label>
+                            <div class="card-body p-0">
+                                {% if payment_details %}
+                                    <div class="table-responsive">
+                                        <table class="table table-sm mb-0">
+                                            <thead class="bg-light">
+                                                <tr>
+                                                    <th scope="col" class="text-center border-0 py-2">#</th>
+                                                    <th scope="col" class="border-0 py-2">Type</th>
+                                                    <th scope="col" class="border-0 py-2 text-end">Amount</th>
+                                                    <th scope="col" class="border-0 py-2">Receipt</th>
+                                                    <th scope="col" class="border-0 py-2">Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for payment in payment_details %}
+                                                <tr class="border-bottom">
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td class="py-2">{{ payment.payment_type }}</td>
+                                                    <td class="py-2 text-end fw-bold text-success">
+                                                        Nu. {{ payment.payment_advice_amount_paid|floatformat:2 }}
+                                                    </td>
+                                                    <td class="py-2">
+                                                        <code class="bg-light text-dark px-2 py-1 rounded">{{ payment.receipt_no }}</code>
+                                                    </td>
+                                                    <td class="py-2 text-muted">{{ payment.receipt_date|date:"d/m/Y" }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                {% else %}
+                                    <div class="p-4 text-center text-muted">
+                                        <i class="fas fa-receipt fa-2x mb-2 opacity-50"></i>
+                                        <p class="mb-0">No Payment Details Available</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Information Section -->
+                {% if additional_info %}
+                <div class="row additional_info">
+                    <div class="col-lg-12">
+                        <label class="form-label fw-bold mb-3">Additional Information</label>
+                        {% for info in additional_info %}
+                            <div class="card mb-3 shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0 text-dark">
+                                        <strong>Request #{{ forloop.counter }}</strong>
+                                        {% if info.additional_info_ca_date %}
+                                            <span class="text-muted float-end">Submitted: {{ info.additional_info_ca_date }}</span>
+                                        {% endif %}
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-4">
+                                        <div class="row g-2 mb-2">
+                                            <div class="col-lg-8">
+                                                <label class="form-label small fw-bold">Remarks from Competent Authority</label>
+                                                <textarea class="form-control form-control-sm" rows="2" readonly>{{ info.additional_info_ca }}</textarea>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <label class="form-label small fw-bold">Response Request Date</label>
+                                                <input class="form-control form-control-sm" type="text" value="{{ info.additional_info_ca_date }}" readonly disabled>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <label class="form-label small fw-bold">Due Date</label>
+                                                <input class="form-control form-control-sm" type="text" value="{{ info.additional_info_due_date }}" readonly disabled>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="row g-2">
+                                            <div class="col-lg-8">
+                                                <label class="form-label small fw-bold">Proponent Response</label>
+                                                <textarea class="form-control form-control-sm" rows="2" readonly>{{ info.additional_info_proponent }}</textarea>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <label class="form-label small fw-bold">Response Date</label>
+                                                <input class="form-control form-control-sm" type="text" value="{{ info.additional_info_proponent_date }}" readonly disabled>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Additional Info Attachments -->
+                    {% if ai_attach %}
+                    <div class="col-lg-12 mt-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-0">Additional Information Attachments</h5>
+                                <div class="pt-3">
+                                    <table class="table dt-responsive nowrap w-100">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">File Name</th>
+                                                <th scope="col">Download</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for file_attach in ai_attach %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{ file_attach.attachment }}</td>
+                                                <td>
+                                                    <a href="{{ file_attach.file_path }}" class="btn btn-sm btn-primary" target="_blank">
+                                                        <i class="mdi mdi-download"></i> Download
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="3" class="text-center">No Data</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- Committee & Field Verification Paper Section -->
+                {% if eatc_attach or rev_lu_attach or lu_attach %}
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <table class="table dt-responsive nowrap w-100" style="table-layout: fixed;">
+                                    <thead>
+                                        <tr>
+                                           {% if request.session.login_type == 'I' %}
+                                            <th scope="col" style="width: 33.33%;">Committee & Field Verification Paper</th>
+                                            {% endif %}
+                                            <th scope="col" style="width: 33.33%;">Draft Legal Undertaking</th>
+                                            <th scope="col" style="width: 33.34%;">Legal Undertaking Attached</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            {% if request.session.login_type == 'I' %}
+                                            <td>
+                                                {% for rev_lu_attach in eatc_attach %}
+                                                    <a class="btn btn-primary btn-sm mb-1 d-block" href="{{ rev_lu_attach.file_path }}" target="_blank">{{ rev_lu_attach.attachment }}</a>
+                                                {% endfor %}
+                                            </td>
+                                            {% endif %}
+                                            <td>
+                                                {% for rev_lu_attach in rev_lu_attach %}
+                                                    <a class="btn btn-primary btn-sm mb-1 d-block" href="{{ rev_lu_attach.file_path }}" target="_blank">{{ rev_lu_attach.attachment }}</a>
+                                                {% endfor %}
+                                            </td>
+                                            <td>
+                                                {% for rev_lu_attach in lu_attach %}
+                                                    <a class="btn btn-primary btn-sm mb-1 d-block" href="{{ rev_lu_attach.file_path }}" target="_blank">{{ rev_lu_attach.attachment }}</a>
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Rejection Remarks (if any) -->
+                {% if application_details.reject_remarks %}
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-3">
+                                <label class="form-label fw-bold">Rejection Remarks</label>
+                                <textarea class="form-control" rows="2" readonly>{{ application_details.reject_remarks }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Resubmit Remarks (if any) -->
+                {% if application_details.resubmit_remarks %}
+                <div class="row mt-3">
+                    <div class="col-lg-12">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Report/Clarification</label>
+                            <textarea class="form-control" rows="2" readonly>{{ application_details.resubmit_remarks }}</textarea>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}

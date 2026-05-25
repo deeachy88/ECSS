@@ -69,7 +69,7 @@
                     </div>
 
                     <ul class="list-unstyled topbar-menu float-end mb-0">
-
+                        <!--
                         {% if request.session.login_type == 'C' %}
                             {% if app_hist_count > 0 %}
                             <li class="d-none d-md-inline-block mt-2 dropdown notification-list">
@@ -80,6 +80,7 @@
                             </li>
                             {% endif %}
                         {% endif %}
+                        -->
 
                         <li class="dropdown notification-list">
                             <div class="d-flex align-items-center gap-3">
@@ -654,31 +655,40 @@
                                 </a>
                             </li>
                             <li class="side-nav-item">
-                                <a data-bs-toggle="collapse" href="#sidebarReviewerReports" aria-expanded="false" aria-controls="sidebarReviewerReports" class="side-nav-link">
+                                <a data-bs-toggle="collapse" href="#sidebarVerifierReports" aria-expanded="false" aria-controls="sidebarVerifierReports" class="side-nav-link">
                                     <i class="uil-clipboard-alt"></i>
                                     <span> Report </span>
                                     <span class="menu-arrow"></span>
                                 </a>
-                                <div class="collapse" id="sidebarReviewerReports">
+                                <div class="collapse" id="sidebarVerifierReports">
                                     <ul class="side-nav-second-level">
                                         <li>
                                             <a href="{% url 'ec_report_form' %}">1. List of EC Issued</a>
                                         </li>
-                                        <!--<li>
+                                        <!--
+                                        <li>
                                             <a href="{% url 'ec_reject_report_form' %}">2. List of EC Rejected</a>
                                         </li>-->
                                         <li>
                                             <a href="{% url 'ec_pending_report_form' %}">2. List of Pending Application</a>
                                         </li>
-                                        <!--
-                                        <li>
-                                            <a href="{% url 'land_use_report_form' %}">4. Land Use Report</a>
-                                        </li>-->
+
                                         <li>
                                             <a href="{% url 'revenue_report_form' %}">3. Revenue Report</a>
                                         </li>
+                                        <!--<li>
+                                            <a href="{% url 'land_use_report_form' %}">5. Land Use Report</a>
+                                        </li>
+                                        -->
+
                                     </ul>
                                 </div>
+                            </li>
+                            <li class="side-nav-item">
+                                <a href="{% url 'application_status_list' %}" class="side-nav-link">
+                                    <i class="uil-folder-plus"></i>
+                                    <span> View Application Status </span>
+                                </a>
                             </li>
                         </ul>
                     {% else %}

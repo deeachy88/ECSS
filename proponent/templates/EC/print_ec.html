@@ -2,237 +2,267 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
     <style>
         @page {
             size: A4;
             margin: 18mm;
         }
-
-        * {
-            box-sizing: border-box;
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            color: #000;
+            margin: 0;
+            padding: 0;
+            background: #f5f5f5;
         }
-
+        /* VIEW MODE */
+        .page-wrapper {
+            width: 210mm;
+            margin: 15px auto;
+        }
+        /* PRINT AREA */
         #print {
-            width: 100%;
-            margin: auto;
-            padding: 20px;
-            border: 3px double #000; /* double border */
+            background: #fff;
+            border: 3px double #000;
+            padding: 22px;
             position: relative;
+            min-height: 260mm;
         }
-
-        /* Watermark */
+        /* PRINT BUTTON */
+        .print-btn {
+            width: 210mm;
+            margin: 10px auto;
+            text-align: right;
+        }
+        .print-btn button {
+            padding: 7px 16px;
+            border: 1px solid #000;
+            background: #fff;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        /* WATERMARK */
         .watermark {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            top: 280px;
+            left: 140px;
             opacity: 0.08;
             z-index: 0;
         }
-
         .watermark img {
-            width: 300px;
+            width: 320px;
         }
-
         .content-wrapper {
             position: relative;
             z-index: 1;
         }
-
+        /* HEADER */
         .header img {
             width: 100%;
-            display: block;
         }
-
+        /* TOP INFO */
         .top-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-            margin-top: 5px;
+            margin-top: 8px;
+            margin-bottom: 10px;
         }
-
-        .title {
-            text-align: center;
-            margin-top: 10px;
-            font-size: 22px;
-            font-weight: bold;
-            color: #000000;
-        }
-
-        .subtitle {
-            text-align: center;
-            font-size: 18px;
-            margin-TOP: 10px;
-            margin-bottom: 20px;
-            font-weight: bold;
-            color: #106126;
-        }
-
-        .content p {
-            text-align: justify;
-            font-size: 13.5px;
-            line-height: 1.5;
-            margin: 6px 0;
-        }
-
-        table {
+        .top-info table {
             width: 100%;
             border-collapse: collapse;
+        }
+        .top-info td {
+            font-size: 13px;
+            padding: 0;
+        }
+        .right-align {
+            text-align: right;
+        }
+        /* TITLES */
+        .title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 15px;
+            letter-spacing: 1px;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 17px;
+            font-weight: bold;
+            color: #0b5d1e;
             margin-top: 10px;
-            font-size: 13.5px;
+            margin-bottom: 22px;
         }
-
-        th {
+        /* CONTENT */
+        .content p {
+            text-align: justify;
+            line-height: 1.7;
+            margin: 8px 0;
+        }
+        /* TERMS TABLE */
+        .terms-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        .terms-table th {
             text-align: left;
-            padding: 6px;
+            background: #efefef;
+            border: 1px solid #000;
+            padding: 8px;
+            font-size: 13px;
+        }
+        .terms-table td {
+            border: 1px solid #000;
+            padding: 10px;
+            text-align: justify;
+            line-height: 1.6;
+        }
+        /* DIVIDER */
+        .divider {
             border-bottom: 1px solid #000;
+            margin: 15px 0;
         }
-
-        td {
-            padding: 6px;
-        }
-
-        /* Bottom layout */
+        /* FOOTER SECTION */
         .bottom-section {
-            margin-top: 25px;
             width: 100%;
-            display: table;
+            margin-top: 35px;
         }
-
+        .bottom-section table {
+            width: 100%;
+        }
         .bottom-left {
-            display: table-cell;
             width: 50%;
             vertical-align: bottom;
         }
-
         .bottom-right {
-            display: table-cell;
             width: 50%;
             text-align: right;
             vertical-align: bottom;
-            font-size: 13px;
         }
-
         .seal img {
-            width: 90px;
+            width: 95px;
         }
-
-        /* Signature block */
-        .signature-block {
-            margin-top: 40px;
-            text-align: right;
+        .expiry-text {
             font-size: 13px;
         }
-
-        .signature-line {
-            margin-top: 40px;
-            border-top: 1px solid #000;
-            width: 200px;
-            margin-left: auto;
-        }
-
-        .print-btn {
-            width: 100%;
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 5px;
-        }
-
+        /* PRINT SETTINGS */
         @media print {
+            body {
+                background: #fff;
+            }
             .print-btn {
                 display: none;
             }
-        }
-
-        #print, table, .bottom-section {
-            page-break-inside: avoid;
+            .page-wrapper {
+                width: 100%;
+                margin: 0;
+            }
+            #print {
+                border: 3px double #000;
+                box-shadow: none;
+            }
         }
     </style>
 </head>
-
 <body>
-
 <div class="print-btn">
-    <button onclick="window.print()" style="padding:6px 12px; font-size:13px;">
-        Print
+    <button onclick="window.print()">
+        Print / Save PDF
     </button>
 </div>
-
-<div id="print">
-
-    <!-- Watermark -->
-    <div class="watermark">
-        <img src="{% static 'assets/images/decc_seal.png' %}">
-    </div>
-
-    <div class="content-wrapper">
-
-        <!-- Header -->
-        <div class="header">
-            <img src="{% static 'assets/images/ec_header.png' %}">
+<div class="page-wrapper">
+    <div id="print">
+        <!-- WATERMARK -->
+        <div class="watermark">
+            <img src="{% static 'assets/images/decc_seal.png' %}">
         </div>
-
-        <!-- Ref + Date -->
-        <div class="top-info">
-            {% for application_details in application_details %}
-                <div><strong>Ref No:</strong> {{application_details.ec_reference_no}}</div>
-                <div><strong>Date:</strong> {{application_details.ec_approve_date}}</div>
-            {% endfor %}
-        </div>
-
-        <!-- Title -->
-        <div class="title">ENVIRONMENT CLEARANCE</div>
-        <div class="subtitle" style="text-align: center;">Issued By: {{competent_authority}}</div>
-
-        <!-- Header Content -->
-        <div class="content">
-            {% for ec_details in ec_details %}
-                {% if ec_details.ec_type == 'Header' %}
-                    <p>{{ec_details.ec_terms | safe}}</p>
-                {% endif %}
-            {% endfor %}
-        </div>
-        <div style="border-bottom: 1px solid #000000; width: 100%;"></div>
-
-        <!-- Terms -->
-        <table>
-            {% for ec_details in ec_details %}
-                {% if ec_details.ec_type == 'Terms' %}
-                    <tr>
-                        <th>{{ec_details.ec_heading | safe}}</th>
-                    </tr>
-                    <tr>
-                        <td>{{ec_details.ec_terms | safe}}</td>
-                    </tr>
-                {% endif %}
-            {% endfor %}
-        </table>
-        <div style="border-bottom: 1px solid #000000; width: 100%;"></div>
-        <!-- Footer -->
-        <div class="content">
-            {% for ec_details in ec_details %}
-                {% if ec_details.ec_type == 'Footer' %}
-                    <p>{{ec_details.ec_terms | safe}}</p>
-                {% endif %}
-            {% endfor %}
-        </div>
-
-        <!-- Seal + Expiry -->
-        <div class="bottom-section">
-            <div class="bottom-left seal">
-                <img src="{% static 'assets/images/decc_seal.png' %}">
+        <div class="content-wrapper">
+            <!-- HEADER -->
+            <div class="header">
+                <img src="{% static 'assets/images/ec_header.png' %}">
             </div>
-
-            <div class="bottom-right">
-                {% for application_details in application_details %}
-                    <p><strong>EC Expiry:</strong> {{application_details.ec_expiry_date|date:"d-m-Y"}}</p>
+            <!-- REF INFO -->
+            <div class="top-info">
+                <table>
+                    <tr>
+                        {% for application_details in application_details %}
+                            <td>
+                                <strong>Ref No:</strong>
+                                {{application_details.ec_reference_no}}
+                            </td>
+                            <td class="right-align">
+                                <strong>Date:</strong>
+                                {{application_details.ec_approve_date}}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                </table>
+            </div>
+            <!-- TITLE -->
+            <div class="title">
+                ENVIRONMENT CLEARANCE
+            </div>
+            <div class="subtitle">
+                Issued By: {{competent_authority}}
+            </div>
+            <!-- HEADER CONTENT -->
+            <div class="content">
+                {% for ec_details in ec_details %}
+                    {% if ec_details.ec_type == 'Header' %}
+                        <p>{{ec_details.ec_terms | safe}}</p>
+                    {% endif %}
                 {% endfor %}
             </div>
+            <div class="divider"></div>
+
+            <!-- TERMS -->
+            <div class="terms-section">
+                {% for ec_details in ec_details %}
+                    {% if ec_details.ec_type == 'Terms' %}
+                    <div class="term-block">
+                        <div class="term-heading">
+                        {{ec_details.ec_heading | safe}}
+                        </div>
+                        <div class="term-content">
+                        {{ec_details.ec_terms | safe}}
+                        </div>
+                        <div class="divider"></div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <!-- FOOTER -->
+            <div class="content">
+                {% for ec_details in ec_details %}
+                    {% if ec_details.ec_type == 'Footer' %}
+                        <p>{{ec_details.ec_terms | safe}}</p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <!-- BOTTOM -->
+            <div class="bottom-section">
+                <table>
+                    <tr>
+                        <td class="bottom-left seal">
+                            <img src="{% static 'assets/images/decc_seal.png' %}">
+                        </td>
+                        <td class="bottom-right">
+                            {% for application_details in application_details %}
+                                <div class="expiry-text">
+                                    <strong>
+                                        EC Expiry:
+                                    </strong>
+                                    {{application_details.ec_expiry_date|date:"d-m-Y"}}
+                                </div>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
-
     </div>
-
 </div>
-
 </body>
 </html>

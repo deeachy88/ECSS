@@ -16,11 +16,6 @@
                             <th scope="col">Project_Name</th>
                             <th scope="col">Activity</th>
                             <th scope="col">Expiry_Date</th>
-                            <!--
-                            <th scope="col">Service Name</th>
-
-                            <th scope="col">Application Date</th>
-                            -->
                             <th></th>
                         </tr>
                     </thead>
@@ -32,24 +27,25 @@
                                 <td>{{application_details.project_name}}</td>
                                 <td>{{application_details.activity}}</td>
                                 <td>{{application_details.ec_expiry_date|date:"d-m-Y"}}</td>
+                                <td class="d-flex gap-1">
+                                    <!-- ✅ Download Button -->
+                                    <button
+                                        type="button"
+                                        class="btn btn-sm btn-outline-success px-1 py-0"
+                                        onclick="download_ec_details('{{application_details.ec_reference_no}}', '{{application_details.ca_authority}}')"
+                                        title="Download">
+                                        <i class="uil uil-download-alt font-16"></i>
+                                    </button>
 
-                                <!--
-                                {% for service_details in service_details %}
-                                    {% if application_details.service_id == service_details.service_id %}
-                                        <td>{{service_details.service_name}}</td>
-                                    {% endif %}
-                                {% endfor %}
-
-                                <td>{{application_details.ec_application_date|date:"d-m-Y"}}</td>-->
-                                <td><button type="button" class="btn btn-sm btn-outline-primary px-1 py-0" onclick="view_print_details('{{application_details.ec_reference_no}}', '{{application_details.ca_authority}}')"> <i class="uil uil-file-copy-alt font-16"></i> </button></td>
-                                <!--{% for payment_details in payment_details %}
-                                    {% if application_details.application_no == payment_details.ref_no %}
-                                        {% if payment_details.receipt_date %}
-                                            <td><button type="button" class="btn btn-sm btn-outline-primary px-1 py-0" onclick="view_print_details('{{application_details.ec_reference_no}}')"> <i class="uil uil-file-copy-alt font-16"></i> </button></td>
-                                        {% endif %}
-                                    {% endif %}
-                                {% endfor %}
-                                -->
+                                    <!-- ✅ Print Button -->
+                                    <button
+                                        type="button"
+                                        class="btn btn-sm btn-outline-primary px-1 py-0"
+                                        onclick="view_print_details('{{application_details.ec_reference_no}}', '{{application_details.ca_authority}}')"
+                                        title="Print">
+                                        <i class="uil uil-file-copy-alt font-16"></i>
+                                    </button>
+                                </td>
                             </tr>
                             {% empty %}
                             <tr>
@@ -62,20 +58,27 @@
         </div>
     </div>
 </div>
+
 <script>
-    function view_print_details(ec_reference_no, ca_authority)
-    {
+    // ✅ Print / View Function
+    function view_print_details(ec_reference_no, ca_authority) {
         $.ajax({
-            type : "GET",
-            url : "{% url 'view_print_details' %}",
-            data :{'ec_reference_no':ec_reference_no, 'ca_authority':ca_authority},
-            success : function(data)
-            {
+            type: "GET",
+            url: "{% url 'view_print_details' %}",
+            data: { 'ec_reference_no': ec_reference_no, 'ca_authority': ca_authority },
+            success: function(data) {
                 $('#application_details').html(data);
                 $('#application_details').show();
             }
         });
     }
-</script>
-{% endblock %}       
 
+    // ✅ Download Function
+    function download_ec_details(ec_reference_no, ca_authority) {
+        const url = "{% url 'download_ec_details' %}"
+                    + "?ec_reference_no=" + encodeURIComponent(ec_reference_no)
+                    + "&ca_authority=" + encodeURIComponent(ca_authority);
+        window.location.href = url;
+    }
+</script>
+{% endblock %}

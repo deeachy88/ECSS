@@ -18,6 +18,7 @@ urlpatterns = [
     # DRAFT DETAILS
     path('draft_application_list', views.draft_application_list, name='draft_application_list'),
     path('view_draft_application_details', views.view_draft_application_details, name='view_draft_application_details'),
+    path('delete-draft-application/', views.delete_draft_application, name='delete_draft_application'),
 
     # LIST OLD EC FOR APPROVAL/REJECT BY VERIFIER
     path('old_ec_application_list', views.old_ec_application_list, name='old_ec_application_list'),
@@ -94,6 +95,8 @@ urlpatterns = [
     path('ec_print_list', views.ec_print_list, name='ec_print_list'),
     path('view_print_details', views.view_print_details, name='view_print_details'),
     path('public/ec/<str:ec_reference_no>/', views.view_ec, name='view_ec'),
+    path('download-ec-details/', views.download_ec_details, name='download_ec_details'),
+    path('view_draft_ec_details', views.view_draft_ec_details, name='view_draft_ec_details'),
 
     #NDI
     path('proof_request/', views.proof_request, name='proof_request'),
