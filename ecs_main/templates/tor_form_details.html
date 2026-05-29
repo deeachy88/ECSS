@@ -173,6 +173,14 @@
                                 <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
                             </div>
                         </div>
+                        <div class="row" style="margin-bottom: -15px;">
+                            <div class="col-lg-8">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">If the project is located within more than one Dzongkhag, please specify the Dzongkhags.</label>
+                                    <input type="text" class="form-control" value="{{application_details.cross_dzongkhag_locations}}" disabled>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-body">
@@ -224,7 +232,7 @@
                             <!-- Payment Section           -->
                             <!-- ========================= -->
                             <div class="row" id="verifierPaymentDiv" style="display: none;">
-                                <div class="col-lg-6">
+                                <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Application Fees</label>
                                         <input
@@ -237,6 +245,13 @@
                                     </div>
                                     <!-- Amount Validation Error -->
                                     <div id="amount_ErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                                <div class="col-lg-8">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Remarks</label>
+                                        <input type="text" class="form-control" id="remarks" name="remarks">
+                                    </div>
+                                    <div id="payment_remarksErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                 </div>
                             </div>
 
@@ -405,7 +420,7 @@
                                 </div>
                                 <div class="col-lg-12 tor_verifier_reject_reason_div"  style="display: none;">
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold">Reject Reason</label>
+                                        <label class="form-label fw-bold">Reason for Rejection is Mandatory if ToR is Rejected</label>
                                         <textarea class="form-control" name="reject_reason" id="reject_reason" rows="2" ></textarea>
                                     </div>
                                 </div>
@@ -860,6 +875,7 @@
     function forwardApplication(identifier) {
         let application_no = $('#application_no').val();
         let amount = $('#amount').val();
+        let remarks = $('#remarks').val();
         let record_id = $('#record_id').val();
         // ONLY validation needed: Check amount
         if (amount === "") {
@@ -886,6 +902,7 @@
             'application_no': application_no,
             'identifier': identifier,
             'amount': amount,
+            'remarks': remarks,
             'record_id': record_id,
             csrfmiddlewaretoken: '{{ csrf_token }}'
         };

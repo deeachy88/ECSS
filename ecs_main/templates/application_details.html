@@ -229,6 +229,14 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row" style="margin-bottom: -15px;">
+                                    <div class="col-lg-8">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">If the project is located within more than one Dzongkhag, please specify the Dzongkhags.</label>
+                                            <input type="text" class="form-control" value="{{application_details.cross_dzongkhag_locations}}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- SECOND TAB -->
@@ -2004,7 +2012,7 @@ function forwardApplication(identifier) {
     let reject_remarks = $('#reject_remarks').val();
     let reject_reason = $('#reject_reason').val();
     let applicant_id = $('#email').val();
-    alert(ai_additional_payment);
+
     const isInformationChecked = $('input[name="information"]:checked').length > 0;
     const isAddPaymentChecked = $('input[name="additional_payment"]:checked').length > 0;
     const isAIAddPaymentChecked = $('input[name="ai_additional_payment"]:checked').length > 0;

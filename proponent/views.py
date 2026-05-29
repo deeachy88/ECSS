@@ -350,6 +350,7 @@ def save_general_details(request):
             'village_code': village_code,
             'thromde_id': thromde_id,
             'location_name': request.POST.get('project_site'),
+            'cross_dzongkhag_locations': request.POST.get('cross_dzongkhag_locations'),
             'project_name': request.POST.get('project_name'),
             'project_description': request.POST.get('project_description'),
             'dzongkhag_throm': dzongkhag_throm,
@@ -669,6 +670,7 @@ def save_new_general_details(request):
             'village_code': village_code,
             'thromde_id': thromde_id,
             'location_name': post_data.get('project_site'),
+            'cross_dzongkhag_locations': post_data.get('cross_dzongkhag_locations'),
             'project_name': post_data.get('project_name'),
             'project_description': post_data.get('project_description'),
             'dzongkhag_throm': dzongkhag_throm,
@@ -863,6 +865,7 @@ def save_other_modification_general_details(request):
             'prev_ec_reference_no': previous_ec_reference_no,
             'ca_authority': ca_auth_id,
             'app_remarks': post_data.get('app_remarks'),
+            'cross_dzongkhag_locations': post_data.get('cross_dzongkhag_locations'),
         }
 
         with transaction.atomic():
@@ -988,8 +991,10 @@ def save_draft_general_details(request):
             'village_code': village_code,
             'thromde_id': thromde_id,
             'location_name': post_data.get('project_site'),
+            'cross_dzongkhag_locations': post_data.get('cross_dzongkhag_locations'),
             'project_name': post_data.get('project_name'),
             'project_description': post_data.get('project_description'),
+            'app_remarks': post_data.get('app_remarks'),
             'dzongkhag_throm': dzongkhag_throm,
             'ca_authority': ca_auth_id
         }
@@ -2614,7 +2619,7 @@ def ec_renewal_details(request):
     # Fetch ALL EC terms for display (no DB writes here)
     ec_terms = t_ec_t2.objects.filter(
         ec_reference_no=ec_reference_no, ec_type='Terms'
-    ).order_by('record_id')  # adjust ordering if needed (e.g., seq_no)
+    ).order_by('order')  # adjust ordering if needed (e.g., seq_no)
 
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
@@ -2959,7 +2964,8 @@ def submit_oc_application(request):
                 buyer_proponent_type=applicant_details.proponent_type,
                 buyer_project_name=application_details.project_name,
                 buyer_focal_person=applicant_focal_person,
-                app_remarks=app_remarks
+                app_remarks=app_remarks,
+                cross_dzongkhag_locations=application_details.cross_dzongkhag_locations,
             )
 
             # B) Create workflow record
@@ -3307,6 +3313,7 @@ def submit_nc_application(request):
                 gewog_code=application_details.gewog_code,
                 village_code=application_details.village_code,
                 location_name=application_details.location_name,
+                cross_dzongkhag_locations=application_details.cross_dzongkhag_locations,
                 application_source=application_details.application_source,
                 dzongkhag_throm=application_details.dzongkhag_throm,
                 activity=application_details.activity,
@@ -3706,6 +3713,7 @@ def save_tor_form(request):
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
         proponent_type = request.session['proponent_type']
         project_site = request.POST.get('project_site')
+        cross_dzongkhag_locations = request.POST.get('cross_dzongkhag_locations')
         mas_integration = request.POST.get('mas_integration')
         print(mas_integration)
 
@@ -3781,6 +3789,7 @@ def save_tor_form(request):
             gewog_code=gewog_code,
             village_code=village_code,
             location_name=project_site,
+            cross_dzongkhag_locations=cross_dzongkhag_locations,
             activity=activity,
             applicant_id=request.session['email'],
             ca_authority=ca_auth_id,
@@ -5714,6 +5723,7 @@ def save_old_ec_general_details(request):
             'village_code': village_code,
             'thromde_id': thromde_id,
             'location_name': request.POST.get('project_site'),
+            'cross_dzongkhag_locations': request.POST.get('cross_dzongkhag_locations'),
             'project_name': request.POST.get('project_name'),
             'project_description': request.POST.get('project_description'),
             'dzongkhag_throm': dzongkhag_throm,

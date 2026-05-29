@@ -187,6 +187,15 @@
                             <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
                         </div>
                     </div>
+                    <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+                        <div class="col-lg-8">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-primary">If the project is located within more than one Dzongkhag, please specify the Dzongkhags</label>
+                                <input type="text" name="cross_dzongkhag_locations" class="form-control" id="cross_dzongkhag_locations">
+                            </div>
+                            <div id="cross_dzongkhag_locationsErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                        </div>
+                    </div>
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body">
@@ -325,6 +334,7 @@
         let project_description = $('#project_description').val();
         let focal_person = $('#focal_person').val();
         let project_site = $('#project_site').val();
+        let cross_dzongkhag_locations = $('#cross_dzongkhag_locations').val();
         let app_remarks = $('#app_remarks').val();
         let site = $("input[name='dzongkhag_throm']:checked").length;
         let site_value = $("input[name='dzongkhag_throm']:checked").val();

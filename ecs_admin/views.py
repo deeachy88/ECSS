@@ -411,7 +411,8 @@ def dashboard(request):
                     reviewer_applications[status_group] = []
                 reviewer_applications[status_group].append(application)
 
-        elif role == 'Admin':
+
+        elif role in ['Admin', 'NECS Head']:
             client_application_count = t_user_master.objects.filter(
                 accept_reject__isnull=True,
                 login_type='C'

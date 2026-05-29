@@ -285,12 +285,21 @@
                                     </div>
                                 {% endif %}
                                 <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-8">
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Name of the Particular Project Site</label>
                                             <input type="text" name="project_site" class="form-control" id="project_site">
                                         </div>
                                         <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+                                    <div class="col-lg-8">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold text-primary">If the project is located within more than one Dzongkhag, please specify the Dzongkhags</label>
+                                            <input type="text" name="cross_dzongkhag_locations" class="form-control" id="cross_dzongkhag_locations">
+                                        </div>
+                                        <div id="cross_dzongkhag_locationsErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
                                 </div>
                             </form>
@@ -461,6 +470,7 @@
         let gewog_code = $('#gewog').val();
         let village_code = $('#vil_chiwog').val();
         let project_site = $('#project_site').val();
+        let cross_dzongkhag_locations = $('#cross_dzongkhag_locations').val();
         let project_description = $('#project_description').val();
         let app_remarks = $('#app_remarks').val();
 

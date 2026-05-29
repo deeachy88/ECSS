@@ -1187,7 +1187,7 @@ def view_application_details(request):
             renewal_details_two = t_ec_compliance.objects.filter(application_no=application_no)
             file_attach = t_file_attachment.objects.filter(application_no=application_no,attachment_type='GEN')
             ec_details = t_ec_application_t2.objects.filter(application_no=application_no).order_by(
-                'order','ec_type')
+                'ec_type','order')
             reviewer_list = t_user_master.objects.filter(
                 role_id__in=['3', '5'],
                 agency_code=ca_auth
@@ -1316,6 +1316,7 @@ def view_application_details(request):
                           {'reviewer_list': reviewer_list, 'assigned_role_name': assigned_role_name, 'status': status,
                            'ai_attach': ai_attach, 'application_details': application_details,
                            'application_no': application_no, 'dzongkhag': dzongkhag, 'gewog': gewog,
+                           'thromde':thromde, 'file_attach': file_attach,
                            'pay_details': pay_details, 'village': village, 'file_attach': file_attach,
                            'app_hist_count': app_hist_count, 'cl_application_count': cl_application_count,
                            'ec_details': ec_details, 'eatc_attach': eatc_attach, 'reject_attach': reject_attach,
@@ -3901,6 +3902,7 @@ def add_inspection(request):
     fines_penalties = request.POST.get('fines_penalties')
     inspection_status = request.POST.get('inspection_status')
     applicant_id = request.POST.get('applicant_id')
+    ca_authority = request.session.get('ca_authority')
     
     t_inspection_monitoring_t1.objects.create(inspection_type=inspection_type, inspection_date=inspection_date,
                                               inspection_reference_no=reference_no, inspection_reason=inspection_reason,
@@ -3909,7 +3911,7 @@ def add_inspection(request):
                                               team_leader=team_leader, team_members=team_members, remarks=remarks,
                                               fines_penalties=fines_penalties, status=inspection_status,
                                               login_id=applicant_id,
-                                              updated_by_ca=request.session['login_id'], record_status='Active')
+                                              updated_by_ca=ca_authority, record_status='Active')
     data['ref_no'] = reference_no
     return JsonResponse(data)
 

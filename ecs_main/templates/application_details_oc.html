@@ -217,6 +217,14 @@
                                         <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
                                 </div>
+                                <div class="row" style="margin-bottom: -15px;">
+                                    <div class="col-lg-8">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">If the project is located within more than one Dzongkhag, please specify the Dzongkhags.</label>
+                                            <input type="text" class="form-control" value="{{application_details.cross_dzongkhag_locations}}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="tab-pane fade" id="second">
                                 <div class="col-md-12">
@@ -970,12 +978,19 @@
                         <form method="post" id="verifier_form">
                             {% csrf_token %}
                             <div class="row verifierDiv" style="display: none;">
-                                <div class="col-lg-6">
+                                <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Application Fees</label>
                                         <input type="number" class="form-control" id="amount" name="amount">
                                     </div>
                                     <div id="amount_ErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                </div>
+                                <div class="col-lg-8">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Remarks</label>
+                                        <input type="text" class="form-control" id="remarks" name="remarks">
+                                    </div>
+                                    <div id="payment_remarksErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                 </div>
                             </div>
                             <div class="row forwardTo" style="display: none;">
@@ -1916,6 +1931,7 @@ function forwardApplication(identifier) {
     let tat = $('#tat').val();
     let forward_to = $('#forward_to').val();
     let amount = $('#amount').val();
+    let amount = $('#remarks').val();
     let record_id = $('#record_id').val();
     let reject_remarks = $('#reject_remarks').val();
     let reject_reason = $('#reject_reason').val();
@@ -2118,6 +2134,7 @@ function forwardApplication(identifier) {
             'additional_payment_amount': additional_payment_amount,
             'account_head':account_head,
             'amount':amount,
+            'remarks':amount,
             'reject_remarks': reject_remarks,
             'reject_reason': reject_reason,
             'tat_v': tat_v,

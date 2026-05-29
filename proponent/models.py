@@ -67,6 +67,7 @@ class t_ec_application_t1(models.Model):
     fmfsr_no = models.CharField(max_length=100, default=None, blank=True, null=True)
     mas_integration = models.CharField(max_length=3, default=None, blank=True, null=True)
     app_remarks = models.TextField(default=None, blank=True, null=True)
+    cross_dzongkhag_locations = models.TextField(default=None, blank=True, null=True)
     
 class t_ec_application_t2(models.Model):
     record_id = models.AutoField(primary_key=True)
@@ -157,6 +158,8 @@ class t_ec_t1(models.Model):
     r_updated_date = models.DateField(default=None, blank=True, null=True)
     fmfsr_no = models.CharField(max_length=100, default=None, blank=True, null=True)
     mas_integration = models.CharField(max_length=3, default=None, blank=True, null=True)
+    app_remarks = models.TextField(default=None, blank=True, null=True)
+    cross_dzongkhag_locations = models.TextField(default=None, blank=True, null=True)
 
 class t_ec_t2(models.Model):
     record_id = models.AutoField(primary_key=True)
@@ -205,6 +208,7 @@ class t_ec_t1_history(models.Model):
     fmfsr_no = models.CharField(max_length=100, default=None, blank=True, null=True)
     mas_integration = models.CharField(max_length=3, default=None, blank=True, null=True)
     app_remarks = models.TextField(default=None, blank=True, null=True)
+    cross_dzongkhag_locations = models.TextField(default=None, blank=True, null=True)
 
 class t_ec_t2_history(models.Model):
     record_id = models.AutoField(primary_key=True)

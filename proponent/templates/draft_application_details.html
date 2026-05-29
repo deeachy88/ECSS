@@ -142,6 +142,12 @@
                                         </div>
                                         <div id="project_descriptionErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Remarks (Any Other Details)</label>
+                                            <textarea class="form-control" name="app_remarks" id="app_remarks" rows="3">{{application_details.app_remarks}}</textarea>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="alert custom-bg border-0" role="alert">
                                     <h5 class="mb-0">Project Location</h5>
@@ -278,12 +284,21 @@
                                     </div>
                                 </div>
                                 <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-8">
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Name of the Particular Project Site</label>
                                             <input type="text" name="project_site" class="form-control" id="project_site" value="{{application_details.location_name}}">
                                         </div>
                                         <div id="project_siteErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom: -15px;"> <!-- Adjust the value as needed -->
+                                    <div class="col-lg-8">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Name of the Particular Project Site</label>
+                                            <input type="text" name="cross_dzongkhag_locations" class="form-control" id="cross_dzongkhag_locations" value="{{application_details.cross_dzongkhag_locations}}">
+                                        </div>
+                                        <div id="cross_dzongkhag_locationsErrorMsg" class="alert alert-danger" style="display: none;"></div>
                                     </div>
                                 </div>
                             </form>
@@ -456,7 +471,9 @@
         let gewog_code = $('#gewog').val();
         let village_code = $('#vil_chiwog').val();
         let project_site = $('#project_site').val();
+        let cross_dzongkhag_locations = $('#cross_dzongkhag_locations').val();
         let project_description = $('#project_description').val();
+        let app_remarks = $('#app_remarks').val();
         if (project_name === "") {
             showErrorAndFocus('#project_nameErrorMsg', 'Enter Name of Project', '#project_name');
             return false;
