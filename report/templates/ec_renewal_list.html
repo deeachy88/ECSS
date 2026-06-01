@@ -1,511 +1,154 @@
-{% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% load static %}
-
 {% block content %}
+
+<style>
+/* Print-friendly styles */
+@media print {
+    .no-print, .no-print * { display: none !important; }
+    body {
+        font-size: 10px;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        margin: 0.5in;
+    }
+    .card, .card-header, .card-body {
+        border: none !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        font-size: 9px !important;
+    }
+    thead { display: table-header-group; }
+    tfoot { display: table-footer-group; }
+    .table th, .table td {
+        padding: 3px !important;
+        word-wrap: break-word;
+        overflow: hidden;
+    }
+    /* Column width optimization for print */
+    .table th:nth-child(1), .table td:nth-child(1) { width: 5%; } /* # */
+    .table th:nth-child(2), .table td:nth-child(2) { width: 15%; } /* Proponent */
+    .table th:nth-child(3), .table td:nth-child(3) { width: 20%; } /* Project Name */
+    .table th:nth-child(4), .table td:nth-child(4) { width: 15%; } /* Activity */
+    .table th:nth-child(5), .table td:nth-child(5) { width: 10%; } /* Contact */
+    .table th:nth-child(6), .table td:nth-child(6) { width: 15%; } /* Email */
+    .table th:nth-child(7), .table td:nth-child(7) { width: 12%; } /* Address */
+    .table th:nth-child(8), .table td:nth-child(8) { width: 8%; } /* Application Date */
+
+    /* Force page orientation to landscape for better fit */
+    @page {
+        size: A4 landscape;
+        margin: 0.5in;
+    }
+
+    /* Break long text */
+    .table td {
+        word-break: break-word;
+        hyphens: auto;
+    }
+}
+
+/* Screen styles */
+.card-header .btn { white-space: nowrap; }
+
+/* Responsive table improvements */
+@media screen and (max-width: 768px) {
+    .table-responsive {
+        font-size: 12px;
+    }
+}
+</style>
+
+
 <div id="ECDetails">
-    <div class="animated fadeIn">
+   <div class="animated fadeIn">
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-1">Environment Clearance Services</h5>
+                            <small class="text-muted">List of Environmental Clearance Renewed</small>
+                        </div>
+
+                        <button type="button" class="btn btn-outline-secondary btn-sm no-print" onclick="window.print()">
+                        Print
+                        </button>
+                    </div>
                     <div class="card-body">
-
-                        <!-- Header Row -->
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="card-title mb-0">
-                                🔔 EC Renewals Due Within 60 Days
-                            </h5>
-                            <span class="badge badge-warning text-dark px-3 py-2" style="font-size:0.85rem;">
-                                Total: {{ ec_list|length }} Record(s)
-                            </span>
-                        </div>
-
-                        <!-- Alert Messages -->
-                        <div class="alert alert-success d-flex align-items-center" id="successMsg" style="display:none !important;" role="alert">
-                            <i class="mdi mdi-check-circle me-2 mr-1"></i>
-                            <span id="successMsgText"></span>
-                        </div>
-                        <div class="alert alert-danger d-flex align-items-center" id="errorMsg" style="display:none !important;" role="alert">
-                            <i class="mdi mdi-alert-circle me-2 mr-1"></i>
-                            <span id="errorMsgText"></span>
-                        </div>
-
-                        <!-- Action Bar -->
-                        <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
-                            <div class="d-flex align-items-center gap-2">
-                                <div class="form-check mb-0 mr-3">
-                                    <input class="form-check-input" type="checkbox" id="selectAll">
-                                    <label class="form-check-label font-weight-bold" for="selectAll">
-                                        Select All
-                                    </label>
-                                </div>
-                                <span class="text-muted small" id="selectedCountLabel">0 selected</span>
-                            </div>
-
-                        </div>
-
-                        <!-- Table -->
                         <div class="table-responsive">
-                            <table id="basic-datatable" class="table dt-responsive table-sm table-centered table-hover mb-0">
-                                <thead class="thead-light">
+                            <table id="basic-datatable" class="table dt-responsive table-sm table-centered mb-0 table-bordered">
+                                <thead>
                                     <tr>
-                                        <th style="width:40px;"></th>
-                                        <th>#</th>
-                                        <th>EC Number</th>
-                                        <th>Approve Date</th>
-                                        <th>Expiry Date</th>
-                                        <th>Project Name</th>
-                                        <th>Address</th>
-                                        <th>Email</th>
-                                        <th class="text-center">Notices Sent</th>
-                                        <th class="text-center">Last Sent</th>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Proponent</th>
+                                        <th scope="col">Project Name</th>
+                                        <th scope="col">Activity</th>
+                                        <th scope="col">Project Type</th>
+                                        <th scope="col">Project Location</th>
+                                        <th scope="col">Contact No.</th>
+                                        <th scope="col">Email Id</th>
+                                        <th scope="col">EC Number</th>
+                                        <th scope="col">Approve Date</th>
+                                        <th scope="col">Expiry Date</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for ec in ec_list %}
-                                    <tr class="ec-row" data-ec-ref="{{ ec.ec_reference_no }}">
-                                        <!-- Checkbox -->
-                                        <td class="text-center">
-                                            <input type="checkbox"
-                                                   class="ec-checkbox form-check-input row-checkbox"
-                                                   value="{{ ec.ec_reference_no }}">
-                                        </td>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td><span class="bold-green font-weight-bold">{{ ec.ec_reference_no }}</span></td>
-                                        <td>{{ ec.ec_approve_date }}</td>
-
-                                        <!-- Expiry Date with urgency highlight -->
-                                        <td>
-                                            {{ ec.ec_expiry_date }}
-                                        </td>
-                                        <td>{{ ec.project_name }}</td>
-                                        <td>{{ ec.address }}</td>
-                                        <td>{{ ec.applicant_id }}</td>
-                                        <!-- Notice Count Badge — Clickable if logs exist -->
-                                        <td class="text-center">
-                                            <!-- Clickable notification count as badge -->
-                                            <a href="javascript:void(0);"
-                                               class="notification-link badge rounded-pill text-decoration-none
-                                                      {% if ec.notification_count == 0 %}bg-secondary
-                                                      {% elif ec.notification_count <= 2 %}bg-warning text-dark
-                                                      {% else %}bg-success{% endif %}"
-                                               data-ref="{{ ec.ec_reference_no }}">
-                                                {{ ec.notification_count }}
-                                            </a>
-                                        </td>
-                                        <td>{{ ec.last_sent_at|default:"No notifications sent" }}</td>
-                                    </tr>
+                                    {% for ec_list in ec_list %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ ec_list.applicant_name }}</td>
+                                            <td>{{ ec_list.project_name }}</td>
+                                            <td>{{ ec_list.activity }}</td>
+                                            {% for service_details in service_details %}
+                                                {% if ec_list.service_id == service_details.service_id %}
+                                                    <td>{{service_details.service_name}}</td>
+                                                {% endif %}
+                                            {% endfor %}
+                                            {% if ec_list.dzongkhag_throm == 'Thromde' %}
+                                                {% for thromde_list in thromde_list %}
+                                                    {% if ec_list.thromde_id == thromde_list.thromde_id %}
+                                                        <td>{{thromde_list.thromde_name}}</td>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% elif ec_list.dzongkhag_throm == 'Dzongkhag' %}
+                                                {% for dzongkhag_list in dzongkhag_list %}
+                                                    {% if ec_list.dzongkhag_code == dzongkhag_list.dzongkhag_code %}
+                                                        <td>{{dzongkhag_list.dzongkhag_name}}</td>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                            <td>{{ ec_list.contact_no }}</td>
+                                            <td>{{ ec_list.email }}</td>
+                                            <td>{{ ec_list.ec_reference_no }}</td>
+                                            <td>{{ ec_list.ec_approve_date }}</td>
+                                            <td>{{ ec_list.ec_approve_date }}</td>
+                                        </tr>
                                     {% empty %}
-                                    <tr>
-                                        <td colspan="11" class="text-center text-muted py-4">
-                                            <i class="mdi mdi-check-all mdi-48px d-block mb-2"></i>
-                                            No EC renewals due within 30 days.
-                                        </td>
-                                    </tr>
+                                        <tr>
+                                            <td colspan="9" class="text-center">No Data</td>
+                                        </tr>
                                     {% endfor %}
                                 </tbody>
+                                <!-- Optional: Footer for totals or notes (prints at bottom of each page if needed) -->
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="8" class="text-right"></th>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
-                        <!-- Action Bar -->
-                        <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
-                            <div>
-                                <button type="button"
-                                        class="btn btn-primary btn-sm"
-                                        id="sendNotificationBtn"
-                                        onclick="send_notification()"
-                                        disabled>
-                                    <i class="mdi mdi-send mr-1"></i> Send Notification
-                                </button>
-                            </div>
-                        </div>
-                        <!-- End Table -->
 
-                    </div><!-- /card-body -->
-
-                    <!-- Loader -->
-                    <div id="pageloader"
-                         style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-                                background:rgba(255,255,255,0.75); z-index:9999;
-                                display:none; align-items:center; justify-content:center;"
-                         id="pageloader">
-                        <div class="text-center">
-                            <div class="spinner-border text-primary" role="status" style="width:3rem; height:3rem;"></div>
-                            <div class="mt-2 font-weight-bold text-primary">Sending notifications...</div>
-                        </div>
-                    </div>
-
-                </div><!-- /card -->
+                    </div> <!-- card-body -->
+                </div> <!-- card -->
             </div>
         </div>
     </div>
 </div>
-
-<!-- Confirmation Modal -->
-<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true"
-     data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg overflow-hidden" style="border-radius: 12px;">
-
-            <!-- Header -->
-            <div class="modal-header border-0 px-4 pt-4 pb-2"
-                 style="background: linear-gradient(135deg, #1a73e8, #0d47a1);">
-                <div class="d-flex align-items-center">
-                    <div class="mr-3"
-                         style="background: rgba(255,255,255,0.2); border-radius: 50%;
-                                width: 20px; height: 20px;
-                                display: flex; align-items: center; justify-content: center;">
-                        <i class="mdi mdi-bell-ring text-white" style="font-size: 20px;"></i>
-                    </div>
-                    <div>
-                        <h5 class="modal-title text-white font-weight-bold mb-0" id="confirmModalLabel">
-                            Send Notifications
-                        </h5>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Body -->
-            <div class="modal-body px-4 py-4 text-center">
-                <i class="mdi mdi-email-send-outline"
-                   style="font-size: 30px; color: #1a73e8; opacity: 0.75;"></i>
-                <h5 class="font-weight-bold text-dark mt-3 mb-2">Are you sure?</h5>
-                <div class="text-muted" id="confirmModalBody" style="font-size: .92rem;">
-                    You are about to send renewal notifications to the selected applicants.
-                </div>
-            </div>
-
-            <!-- Footer -->
-            <div class="modal-footer border-0 px-4 pb-4 pt-0 justify-content-center"
-                 style="gap: 12px;">
-
-                <!-- ✅ Bootstrap 5 uses data-bs-dismiss instead of data-dismiss -->
-                <button type="button"
-                        id="cancelModalBtn"
-                        class="btn btn-outline-secondary px-4"
-                        data-bs-dismiss="modal"
-                        style="border-radius: 8px; min-width: 110px;">
-                    <i class="mdi mdi-close me-1"></i> Cancel
-                </button>
-
-                <button type="button"
-                        id="confirmSendBtn"
-                        class="btn px-4 text-white"
-                        style="border-radius: 8px; min-width: 140px; border: none;
-                               background: linear-gradient(135deg, #1a73e8, #0d47a1);
-                               box-shadow: 0 4px 12px rgba(26,115,232,0.4);">
-                    <i class="mdi mdi-send me-1"></i> Yes, Send
-                </button>
-
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════════════════════════ -->
-<!-- Notification Logs Modal                                                   -->
-<!-- ══════════════════════════════════════════════════════════════════════════ -->
-
-<div class="modal fade" id="logsModal" tabindex="-1"
-     aria-labelledby="logsModalLabel" aria-hidden="true"
-     data-bs-backdrop="static" data-bs-keyboard="false">
-
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="logsModalLabel">
-                    Notifications for EC:
-                    <span id="modalRefNo" class="badge bg-secondary fs-6"></span>
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0" id="notificationTable">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="text-center" style="width: 50px;">#</th>
-                                <th>Recipient Email</th>
-                                <th style="width: 180px;">Sent At</th>
-                                <th style="width: 100px;">Status</th>
-                                <th>Remarks</th>
-                            </tr>
-                        </thead>
-                        <tbody id="notificationBody">
-                            <!-- Data will be populated by JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-                <div id="noNotifications" class="text-center py-5 text-muted" style="display:none;">
-                    <i class="bi bi-inbox" style="font-size: 2rem;"></i>
-                    <p class="mt-2 mb-0">No notifications sent for this EC.</p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <span class="text-muted small" id="notificationCountLabel"></span>
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle"></i> Close
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<script>
-// Convert Django dictionary to JavaScript object
-const notificationLogs = {
-    {% for ref_no, logs in notification_logs.items %}
-        "{{ ref_no }}": [
-            {% for log in logs %}
-                {
-                    "record_id": "{{ log.record_id }}",
-                    "recipient_email": "{{ log.recipient_email }}",
-                    "sent_at": "{{ log.sent_at|date:'Y-m-d H:i:s' }}",
-                    "status": "{{ log.status }}",
-                    "remarks": "{{ log.remarks|escapejs }}"
-                }{% if not forloop.last %},{% endif %}
-            {% endfor %}
-        ]{% if not forloop.last %},{% endif %}
-    {% endfor %}
-};
-
-document.addEventListener('DOMContentLoaded', function () {
-
-    // ─── Element References ────────────────────────────────────────────────────
-    const selectAllChk     = document.getElementById('selectAll');
-    const sendBtn          = document.getElementById('sendNotificationBtn');
-    const selectedCountLbl = document.getElementById('selectedCountLabel');
-
-    // ── Safe Modal Instances ───────────────────────────────────────────────────
-    const confirmModalEl   = document.getElementById('confirmModal');
-    const logsModalEl      = document.getElementById('logsModal');
-    const links            = document.querySelectorAll('.notification-link');
-
-    // Guard: only init if elements exist in DOM
-    if (!confirmModalEl || !logsModalEl) {
-        console.error('❌ Modal element(s) not found in DOM.');
-        return;
-    }
-
-    const confirmModal = bootstrap.Modal.getOrCreateInstance(confirmModalEl);
-    const logsModal    = bootstrap.Modal.getOrCreateInstance(logsModalEl);
-
-
-    // ─── Checkbox Helpers ──────────────────────────────────────────────────────
-    function getCheckedBoxes() {
-        return [...document.querySelectorAll('.row-checkbox:checked')];
-    }
-
-    function updateSelectionUI() {
-        const checked = getCheckedBoxes();
-        const total   = document.querySelectorAll('.row-checkbox').length;
-
-        selectedCountLbl.textContent   = `${checked.length} selected`;
-        sendBtn.disabled               = checked.length === 0;
-        selectAllChk.checked           = checked.length === total && total > 0;
-        selectAllChk.indeterminate     = checked.length > 0 && checked.length < total;
-
-        document.querySelectorAll('.ec-row').forEach(row => {
-            const cb = row.querySelector('.row-checkbox');
-            row.classList.toggle('table-active', cb && cb.checked);
-        });
-    }
-
-    // Select All
-    selectAllChk.addEventListener('change', function () {
-        document.querySelectorAll('.row-checkbox').forEach(cb => {
-            cb.checked = this.checked;
-        });
-        updateSelectionUI();
-    });
-
-    // Individual checkboxes
-    document.querySelectorAll('.row-checkbox').forEach(cb => {
-        cb.addEventListener('change', updateSelectionUI);
-    });
-
-    // Row click — toggle checkbox (ignore badge & checkbox clicks)
-    document.querySelectorAll('.ec-row').forEach(row => {
-        row.style.cursor = 'pointer';
-        row.addEventListener('click', function (e) {
-            if (e.target.type === 'checkbox') return;
-            if (e.target.closest('.badge'))   return;
-            const cb = row.querySelector('.row-checkbox');
-            if (cb) {
-                cb.checked = !cb.checked;
-                updateSelectionUI();
-            }
-        });
-    });
-
-
-
-    // ─── Confirm Send Modal ────────────────────────────────────────────────────
-    document.getElementById('cancelModalBtn').addEventListener('click', function () {
-        confirmModal.hide();
-    });
-
-    confirmModalEl.addEventListener('hidden.bs.modal', function () {
-        sendBtn.disabled = getCheckedBoxes().length === 0;
-    });
-
-    // ─── Send Notification ─────────────────────────────────────────────────────
-    window.send_notification = function () {
-        const checked      = getCheckedBoxes();
-        const selectedRefs = checked.map(cb => cb.value);
-
-        if (selectedRefs.length === 0) {
-            showError('Please select at least one record.');
-            return;
-        }
-
-        const refListHtml = selectedRefs
-            .map(r => `<li><strong>${r}</strong></li>`)
-            .join('');
-
-        document.getElementById('confirmModalBody').innerHTML = `
-            <p>You are about to send renewal notifications to
-               <strong>${selectedRefs.length}</strong> proponent(s):</p>
-            <ul class="text-start mb-0">${refListHtml}</ul>`;
-
-        confirmModal.show();
-
-        // Re-attach to avoid stacking duplicate handlers
-        const confirmSendBtn    = document.getElementById('confirmSendBtn');
-        confirmSendBtn.onclick  = function () {
-            confirmModal.hide();
-            dispatchNotification(selectedRefs);
-        };
-    };
-
-
-    // ─── Dispatch AJAX ─────────────────────────────────────────────────────────
-    function dispatchNotification(selectedRefs) {
-        const loader         = document.getElementById('pageloader');
-        loader.style.display = 'flex';
-        sendBtn.disabled     = true;
-
-        $.ajax({
-            type : 'POST',
-            url  : "{% url 'send_notification' %}",
-            data : {
-                notice             : 'Notice',
-                selected_refs      : JSON.stringify(selectedRefs),
-                csrfmiddlewaretoken: '{{ csrf_token }}'
-            },
-            success: function (data) {
-                loader.style.display = 'none';
-
-                if (data.status === 'success') {
-                    let msg = `✅ ${data.message}`;
-                    if (data.failed_list && data.failed_list.length > 0) {
-                        msg += ` ⚠️ Failed: ${data.failed_list.join(', ')}`;
-                    }
-                    showSuccess(msg);
-                } else {
-                    showError(data.message || 'Something went wrong.');
-                }
-
-                document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = false);
-                selectAllChk.checked = false;
-                updateSelectionUI();
-
-                setTimeout(() => location.reload(), 3000);
-            },
-            error: function (xhr) {
-                loader.style.display = 'none';
-                let errMsg = 'Request failed.';
-                try {
-                    errMsg = JSON.parse(xhr.responseText).message || errMsg;
-                } catch (e) {}
-                showError(errMsg);
-                sendBtn.disabled = false;
-            }
-        });
-    }
-
-
-    // ─── Alert Helpers ─────────────────────────────────────────────────────────
-    function showSuccess(msg) {
-        const el = document.getElementById('successMsg');
-        document.getElementById('successMsgText').textContent = msg;
-        el.style.display = 'flex';
-        setTimeout(() => { el.style.display = 'none'; }, 4000);
-    }
-
-    function showError(msg) {
-        const el = document.getElementById('errorMsg');
-        document.getElementById('errorMsgText').textContent = msg;
-        el.style.display = 'flex';
-        setTimeout(() => { el.style.display = 'none'; }, 4000);
-    }
-
-    // Notification Logs Modal Click Handler (Improved)
-    // ═══════════════════════════════════════════════════════════════════════════
-    const notificationLinks = document.querySelectorAll('.notification-link');
-
-    notificationLinks.forEach(function(link) {
-        link.addEventListener('click', function(e) {
-            e.stopPropagation(); // Prevent row click from firing
-            const refNo = this.getAttribute('data-ref');
-            const logs = notificationLogs[refNo] || [];
-
-            // Set modal title badge
-            document.getElementById('modalRefNo').textContent = refNo;
-
-            // Update count label in footer
-            const countLabel = document.getElementById('notificationCountLabel');
-            if (countLabel) {
-                countLabel.textContent = `Total: ${logs.length} notification(s)`;
-            }
-
-            // Populate table
-            const tbody = document.getElementById('notificationBody');
-            const noNotif = document.getElementById('noNotifications');
-            const table = document.getElementById('notificationTable');
-
-            tbody.innerHTML = '';
-
-            if (logs.length === 0) {
-                noNotif.style.display = 'block';
-                table.style.display = 'none';
-            } else {
-                noNotif.style.display = 'none';
-                table.style.display = 'table';
-
-                logs.forEach(function(log, index) {
-                    // Format status with badge color
-                    let statusBadge = log.status;
-                    if (log.status === 'Sent' || log.status === 'Success') {
-                        statusBadge = `<span class="badge bg-success">${log.status}</span>`;
-                    } else if (log.status === 'Failed' || log.status === 'Error') {
-                        statusBadge = `<span class="badge bg-danger">${log.status}</span>`;
-                    } else if (log.status === 'Pending') {
-                        statusBadge = `<span class="badge bg-warning text-dark">${log.status}</span>`;
-                    } else {
-                        statusBadge = `<span class="badge bg-secondary">${log.status}</span>`;
-                    }
-
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td class="text-center text-muted">${index + 1}</td>
-                        <td>${log.recipient_email}</td>
-                        <td class="small">${log.sent_at}</td>
-                        <td>${statusBadge}</td>
-                        <td class="small text-muted">${log.remarks || '—'}</td>
-                    `;
-                    tbody.appendChild(row);
-                });
-            }
-
-            // Show modal using Bootstrap 5 instance
-            logsModal.show();
-        });
-    });
-
-
-}); // END DOMContentLoaded
-</script>
-
 
 {% endblock %}

@@ -302,7 +302,14 @@
                                     </div>
                                 </div>
                             </div>
-                            <div>
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <label class="form-label fw-bold">Rejection Remarks:</label>
+                                    <input type="text" name="reject_reason" class="form-control" id="reject_reason">
+                                </div>
+                                <div id="reject_reasonErrorMsg" class="alert alert-danger" style="display: none;"></div>
+                            </div>
+                                <div>
                                 <button id="pageloader" class="btn btn-primary" type="button" disabled="" style="display:none;">
                                     <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
                                     Loading...
@@ -352,6 +359,27 @@
 {% endfor %}
 <script>
     function submit_general_application(identifier) {
+
+        // Clear previous messages
+        $('#general_submit_successMsg').hide();
+        $('#general_submit_errorMsg').hide();
+        $('#reject_reasonErrorMsg').hide();
+
+        // Validate reject_reason when rejecting
+        if (identifier === 'RS') {
+            const rejectReason = $('#reject_reason').val().trim();
+            if (!rejectReason) {
+                $('#reject_reasonErrorMsg')
+                    .text('Rejection remarks are required before rejecting.')
+                    .show();
+
+                // Hide success message after 5 seconds
+                setTimeout(() => {
+                    $('#reject_reasonErrorMsg').fadeOut();
+                }, 2000);
+                return; // Stop submission
+            }
+        }
         $("#pageloader").show();
 
         $.ajax({
@@ -374,6 +402,7 @@
                         })
                         .show()
                         .focus();
+
 
                     setTimeout(() => {
                         window.location.href = '/dashboard';

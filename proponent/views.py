@@ -5865,33 +5865,58 @@ def submit_old_ec_general_application(request):
     try:
         application_no = request.POST.get('general_disclaimer_application_no')
         ec_reference_no = request.POST.get('ec_reference_no')
-        identifier = request.GET.get('identifier')
-        print(application_no, ec_reference_no, identifier)
+        reject_reason   = request.POST.get('reject_reason')
+        identifier      = request.GET.get('identifier')
+
+        print(application_no, ec_reference_no, reject_reason, identifier)
 
         # Get application details
         application_details = t_ec_application_t1.objects.filter(application_no=application_no)
-        main_application = application_details.filter(service_type='Main Activity').first()
+        main_application    = application_details.filter(service_type='Main Activity').first()
 
         if not main_application:
             data['error'] = "No main application found"
             return JsonResponse(data, status=400)
 
+        applicant_name = main_application.applicant_name
+        email          = main_application.applicant_id
+
         if identifier in ['A', 'R']:
             main_application.application_status = identifier
-            main_application.assigned_by = request.session['login_id']
-            main_application.assigned_date = timezone.now()
+            main_application.assigned_by        = request.session['login_id']
+            main_application.assigned_date      = timezone.now()
             main_application.save()
 
             # Push to main/history tables ONLY when approved
             _handle_old_application_ec_tables(ec_reference_no, application_no)
 
             remarks = 'OLD EC Approved'
+
+            # ✅ Send approval email after DB commit
+            transaction.on_commit(
+                lambda: threading.Thread(
+                    target=_send_approval_mail_in_background,
+                    args=(applicant_name, email, application_no),
+                    daemon=True
+                ).start()
+            )
+
         else:
-            main_application.action_date = timezone.now()
-            main_application.application_status = identifier
+            main_application.action_date         = timezone.now()
+            main_application.application_status  = identifier
+            main_application.reject_remarks      = reject_reason
             main_application.save()
 
-            remarks='OLD EC Sent back for Resubmission'
+            remarks = 'OLD EC Sent back for Resubmission'
+
+            # ✅ Send rejection email after DB commit
+            transaction.on_commit(
+                lambda: threading.Thread(
+                    target=_send_rejection_mail_in_background,
+                    args=(applicant_name, email, application_no, reject_reason),
+                    daemon=True
+                ).start()
+            )
 
         # Update existing history row(s) for the main activity
         t_application_history.objects.filter(
@@ -5903,13 +5928,82 @@ def submit_old_ec_general_application(request):
             application_status=identifier
         )
 
-
         data['message'] = "success"
+
     except Exception as e:
         data['error'] = str(e).split("\n")[0]
+
     return JsonResponse(data)
 
 # OLD EC UPDATE END
+
+#SEND EMAIL on APPROVE AND REJECT start
+# ──────────────────────────────────────────────
+# Background thread targets
+# ──────────────────────────────────────────────
+
+def _send_approval_mail_in_background(name, email, application_no):
+    try:
+        _send_approval_mail(name, email, application_no)
+    except Exception:
+        logger.exception(
+            "Failed to send approval email for application_no=%s", application_no
+        )
+
+
+def _send_rejection_mail_in_background(name, email, application_no, reject_reason):
+    try:
+        _send_rejection_mail(name, email, application_no, reject_reason)
+    except Exception:
+        logger.exception(
+            "Failed to send rejection email for application_no=%s", application_no
+        )
+
+
+# ──────────────────────────────────────────────
+# Actual mail senders
+# ──────────────────────────────────────────────
+
+def _send_approval_mail(name, email, application_no):
+    subject = "EC Application Approved"
+    message = (
+        f"Dear {name},\n\n"
+        f"Your application registered under the application number: {application_no} "
+        f"has been approved.\n\n"
+        f"Please log in to the portal for further steps.\n\n"
+        f"Regards,\n"
+        f"Environment Clearance Services"
+    )
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=getattr(settings, "DEFAULT_FROM_EMAIL", None),
+        recipient_list=[email],
+        fail_silently=False,
+    )
+
+
+def _send_rejection_mail(name, email, application_no, reject_reason):
+    subject = "EC Application Rejected / Sent for Resubmission"
+    message = (
+        f"Dear {name},\n\n"
+        f"Your application registered under the application number: {application_no} "
+        f"has been rejected / sent back for resubmission.\n\n"
+        f"Remarks: {reject_reason}\n\n"
+        f"Please log in to the portal to resubmit your application.\n\n"
+        f"Regards,\n"
+        f"Environment Clearance Services"
+    )
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=getattr(settings, "DEFAULT_FROM_EMAIL", None),
+        recipient_list=[email],
+        fail_silently=False,
+    )
+
+#SEND EMAIL on APPROVE AND REJECT start
+
 
 def _handle_old_application_ec_tables(ec_reference_no, application_no):
     source_t1_records = t_ec_application_t1.objects.filter(

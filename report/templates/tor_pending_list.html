@@ -1,7 +1,6 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
-
 <style>
 /* Print-friendly styles */
 @media print {
@@ -64,8 +63,7 @@
 }
 </style>
 
-
-<div id="ECDetails">
+<div id="ECPendingDetails">
    <div class="animated fadeIn">
         <div class="row">
             <div class="col-md-12">
@@ -73,7 +71,7 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <div>
                             <h5 class="mb-1">Environment Clearance Services</h5>
-                            <small class="text-muted">List of Environmental Clearance issued</small>
+                            <small class="text-muted">List of TOR Application Pending</small>
                         </div>
 
                         <button type="button" class="btn btn-outline-secondary btn-sm no-print" onclick="window.print()">
@@ -93,9 +91,10 @@
                                         <th scope="col">Project Location</th>
                                         <th scope="col">Contact No.</th>
                                         <th scope="col">Email Id</th>
-                                        <th scope="col">EC Number</th>
-                                        <th scope="col">Approve Date</th>
-                                        <th scope="col">Expiry Date</th>
+                                        <th scope="col">Application Type</th>
+                                        <th scope="col">Application No</th>
+                                        <th scope="col">Application Date</th>
+                                        <th scope="col">Application Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -125,9 +124,39 @@
                                             {% endif %}
                                             <td>{{ ec_list.contact_no }}</td>
                                             <td>{{ ec_list.email }}</td>
-                                            <td>{{ ec_list.ec_reference_no }}</td>
-                                            <td>{{ ec_list.ec_approve_date }}</td>
-                                            <td>{{ ec_list.ec_approve_date }}</td>
+                                            <td>{{ ec_list.application_type }}</td>
+                                            <td>{{ ec_list.application_no }}</td>
+                                            <td>{{ ec_list.application_date }}</td>
+                                            <td>
+                                                {% if ec_list.application_status == 'A' %}
+                                                    Approved
+                                                {% elif ec_list.application_status == 'P' %}
+                                                    Pending
+                                                {% elif ec_list.application_status == 'R' %}
+                                                    Application Under Review
+                                                {% elif ec_list.application_status == 'ALR' %}
+                                                    Additional Information
+                                                {% elif ec_list.application_status == 'ALS' %}
+                                                    Additional Information Submitted.
+                                                {% elif ec_list.application_status == 'LU' %}
+                                                    Legal Undertaking
+                                                {% elif ec_list.application_status == 'LUS' %}
+                                                    Legal Undertaking Submitted
+                                                {% elif ec_list.application_status == 'DEC' %}
+                                                    Draft EC Forwarded to Verifier
+                                                {% elif ec_list.application_status == 'AP' %}
+                                                    Additional Payment Pending
+                                                {% elif ec_list.application_status == 'RJ' %}
+                                                    Application Rejected
+                                                {% elif ec_list.application_status == 'RS' %}
+                                                    OLD EC- Rejected/Resubmit
+                                                {% elif ec_list.application_status == 'FT' %}
+                                                    TOR- Forwarded to Verifier
+                                                {% elif ec_list.application_status == 'OC' %}
+                                                    Ownership Change- Forwarded to Seller for Acceptance
+                                                {% endif %}
+
+                                            </td>
                                         </tr>
                                     {% empty %}
                                         <tr>
@@ -135,20 +164,19 @@
                                         </tr>
                                     {% endfor %}
                                 </tbody>
-                                <!-- Optional: Footer for totals or notes (prints at bottom of each page if needed) -->
-                                <tfoot>
-                                    <tr>
-                                        <th colspan="8" class="text-right"></th>
-                                    </tr>
-                                </tfoot>
                             </table>
                         </div>
-
-                    </div> <!-- card-body -->
-                </div> <!-- card -->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+window.addEventListener('beforeprint', function() {
+    document.body.style.transform = 'rotate(0deg)';
+});
+</script>
 
 {% endblock %}

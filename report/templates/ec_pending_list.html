@@ -87,10 +87,14 @@
                                         <th scope="col">Proponent</th>
                                         <th scope="col">Project Name</th>
                                         <th scope="col">Activity</th>
-                                        <th scope="col">Contact No</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">Address</th>
-                                        <th scope="col">App. Date</th>
+                                        <th scope="col">Project Type</th>
+                                        <th scope="col">Project Location</th>
+                                        <th scope="col">Contact No.</th>
+                                        <th scope="col">Email Id</th>
+                                        <th scope="col">Application Type</th>
+                                        <th scope="col">Application No</th>
+                                        <th scope="col">Application Date</th>
+                                        <th scope="col">Application Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -100,14 +104,63 @@
                                             <td>{{ ec_list.applicant_name }}</td>
                                             <td>{{ ec_list.project_name }}</td>
                                             <td>{{ ec_list.activity }}</td>
+                                            {% for service_details in service_details %}
+                                                {% if ec_list.service_id == service_details.service_id %}
+                                                    <td>{{service_details.service_name}}</td>
+                                                {% endif %}
+                                            {% endfor %}
+                                            {% if ec_list.dzongkhag_throm == 'Thromde' %}
+                                                {% for thromde_list in thromde_list %}
+                                                    {% if ec_list.thromde_id == thromde_list.thromde_id %}
+                                                        <td>{{thromde_list.thromde_name}}</td>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% elif ec_list.dzongkhag_throm == 'Dzongkhag' %}
+                                                {% for dzongkhag_list in dzongkhag_list %}
+                                                    {% if ec_list.dzongkhag_code == dzongkhag_list.dzongkhag_code %}
+                                                        <td>{{dzongkhag_list.dzongkhag_name}}</td>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
                                             <td>{{ ec_list.contact_no }}</td>
                                             <td>{{ ec_list.email }}</td>
-                                            <td>{{ ec_list.address }}</td>
-                                            <td>{{ ec_list.application_date|date:"M d, Y" }}</td>
+                                            <td>{{ ec_list.application_type }}</td>
+                                            <td>{{ ec_list.application_no }}</td>
+                                            <td>{{ ec_list.application_date }}</td>
+                                            <td>
+                                                {% if ec_list.application_status == 'A' %}
+                                                    Approved
+                                                {% elif ec_list.application_status == 'P' %}
+                                                    Pending
+                                                {% elif ec_list.application_status == 'R' %}
+                                                    Application Under Review
+                                                {% elif ec_list.application_status == 'ALR' %}
+                                                    Additional Information
+                                                {% elif ec_list.application_status == 'ALS' %}
+                                                    Additional Information Submitted.
+                                                {% elif ec_list.application_status == 'LU' %}
+                                                    Legal Undertaking
+                                                {% elif ec_list.application_status == 'LUS' %}
+                                                    Legal Undertaking Submitted
+                                                {% elif ec_list.application_status == 'DEC' %}
+                                                    Draft EC Forwarded to Verifier
+                                                {% elif ec_list.application_status == 'AP' %}
+                                                    Additional Payment Pending
+                                                {% elif ec_list.application_status == 'RJ' %}
+                                                    Application Rejected
+                                                {% elif ec_list.application_status == 'RS' %}
+                                                    OLD EC- Rejected/Resubmit
+                                                {% elif ec_list.application_status == 'FT' %}
+                                                    TOR- Forwarded to Verifier
+                                                {% elif ec_list.application_status == 'OC' %}
+                                                    Ownership Change- Forwarded to Seller for Acceptance
+                                                {% endif %}
+
+                                            </td>
                                         </tr>
                                     {% empty %}
                                         <tr>
-                                            <td colspan="8" class="text-center">No Data</td>
+                                            <td colspan="9" class="text-center">No Data</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>

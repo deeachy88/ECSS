@@ -285,7 +285,7 @@ def dashboard(request):
                     'assigned_to',
                     'application_source'
                 )
-                .order_by('-assigned_to', 'application_date')
+                .order_by('-assigned_to', 'application_status', 'application_date')
             )
             # Convert QuerySet to list
             applications_list = list(applications_by_reviewer_qs)
@@ -384,7 +384,7 @@ def dashboard(request):
                     'service_id',
                     'application_source'
                 )
-                .order_by('-application_date')
+                .order_by('application_status', '-application_date')
             )
 
             # Create count dictionary and group applications by status
@@ -443,7 +443,7 @@ def dashboard(request):
                     'assigned_to',
                     'application_source'
                 )
-                .order_by('-assigned_to', 'application_date')
+                .order_by('-assigned_to', 'application_status', 'application_date')
             )
             # Convert QuerySet to list
             applications_list = list(applications_by_reviewer_qs)

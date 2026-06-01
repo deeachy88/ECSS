@@ -227,8 +227,26 @@
                                                                         Pending
                                                                     {% elif application.application_status == 'R' %}
                                                                         Application Under Review
-                                                                    {% elif application.application_status == 'RRJ' %}
-                                                                        Application Rejected By Reviewer.
+                                                                    {% elif application.application_status == 'ALR' %}
+                                                                        Additional Information
+                                                                    {% elif application.application_status == 'ALS' %}
+                                                                        Additional Information Submitted.
+                                                                    {% elif application.application_status == 'LU' %}
+                                                                        Legal Undertaking
+                                                                    {% elif application.application_status == 'LUS' %}
+                                                                        Legal Undertaking Submitted
+                                                                    {% elif application.application_status == 'DEC' %}
+                                                                        Draft EC Forwarded to Verifier
+                                                                    {% elif application.application_status == 'AP' %}
+                                                                        Additional Payment Pending
+                                                                    {% elif application.application_status == 'RJ' %}
+                                                                        Application Rejected
+                                                                    {% elif application.application_status == 'RS' %}
+                                                                        OLD EC- Rejected/Resubmit
+                                                                    {% elif application.application_status == 'FT' %}
+                                                                        OR- Forwarded to Verifier
+                                                                    {% elif application.application_status == 'OC' %}
+                                                                        Ownership Change- Forwarded to Seller for Acceptance
                                                                     {% endif %}
                                                                 </td>
                                                                 <td class="text-center">
@@ -323,9 +341,28 @@
                                                                             Pending
                                                                         {% elif application.application_status == 'R' %}
                                                                             Application Under Review
-                                                                        {% elif application.application_status == 'RRJ' %}
-                                                                            Application Rejected By Reviewer.
+                                                                        {% elif application.application_status == 'ALR' %}
+                                                                            Additional Information
+                                                                        {% elif application.application_status == 'ALS' %}
+                                                                            Additional Information Submitted.
+                                                                        {% elif application.application_status == 'LU' %}
+                                                                            Legal Undertaking
+                                                                        {% elif application.application_status == 'LUS' %}
+                                                                            Legal Undertaking Submitted
+                                                                        {% elif application.application_status == 'DEC' %}
+                                                                            Draft EC Forwarded to Verifier
+                                                                        {% elif application.application_status == 'AP' %}
+                                                                            Additional Payment Pending
+                                                                        {% elif application.application_status == 'RJ' %}
+                                                                            Application Rejected
+                                                                        {% elif application.application_status == 'RS' %}
+                                                                            OLD EC- Rejected/Resubmit
+                                                                        {% elif application.application_status == 'FT' %}
+                                                                            OR- Forwarded to Verifier
+                                                                        {% elif application.application_status == 'OC' %}
+                                                                            Ownership Change- Forwarded to Seller for Acceptance
                                                                         {% endif %}
+
                                                                     </td>
                                                                     <!--
                                                                     <td>

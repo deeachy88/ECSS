@@ -97,7 +97,7 @@
               <select id="ca_authority" name="ca_authority" class="form-select">
                 <option value="ALL">-- Select All --</option>
                 {% for ca_list in ca_list %}
-                  <option value="{{ ca_list.competent_authority }}">
+                  <option value="{{ ca_list.competent_authority_id }}">
                     {{ ca_list.remarks }}
                   </option>
                 {% endfor %}

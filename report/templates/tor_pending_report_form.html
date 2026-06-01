@@ -3,15 +3,10 @@
 {% load static %}
 {% block content %}
 
-{% if not request.session.name %}
-<script>
-    window.location.replace("{% url 'index' %}");
-</script>
-{% endif %}
-
 <style>
+/* Minimal styling (same as other form) */
 .form-header {
-  background-color: #699ff5;  /* soft neutral background */
+  background-color: #699ff5;
   border: 1px solid #e3e6ea;
   border-radius: 6px;
   padding: 14px 16px;
@@ -27,16 +22,9 @@
   color: #000000;
 }
 
-
-/* Light, minimal styling */
-.form-section-title {
-  font-weight: 600;
-  margin-bottom: 15px;
-}
-
 .form-label {
-  font-size: 14px;
-  color: #000000;
+  font-size: 13px;
+  color: #495057;
 }
 
 .required {
@@ -50,21 +38,20 @@
 }
 </style>
 
-<div id="ECDetails">
+<div id="ECPendingDetails">
   <form id="certificateReportForm">
     <input type="hidden" id="role_id" value="{{ request.session.role_id }}">
+
     <div class="card border-0 shadow-sm mt-3">
       <div class="card-body p-4">
 
         <!-- HEADER -->
         <div class="form-header">
-          <h5>New Environmental Clearance Issued Report</h5>
+          <h5>ToR Pending Report</h5>
           <small>Filter and generate report</small>
         </div>
 
         <!-- FORM -->
-        <div class="form-section-title">Report Filters</div>
-
         <div class="row g-3">
 
           <!-- FROM DATE -->
@@ -122,7 +109,7 @@
 
         <!-- ACTION BUTTON -->
         <div class="d-flex justify-content-end mt-4">
-          <button type="button" class="btn btn-primary btn-sm" onclick="viewECIssuedList()">
+          <button type="button" class="btn btn-primary btn-sm" onclick="viewECPendingList()">
             View Report
           </button>
         </div>
@@ -134,7 +121,7 @@
 </div>
 
 <script>
-function viewECIssuedList() {
+function viewECPendingList() {
     var from_date = $('#fromDate').val();
     var to_date = $('#toDate').val();
     var service_id = $('#service_id').val();
@@ -161,7 +148,7 @@ function viewECIssuedList() {
 
     $.ajax({
         type: "GET",
-        url: "{% url 'view_ec_list' %}",
+        url: "{% url 'tor_pending_list' %}",
         data: {
             'from_date': from_date,
             'to_date': to_date,
@@ -170,7 +157,7 @@ function viewECIssuedList() {
             'role_id': role_id
         },
         success: function(data) {
-            $('#ECDetails').html(data);
+            $('#ECPendingDetails').html(data);
         }
     });
 }

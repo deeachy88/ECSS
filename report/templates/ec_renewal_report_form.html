@@ -58,7 +58,7 @@
 
         <!-- HEADER -->
         <div class="form-header">
-          <h5>New Environmental Clearance Issued Report</h5>
+          <h5>Environmental Clearance Renewal Report</h5>
           <small>Filter and generate report</small>
         </div>
 
@@ -161,7 +161,7 @@ function viewECIssuedList() {
 
     $.ajax({
         type: "GET",
-        url: "{% url 'view_ec_list' %}",
+        url: "{% url 'view_ec_renewal_list' %}",
         data: {
             'from_date': from_date,
             'to_date': to_date,

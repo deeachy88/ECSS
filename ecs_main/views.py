@@ -39,8 +39,11 @@ STATUS_LABELS = OrderedDict([
     ("LUS", "Legal Undertaking Submitted"),
     ("DEC", "Draft EC Forwarded to Verifier"),
     ("AP",  "Additional Payment Pending"),
-    ("A",   "Approved"),
     ("RJ",  "Application Rejected"),
+    ("RS",  "OLD EC- Rejected/Resubmit"),
+    ("FT",  "TOR- Forwarded to Verifier"),
+    ("OC",  "Ownership Change- Forwarded to Seller for Acceptance"),
+    ("A",   "Approved"),
 ])
 
 def verify_application_list(request):

@@ -36,14 +36,17 @@ from proponent.models import t_ec_application_t2, t_ec_application_t1, t_ec_comp
 STATUS_LABELS = OrderedDict([
     ("P",   "Pending"),
     ("R",   "Application Under Review"),
-    ("ALR", "Awaiting Additional Information"),
+    ("ALR", "Additional Information"),
     ("ALS", "Additional Information Submitted"),
-    ("LU",  "Awaiting Legal Undertaking"),
+    ("LU",  "Legal Undertaking"),
     ("LUS", "Legal Undertaking Submitted"),
     ("DEC", "Draft EC Forwarded to Verifier"),
     ("AP",  "Additional Payment Pending"),
-    ("A",   "Approved"),
     ("RJ",  "Application Rejected"),
+    ("RS",  "OLD EC- Rejected/Resubmit"),
+    ("FT",  "TOR- Forwarded to Verifier"),
+    ("OC",  "Ownership Change- Forwarded to Seller for Acceptance"),
+    ("A",   "Approved"),
 ])
 
 def ec_report_form(request):
@@ -100,9 +103,11 @@ def view_ec_list(request):
     ca_authority = request.GET.get('ca_authority')
     role_id = request.GET.get('role_id')
     login_id = request.session.get('login_id')
-    # dzongkhag_code = request.GET.get('dzongkhag_code')
+    thromde_list = t_thromde_master.objects.all()
     dzongkhag_list = t_dzongkhag_master.objects.all()
+    gewog_list = t_gewog_master.objects.all()
     ca_list = t_competant_authority_master.objects.all()
+    service_details = t_service_master.objects.all()
     ca_auth= request.session['ca_authority']
     print(ca_auth)
 
@@ -111,33 +116,75 @@ def view_ec_list(request):
     ec_renewal_count = 0
     v_application_count = 0
 
-    if role_id == '1':
+    if role_id in ('1', '4'):
         if ca_authority == 'ALL' and service_id == 'ALL':
-            ec_list = t_ec_t1.objects.filter(ec_approve_date__range=[from_date, to_date],
-                                                                status='A').values()
+            ec_list = (t_ec_t1.objects.filter(
+                ec_approve_date__range=[from_date, to_date],
+                status='A')
+                       .exclude(application_no__icontains='OC')
+                       .exclude(application_no__icontains='REN')
+                       .exclude(application_no__icontains='NC')
+                       .exclude(application_no__icontains='TOR')
+                       .values()
+                       )
         elif ca_authority == 'ALL' and service_id != 'ALL':
-            ec_list = t_ec_t1.objects.filter(ec_approve_date__range=[from_date, to_date],
-                                                                status='A',
-                                                                service_id=service_id).values()
+            ec_list = (t_ec_t1.objects.filter(
+                ec_approve_date__range=[from_date, to_date],
+                status='A',
+                service_id=service_id)
+                       .exclude(application_no__icontains='OC')
+                       .exclude(application_no__icontains='REN')
+                       .exclude(application_no__icontains='NC')
+                       .exclude(application_no__icontains='TOR')
+                       .values()
+                       )
         elif ca_authority != 'ALL' and service_id == 'ALL':
-            ec_list = t_ec_t1.objects.filter(ec_approve_date__range=[from_date, to_date],
-                                                                ca_authority=ca_authority,
-                                                                status='A').values()
+            ec_list = (t_ec_t1.objects.filter(
+                ec_approve_date__range=[from_date, to_date],
+                ca_authority=ca_authority,
+                status='A')
+                       .exclude(application_no__icontains='OC')
+                       .exclude(application_no__icontains='REN')
+                       .exclude(application_no__icontains='NC')
+                       .exclude(application_no__icontains='TOR')
+                       .values()
+                       )
         elif ca_authority != 'ALL' and service_id != 'ALL':
-            ec_list = t_ec_t1.objects.filter(ec_approve_date__range=[from_date, to_date],
-                                                                ca_authority=ca_authority,
-                                                                service_id=service_id,
-                                                                status='A').values()
+            ec_list = (t_ec_t1.objects.filter(
+                ec_approve_date__range=[from_date, to_date],
+                ca_authority=ca_authority,
+                service_id=service_id,
+                status='A')
+                       .exclude(application_no__icontains='OC')
+                       .exclude(application_no__icontains='REN')
+                       .exclude(application_no__icontains='NC')
+                       .exclude(application_no__icontains='TOR')
+                       .values()
+                       )
     else:
         if service_id == 'ALL':
-            ec_list = t_ec_t1.objects.filter(ec_approve_date__range=[from_date, to_date],
-                                                         ca_authority=ca_auth,
-                                                         status='A').values()
+            ec_list = (t_ec_t1.objects.filter(
+                ec_approve_date__range=[from_date, to_date],
+                ca_authority=ca_auth,
+                status='A')
+                       .exclude(application_no__icontains='OC')
+                       .exclude(application_no__icontains='REN')
+                       .exclude(application_no__icontains='NC')
+                       .exclude(application_no__icontains='TOR')
+                       .values()
+                       )
         else:
-            ec_list = t_ec_t1.objects.filter(ec_approve_date__range=[from_date, to_date],
-                                                         ca_authority=ca_auth,
-                                                         service_id=service_id,
-                                                         status='A').values()
+            ec_list = (t_ec_t1.objects.filter(
+                ec_approve_date__range=[from_date, to_date],
+                ca_authority=ca_auth,
+                service_id=service_id,
+                status='A')
+                       .exclude(application_no__icontains='OC')
+                       .exclude(application_no__icontains='REN')
+                       .exclude(application_no__icontains='NC')
+                       .exclude(application_no__icontains='TOR')
+                       .values()
+                       )
 
     # Verifier application count
     v_application_count = t_workflow_dtls.objects.filter(
@@ -167,7 +214,164 @@ def view_ec_list(request):
                                                                               status='A',
                                                                               ec_expiry_date__lt=expiry_date_threshold).count()
     return render(request, 'ec_list.html',
-                  {'dzongkhag_list': dzongkhag_list,'ec_renewal_count':ec_renewal_count,'v_application_count':v_application_count,'r_application_count':r_application_count,'p_application_count':p_application_count, 'ec_list': ec_list, 'ca_list': ca_list})
+                  {'dzongkhag_list': dzongkhag_list, 'gewog_list':gewog_list, 'thromde_list':thromde_list,
+                   'service_details':service_details, 'ec_renewal_count':ec_renewal_count,
+                   'v_application_count':v_application_count,'r_application_count':r_application_count,
+                   'p_application_count':p_application_count, 'ec_list': ec_list, 'ca_list': ca_list})
+
+def ec_renewal_report_form(request):
+    dzongkhag_list = t_dzongkhag_master.objects.all()
+    v_application_count = 0
+    r_application_count = 0
+    p_application_count = 0
+    ec_renewal_count = 0
+    ca_authority = request.session.get('ca_authority', None)
+    login_id=request.session.get('login_id', None)
+
+    ca_list = t_competant_authority_master.objects.all()
+    service_list = t_service_master.objects.filter(service_id__in=[1, 2, 3, 4, 5, 6, 7, 8, 9]).values()
+    client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
+    if ca_authority is not None:
+        v_application_count = t_workflow_dtls.objects.filter(
+            assigned_role_id='2',
+            assigned_role_name='Verifier',
+            action_date__isnull=False,
+            application_status__in=['P', 'DEC', 'AL', 'FT', 'V', 'RRJ'],
+            ca_authority=request.session['ca_authority']).count()
+
+        r_application_count = t_workflow_dtls.objects.filter(
+            assigned_role_id='3',
+            assigned_user_id=login_id,
+            assigned_role_name='Reviewer',
+            ca_authority=ca_authority
+        ).count()
+
+        p_application_count = t_workflow_dtls.objects.filter(
+            assigned_role_id='3',
+            assigned_role_name='Reviewer',
+            ca_authority=ca_authority,
+            assigned_user_id__isnull=True,  # assigned_user_id is null
+            action_date__isnull=False  # action_date is not null
+        ).count()
+        expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+        ec_renewal_count = t_ec_t1.objects.filter(ca_authority=request.session['ca_authority'],
+                                                                                  status='A',
+                                                                                  ec_expiry_date__lt=expiry_date_threshold).count()
+    response = render(request, 'ec_renewal_report_form.html',
+                  {'dzongkhag_list': dzongkhag_list,'client_application_count':client_application_count,'ec_renewal_count':ec_renewal_count,'v_application_count':v_application_count,'r_application_count':r_application_count, 'p_application_count':p_application_count, 'ca_list': ca_list, 'service_list': service_list})
+
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
+
+def view_ec_renewal_list(request):
+    from_date = request.GET.get('from_date')
+    to_date = request.GET.get('to_date')
+    service_id = request.GET.get('service_id')
+    ca_authority = request.GET.get('ca_authority')
+    role_id = request.GET.get('role_id')
+    login_id = request.session.get('login_id')
+    thromde_list = t_thromde_master.objects.all()
+    dzongkhag_list = t_dzongkhag_master.objects.all()
+    gewog_list = t_gewog_master.objects.all()
+    ca_list = t_competant_authority_master.objects.all()
+    service_details = t_service_master.objects.all()
+    ca_auth= request.session['ca_authority']
+    print(ca_auth)
+    print(role_id)
+
+    r_application_count = 0
+    p_application_count = 0
+    ec_renewal_count = 0
+    v_application_count = 0
+
+    if role_id in ('1', '4'):
+        if ca_authority == 'ALL' and service_id == 'ALL':
+            ec_list = (t_ec_t1.objects.filter(
+                ec_approve_date__range=[from_date, to_date],
+                status='A',
+                application_no__icontains='REN')
+                       .values()
+                       )
+        elif ca_authority == 'ALL' and service_id != 'ALL':
+            ec_list = (t_ec_t1.objects.filter(
+                ec_approve_date__range=[from_date, to_date],
+                status='A',
+                service_id=service_id,
+                application_no__icontains='REN')
+                       .values()
+                       )
+        elif ca_authority != 'ALL' and service_id == 'ALL':
+            ec_list = (t_ec_t1.objects.filter(
+                ec_approve_date__range=[from_date, to_date],
+                ca_authority=ca_authority,
+                status='A',
+                application_no__icontains='REN')
+                       .values()
+                       )
+        elif ca_authority != 'ALL' and service_id != 'ALL':
+            ec_list = (t_ec_t1.objects.filter(
+                ec_approve_date__range=[from_date, to_date],
+                ca_authority=ca_authority,
+                service_id=service_id,
+                status='A',
+                application_no__icontains='REN')
+                       .values()
+                       )
+    else:
+        if service_id == 'ALL':
+            ec_list = (t_ec_t1.objects.filter(
+                ec_approve_date__range=[from_date, to_date],
+                ca_authority=ca_auth,
+                status='A',
+                application_no__icontains='REN')
+                       .values()
+                       )
+        else:
+            ec_list = (t_ec_t1.objects.filter(
+                ec_approve_date__range=[from_date, to_date],
+                ca_authority=ca_auth,
+                service_id=service_id,
+                status='A',
+                application_no__icontains='REN')
+                       .values()
+                       )
+
+    # Verifier application count
+    v_application_count = t_workflow_dtls.objects.filter(
+        assigned_role_id='2',
+        assigned_role_name='Verifier',
+        ca_authority=ca_auth
+    ).count()
+
+    # Reviewer application count
+    r_application_count = t_workflow_dtls.objects.filter(
+        assigned_role_id='3',
+        assigned_user_id=login_id,
+        assigned_role_name='Reviewer',
+        ca_authority=ca_auth
+    ).count()
+
+    p_application_count = t_workflow_dtls.objects.filter(
+        assigned_role_id='3',
+        assigned_role_name='Reviewer',
+        ca_authority=ca_auth,
+        assigned_user_id__isnull=True,  # assigned_user_id is null
+        action_date__isnull=False  # action_date is not null
+    ).count()
+
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+    ec_renewal_count = t_ec_t1.objects.filter(ca_authority=request.session['ca_authority'],
+                                                                              status='A',
+                                                                              ec_expiry_date__lt=expiry_date_threshold).count()
+    return render(request, 'ec_renewal_list.html',
+                  {'dzongkhag_list': dzongkhag_list, 'gewog_list':gewog_list, 'thromde_list':thromde_list,
+                   'service_details':service_details, 'ec_renewal_count':ec_renewal_count,
+                   'v_application_count':v_application_count,'r_application_count':r_application_count,
+                   'p_application_count':p_application_count, 'ec_list': ec_list, 'ca_list': ca_list})
+
 
 
 def ec_reject_report_form(request):
@@ -300,7 +504,10 @@ def ec_pending_report_form(request):
         ec_expiry_date__lt=expiry_date_threshold
     ).count()
     return render(request, 'ec_pending_report_form.html',
-                  {'dzongkhag_list': dzongkhag_list,'client_application_count':client_application_count,'v_application_count':v_application_count,'ec_renewal_count':ec_renewal_count, 'ca_list': ca_list,'r_application_count':r_application_count, 'p_application_count':p_application_count, 'service_list': service_list})
+                  {'dzongkhag_list': dzongkhag_list,'client_application_count':client_application_count,
+                            'v_application_count':v_application_count,'ec_renewal_count':ec_renewal_count,
+                            'ca_list': ca_list,'r_application_count':r_application_count, 'p_application_count':p_application_count,
+                            'service_list': service_list})
 
 def ec_pending_list(request):
     from_date = request.GET.get('from_date')
@@ -308,9 +515,12 @@ def ec_pending_list(request):
     service_id = request.GET.get('service_id')
     ca_authority = request.GET.get('ca_authority')
     role_id = request.GET.get('role_id')
-    #dzongkhag_code = request.GET.get('dzongkhag_code')
+    thromde_list = t_thromde_master.objects.all()
     dzongkhag_list = t_dzongkhag_master.objects.all()
+    gewog_list = t_gewog_master.objects.all()
     ca_list = t_competant_authority_master.objects.all()
+    service_details = t_service_master.objects.all()
+
     ca_auth = request.session.get('ca_authority')
     login_id = request.session.get('login_id')
     print(ca_auth)
@@ -321,7 +531,7 @@ def ec_pending_list(request):
     }
 
     # 2. Handle the CA Authority logic
-    if str(role_id) == '1':
+    if str(role_id) in ('1', '4'):
         if ca_authority != 'ALL':
             filters['ca_authority'] = ca_authority
     else:
@@ -333,11 +543,12 @@ def ec_pending_list(request):
         filters['service_id'] = service_id
 
     # 4. Execute the query excluding 'A' (Approved) and 'R' (Rejected)
+
     ec_list = t_ec_application_t1.objects.filter(
         **filters
     ).exclude(
-        application_status__in=['A', 'R']
-    ).values()
+        application_status__in=['A', 'RJ']
+    ).values().order_by('application_type', 'application_status')
 
     # Verifier application count
     v_application_count = t_workflow_dtls.objects.filter(
@@ -366,55 +577,285 @@ def ec_pending_list(request):
                                                                               status='A',
                                                                               ec_expiry_date__lt=expiry_date_threshold).count()
     return render(request, 'ec_pending_list.html',
-                  {'dzongkhag_list': dzongkhag_list,'ec_renewal_count':ec_renewal_count,'v_application_count':v_application_count,'r_application_count':r_application_count, 'p_application_count':p_application_count,'ec_list': ec_list, 'ca_list': ca_list})
+                  {'dzongkhag_list': dzongkhag_list, 'service_details':service_details,
+                   'thromde_list':thromde_list, 'gewog_list':gewog_list, 'ec_renewal_count':ec_renewal_count,
+                   'v_application_count':v_application_count,'r_application_count':r_application_count,
+                   'p_application_count':p_application_count,'ec_list': ec_list, 'ca_list': ca_list})
 
-def land_use_report_form(request):
+def tor_report_form(request):
     dzongkhag_list = t_dzongkhag_master.objects.all()
-    #ca_list = t_competant_authority_master.objects.all().distinct('competent_authority')
+    v_application_count = 0
+    r_application_count = 0
+    p_application_count = 0
+    ec_renewal_count = 0
+    ca_authority = request.session.get('ca_authority', None)
+    login_id=request.session.get('login_id', None)
+
     ca_list = t_competant_authority_master.objects.all()
     service_list = t_service_master.objects.filter(service_id__in=[1, 2, 3, 4, 5, 6, 7, 8, 9]).values()
-    v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
-    r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
-    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
     client_application_count = t_user_master.objects.filter(accept_reject__isnull=True,login_type='C').count()
-    ec_renewal_count = t_ec_t1.objects.filter(ca_authority=request.session['ca_authority'],
-                                                                              status='A',
-                                                                              ec_expiry_date__lt=expiry_date_threshold).count()
-    return render(request, 'land_use_report_form.html',
-                  {'dzongkhag_list': dzongkhag_list,'client_application_count':client_application_count,'ec_renewal_count':ec_renewal_count,'v_application_count':v_application_count,'r_application_count':r_application_count, 'ca_list': ca_list, 'service_list': service_list})
+    if ca_authority is not None:
+        v_application_count = t_workflow_dtls.objects.filter(
+            assigned_role_id='2',
+            assigned_role_name='Verifier',
+            action_date__isnull=False,
+            application_status__in=['P', 'DEC', 'AL', 'FT', 'V', 'RRJ'],
+            ca_authority=request.session['ca_authority']).count()
 
-def land_use_report(request):
+        r_application_count = t_workflow_dtls.objects.filter(
+            assigned_role_id='3',
+            assigned_user_id=login_id,
+            assigned_role_name='Reviewer',
+            ca_authority=ca_authority
+        ).count()
+
+        p_application_count = t_workflow_dtls.objects.filter(
+            assigned_role_id='3',
+            assigned_role_name='Reviewer',
+            ca_authority=ca_authority,
+            assigned_user_id__isnull=True,  # assigned_user_id is null
+            action_date__isnull=False  # action_date is not null
+        ).count()
+        expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+        ec_renewal_count = t_ec_t1.objects.filter(ca_authority=request.session['ca_authority'],
+                                                                                  status='A',
+                                                                                  ec_expiry_date__lt=expiry_date_threshold).count()
+    response = render(request, 'tor_report_form.html',
+                  {'dzongkhag_list': dzongkhag_list,'client_application_count':client_application_count,'ec_renewal_count':ec_renewal_count,'v_application_count':v_application_count,'r_application_count':r_application_count, 'p_application_count':p_application_count, 'ca_list': ca_list, 'service_list': service_list})
+
+    # Set cache-control headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
+
+def view_tor_list(request):
     from_date = request.GET.get('from_date')
     to_date = request.GET.get('to_date')
     service_id = request.GET.get('service_id')
-    dzongkhag_code = request.GET.get('dzongkhag_code')
+    ca_authority = request.GET.get('ca_authority')
+    role_id = request.GET.get('role_id')
+    login_id = request.session.get('login_id')
+    thromde_list = t_thromde_master.objects.all()
+    dzongkhag_list = t_dzongkhag_master.objects.all()
+    gewog_list = t_gewog_master.objects.all()
+    ca_list = t_competant_authority_master.objects.all()
+    service_details = t_service_master.objects.all()
+    ca_auth= request.session['ca_authority']
+    print(ca_auth)
+
+    r_application_count = 0
+    p_application_count = 0
+    ec_renewal_count = 0
+    v_application_count = 0
+
+    if role_id in ('1', '4'):
+        if ca_authority == 'ALL' and service_id == 'ALL':
+            ec_list = (t_ec_application_t1.objects.filter(
+                tor_approve_date__range=[from_date, to_date],
+                application_status='A',
+                application_no__icontains='TOR')
+                       .values()
+                       )
+        elif ca_authority == 'ALL' and service_id != 'ALL':
+            ec_list = (t_ec_application_t1.objects.filter(
+                tor_approve_date__range=[from_date, to_date],
+                application_status='A',
+                service_id=service_id,
+                application_no__icontains='TOR')
+                       .values()
+                       )
+        elif ca_authority != 'ALL' and service_id == 'ALL':
+            ec_list = (t_ec_application_t1.objects.filter(
+                tor_approve_date__range=[from_date, to_date],
+                ca_authority=ca_authority,
+                application_status='A',
+                application_no__icontains='TOR')
+                       .values()
+                       )
+        elif ca_authority != 'ALL' and service_id != 'ALL':
+            ec_list = (t_ec_application_t1.objects.filter(
+                tor_approve_date__range=[from_date, to_date],
+                ca_authority=ca_authority,
+                service_id=service_id,
+                application_status='A',
+                application_no__icontains='TOR')
+                       .values()
+                       )
+    else:
+        if service_id == 'ALL':
+            ec_list = (t_ec_application_t1.objects.filter(
+                tor_approve_date__range=[from_date, to_date],
+                ca_authority=ca_auth,
+                application_status='A',
+                application_no__icontains='TOR')
+                       .values()
+                       )
+        else:
+            ec_list = (t_ec_application_t1.objects.filter(
+                tor_approve_date__range=[from_date, to_date],
+                ca_authority=ca_auth,
+                service_id=service_id,
+                application_status='A',
+                application_no__icontains='TOR')
+                       .values()
+                       )
+
+    # Verifier application count
+    v_application_count = t_workflow_dtls.objects.filter(
+        assigned_role_id='2',
+        assigned_role_name='Verifier',
+        ca_authority=ca_auth
+    ).count()
+
+    # Reviewer application count
+    r_application_count = t_workflow_dtls.objects.filter(
+        assigned_role_id='3',
+        assigned_user_id=login_id,
+        assigned_role_name='Reviewer',
+        ca_authority=ca_auth
+    ).count()
+
+    p_application_count = t_workflow_dtls.objects.filter(
+        assigned_role_id='3',
+        assigned_role_name='Reviewer',
+        ca_authority=ca_auth,
+        assigned_user_id__isnull=True,  # assigned_user_id is null
+        action_date__isnull=False  # action_date is not null
+    ).count()
+
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+    ec_renewal_count = t_ec_t1.objects.filter(ca_authority=request.session['ca_authority'],
+                                                                              status='A',
+                                                                              ec_expiry_date__lt=expiry_date_threshold).count()
+    return render(request, 'tor_list.html',
+                  {'dzongkhag_list': dzongkhag_list, 'gewog_list':gewog_list, 'thromde_list':thromde_list,
+                   'service_details':service_details, 'ec_renewal_count':ec_renewal_count,
+                   'v_application_count':v_application_count,'r_application_count':r_application_count,
+                   'p_application_count':p_application_count, 'ec_list': ec_list, 'ca_list': ca_list})
+
+def tor_pending_report_form(request):
+    login_id = request.session.get('login_id')
+    ca_authority = request.session.get('ca_authority')
     dzongkhag_list = t_dzongkhag_master.objects.all()
     ca_list = t_competant_authority_master.objects.all()
 
-    if dzongkhag_code == 'ALL' and service_id == 'ALL':
-        ec_list = t_ec_application_t1.objects.filter(ec_approve_date__range=[from_date, to_date],
-                                                            application_status='Approved').values()
-    elif dzongkhag_code == 'ALL' and service_id != 'ALL':
-        ec_list = t_ec_application_t1.objects.filter(ec_approve_date__range=[from_date, to_date],
-                                                            application_status='Approved',
-                                                            service_id=service_id).values()
-    elif dzongkhag_code != 'ALL' and service_id == 'ALL':
-        ec_list = t_ec_application_t1.objects.filter(ec_approve_date__range=[from_date, to_date],
-                                                            application_status='Approved',
-                                                            dzongkhag_code=dzongkhag_code).values()
-    elif dzongkhag_code != 'ALL' and service_id != 'ALL':
-        ec_list = t_ec_application_t1.objects.filter(ec_approve_date__range=[from_date, to_date],
-                                                            application_status='Approved',
-                                                            dzongkhag_code=dzongkhag_code,
-                                                            service_id=service_id).values()
-    v_application_count = t_workflow_dtls.objects.filter(assigned_role_id='2', assigned_role_name='Verifier', ca_authority=request.session['ca_authority']).count()
-    r_application_count = t_workflow_dtls.objects.filter(assigned_role_id='3', assigned_role_name='Reviewer', ca_authority=request.session['ca_authority']).count()
+    v_application_count = 0
+    r_application_count = 0
+    p_application_count = 0
+    ec_renewal_count = 0
+
+    service_list = t_service_master.objects.filter(service_id__in=[1, 2, 3, 4, 5, 6, 7, 8, 9]).values()
+    v_application_count = t_workflow_dtls.objects.filter(
+        assigned_role_id='2',
+        assigned_role_name='Verifier',
+        action_date__isnull=False,
+        application_status__in=['P', 'DEC', 'AL', 'FT', 'V', 'RRJ'],
+        ca_authority=request.session['ca_authority']
+    ).count()
+    # Reviewer application count
+    r_application_count = t_workflow_dtls.objects.filter(
+        assigned_role_id='3',
+        assigned_user_id=login_id,
+        assigned_role_name='Reviewer',
+        ca_authority=ca_authority
+    ).count()
+
+    p_application_count = t_workflow_dtls.objects.filter(
+        assigned_role_id='3',
+        assigned_role_name='Reviewer',
+        ca_authority=ca_authority,
+        assigned_user_id__isnull=True,  # assigned_user_id is null
+        action_date__isnull=False  # action_date is not null
+    ).count()
+    expiry_date_threshold = datetime.now().date() + timedelta(days=60)
+    client_application_count = t_user_master.objects.filter(
+        accept_reject__isnull=True,
+        login_type='C'
+    ).count()
+    ec_renewal_count = t_ec_t1.objects.filter(
+        ca_authority=request.session['ca_authority'],
+        status='A',
+        ec_expiry_date__lt=expiry_date_threshold
+    ).count()
+    return render(request, 'tor_pending_report_form.html',
+                  {'dzongkhag_list': dzongkhag_list,'client_application_count':client_application_count,
+                            'v_application_count':v_application_count,'ec_renewal_count':ec_renewal_count,
+                            'ca_list': ca_list,'r_application_count':r_application_count, 'p_application_count':p_application_count,
+                            'service_list': service_list})
+
+def tor_pending_list(request):
+    from_date = request.GET.get('from_date')
+    to_date = request.GET.get('to_date')
+    service_id = request.GET.get('service_id')
+    ca_authority = request.GET.get('ca_authority')
+    role_id = request.GET.get('role_id')
+    thromde_list = t_thromde_master.objects.all()
+    dzongkhag_list = t_dzongkhag_master.objects.all()
+    gewog_list = t_gewog_master.objects.all()
+    ca_list = t_competant_authority_master.objects.all()
+    service_details = t_service_master.objects.all()
+
+    ca_auth = request.session.get('ca_authority')
+    login_id = request.session.get('login_id')
+    print(ca_authority)
+    print(ca_auth)
+
+    # 1. Start with the common filters
+    filters = {
+        'application_date__range': [from_date, to_date],
+        'application_no__icontains': 'TOR',
+    }
+
+    # 2. Handle the CA Authority logic
+    if str(role_id) in ('1', '4'):
+        if ca_authority != 'ALL':
+            filters['ca_authority'] = ca_authority
+    else:
+        # Non-admin roles use the specific 'ca_auth' context
+        filters['ca_authority'] = ca_auth
+
+    # 3. Handle the Service ID logic
+    if service_id != 'ALL':
+        filters['service_id'] = service_id
+
+    # 4. Execute the query excluding 'A' (Approved) and 'R' (Rejected)
+
+    ec_list = t_ec_application_t1.objects.filter(
+        **filters
+    ).exclude(application_status='A').values().order_by('application_status')
+
+    # Verifier application count
+    v_application_count = t_workflow_dtls.objects.filter(
+        assigned_role_id='2',
+        assigned_role_name='Verifier',
+        ca_authority=ca_auth
+    ).count()
+
+    # Reviewer application count
+    r_application_count = t_workflow_dtls.objects.filter(
+        assigned_role_id='3',
+        assigned_user_id=login_id,
+        assigned_role_name='Reviewer',
+        ca_authority=ca_auth
+    ).count()
+
+    p_application_count = t_workflow_dtls.objects.filter(
+        assigned_role_id='3',
+        assigned_role_name='Reviewer',
+        ca_authority=ca_auth,
+        assigned_user_id__isnull=True,  # assigned_user_id is null
+        action_date__isnull=False  # action_date is not null
+    ).count()
     expiry_date_threshold = datetime.now().date() + timedelta(days=60)
     ec_renewal_count = t_ec_t1.objects.filter(ca_authority=request.session['ca_authority'],
-                                                                                  status='A',
-                                                                                  ec_expiry_date__lt=expiry_date_threshold).count()
-    return render(request, 'land_use_list.html',
-                  {'dzongkhag_list': dzongkhag_list,'ec_renewal_count':ec_renewal_count,'v_application_count':v_application_count,'r_application_count':r_application_count, 'ec_list': ec_list, 'ca_list': ca_list})
+                                                                              status='A',
+                                                                              ec_expiry_date__lt=expiry_date_threshold).count()
+    return render(request, 'tor_pending_list.html',
+                  {'dzongkhag_list': dzongkhag_list, 'service_details':service_details,
+                   'thromde_list':thromde_list, 'gewog_list':gewog_list, 'ec_renewal_count':ec_renewal_count,
+                   'v_application_count':v_application_count,'r_application_count':r_application_count,
+                   'p_application_count':p_application_count,'ec_list': ec_list, 'ca_list': ca_list})
 
 def revenue_report_form(request):
     login_id = request.session.get('login_id')
@@ -656,8 +1097,8 @@ def application_status_list(request):
     # ------------------------------------------------------------------
     if login_type == 'C':
         application_list = t_ec_application_t1.objects.filter(
-            applicant_id=applicant_id,
-            application_type='New'
+            applicant_id=applicant_id
+            #application_type='New'
         ).order_by('application_no', '-application_date').distinct('application_no')
 
     elif login_type == 'I' and role in ('Admin', 'NECS Head'):
