@@ -35,13 +35,16 @@
                 'application_no': application_no,
                 'csrfmiddlewaretoken': '{{ csrf_token }}'
             },
-            success : function(responseText)
-            {
-
-                // Dynamically target the div based on attachment_type
-                // Example: If attachment_type is 'FO', it updates #FO_attachment
-                // Example: If attachment_type is 'GEN', it updates #GEN_attachment
-                $('#' + attachment_type + '_attachment').html(responseText);
+            success: function(responseText) {
+                if (attachment_type === 'H') {
+                    $('#home_page_file_attachment').html(responseText);
+                } else if (attachment_type === 'M') {
+                     $('#menu_file_attachment').html(responseText);
+                } else if (attachment_type === 'SM') {
+                    $('#sub_menu_file_attachment').html(responseText);
+                } else {
+                    $('#' + attachment_type + '_attachment').html(responseText);
+                }
             }
         });
     }
