@@ -17,6 +17,38 @@
         body { background-color: white; margin: 0; }
         .banner-image { width: 100%; height: auto; display: block; }
         [v-cloak] { display: none; }
+        
+        /* NDI loader overlay (minimal, used after QR scan) */
+        .ndi-loader-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(18, 65, 67, 0.55);
+            z-index: 20000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .ndi-loader-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px 22px;
+            width: min(360px, 92vw);
+            text-align: center;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.24);
+            font-family: Inter, sans-serif;
+        }
+        .ndi-loader-text {
+            margin: 0 0 6px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #222;
+        }
+        .ndi-loader-subtext {
+            margin: 0;
+            font-size: 14px;
+            color: #6b7280;
+        }
     </style>
 
     <!-- Preload critical assets -->
@@ -503,6 +535,15 @@
     </div>
 </div>
 <!-- Modal LOGIN END-->
+
+<!-- NDI loader overlay (shown after QR is scanned) -->
+<div id="ndiLoaderOverlay" class="ndi-loader-overlay" aria-live="polite" aria-busy="true">
+    <div class="ndi-loader-card">
+        <p class="ndi-loader-text" id="ndiLoaderMainText">Waiting for response</p>
+        <p class="ndi-loader-subtext" id="ndiLoaderSubText">Please wait</p>
+    </div>
+</div>
+
 
 <div class="modal fade" id="registrationModalForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -1498,6 +1539,11 @@
                         return;
                     }
 
+                    // After the QR is scanned, wallet responses come back here.
+                    if (typeof window.showNdiWaitingLoader === 'function') {
+                        window.showNdiWaitingLoader();
+                    }
+
                     /*
                     =========================================
                     HANDLE REJECTED PROOF
@@ -1505,6 +1551,10 @@
                     */
 
                     if (response.proof_type === 'present-proof/rejected') {
+
+                        if (typeof window.hideNdiLoader === 'function') {
+                            window.hideNdiLoader();
+                        }
 
                         $('#ndi_login_error')
                             .html("NDI verification rejected")
@@ -1555,6 +1605,10 @@
                         console.log("Proponent verified");
 
                         // your proponent logic here
+
+                        if (typeof window.hideNdiLoader === 'function') {
+                            window.hideNdiLoader();
+                        }
                     }
                 };
 

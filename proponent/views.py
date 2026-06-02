@@ -1384,7 +1384,8 @@ def proof_request(request):
         ]
         proof_data = {
             'proofName': 'ECSS Credentials',
-            'proofAttributes': proof_attributes
+            'proofAttributes': proof_attributes,
+            'purpose' : purpose
         }
 
         # Make request to verifier API
@@ -1418,6 +1419,10 @@ def proof_request(request):
 
 def proof_request_employee(request):
     category = request.GET.get('category', '')
+    if category == 'Employee':
+        purpose = 'login'
+    else:
+        purpose = 'ekyc'
 
     try:
         # Invalidate existing session and create a new session
@@ -1449,7 +1454,8 @@ def proof_request_employee(request):
         ]
         proof_data = {
             'proofName': 'ECSS Credentials',
-            'proofAttributes': proof_attributes
+            'proofAttributes': proof_attributes,
+            'purpose' : purpose
         }
 
         # Make request to verifier API
@@ -1529,8 +1535,11 @@ def fetch_relationship_data(request,thread_id):
         return JsonResponse({'error': 'Failed to fetch data from verifier API'}, status=response.status_code)
 
 def proof_request_proponent(request):
-    category = request.GET.get('category', '')  # Get the category from query parameters
-
+    category = request.GET.get('category', '')
+    if category == 'Employee':
+        purpose = 'login'
+    else:
+        purpose = 'ekyc'
     try:
         # Invalidate existing session and create a new session
         session_id = request.session.session_key
@@ -1593,7 +1602,8 @@ def proof_request_proponent(request):
         ]
         proof_data = {
             'proofName': 'ECSS Credentials',
-            'proofAttributes': proof_attributes
+            'proofAttributes': proof_attributes,
+            'purpose' : purpose
         }
 
         # Make request to verifier API with proof data
