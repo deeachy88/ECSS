@@ -7,12 +7,14 @@ import logging
 import threading
 import requests
 import traceback
+import uuid
 
 from datetime import date, datetime, timedelta, timezone as dt_timezone
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
+from django.core.cache import cache
 from django.db import connection, transaction
 from django.db.models import Count, Subquery, OuterRef, Exists, Max
 from django.shortcuts import redirect, render
@@ -350,7 +352,6 @@ def save_general_details(request):
             'village_code': village_code,
             'thromde_id': thromde_id,
             'location_name': request.POST.get('project_site'),
-            'cross_dzongkhag_locations': request.POST.get('cross_dzongkhag_locations'),
             'project_name': request.POST.get('project_name'),
             'project_description': request.POST.get('project_description'),
             'dzongkhag_throm': dzongkhag_throm,
@@ -670,7 +671,6 @@ def save_new_general_details(request):
             'village_code': village_code,
             'thromde_id': thromde_id,
             'location_name': post_data.get('project_site'),
-            'cross_dzongkhag_locations': post_data.get('cross_dzongkhag_locations'),
             'project_name': post_data.get('project_name'),
             'project_description': post_data.get('project_description'),
             'dzongkhag_throm': dzongkhag_throm,
@@ -865,7 +865,6 @@ def save_other_modification_general_details(request):
             'prev_ec_reference_no': previous_ec_reference_no,
             'ca_authority': ca_auth_id,
             'app_remarks': post_data.get('app_remarks'),
-            'cross_dzongkhag_locations': post_data.get('cross_dzongkhag_locations'),
         }
 
         with transaction.atomic():
@@ -991,10 +990,8 @@ def save_draft_general_details(request):
             'village_code': village_code,
             'thromde_id': thromde_id,
             'location_name': post_data.get('project_site'),
-            'cross_dzongkhag_locations': post_data.get('cross_dzongkhag_locations'),
             'project_name': post_data.get('project_name'),
             'project_description': post_data.get('project_description'),
-            'app_remarks': post_data.get('app_remarks'),
             'dzongkhag_throm': dzongkhag_throm,
             'ca_authority': ca_auth_id
         }
@@ -1348,30 +1345,27 @@ def send_submit_renewal_application_mail(name, email_id, application_no):
 
 def proof_request(request):
     category = request.GET.get('category', '')
-
     if category == 'Login':
         purpose = 'login'
     else:
         purpose = 'ekyc'
 
     try:
-        # Invalidate existing session and create a new session
-        session_id = request.session.session_key
-        if session_id:
-            request.session.flush()
-            request.session.create()
-
-        request.session.create()  # Create a new session
-        new_session_id = request.session.session_key
-
         # Get NDI access token
         ndi_token = get_access_token_ndi()
+        
+        # Debug: Check if token exists
+        # logger.debug(f"NDI Token: {ndi_token[:50]}...")  # Log first 50 chars
 
         # Define verifier API URL and headers
-        verifier_api_url = 'https://demo-client.bhutanndi.com/verifier/v1/proof-request'
-        headers = {'Authorization': f"Bearer {ndi_token}", 'Content-Type': 'application/json'}
+        verifier_base = getattr(settings, 'NDI_VERIFIER_BASE', 'https://demo-client.bhutanndi.com')
+        verifier_api_url = f'{verifier_base}/verifier/v1/proof-request'
+        headers = {
+            'Authorization': f"Bearer {ndi_token}", 
+            'Content-Type': 'application/json'
+        }
 
-        # Define proof request data
+        # Define proof request data - Check the exact format required by API
         proof_attributes = [
             {
                 'name': "ID Number",
@@ -1382,39 +1376,65 @@ def proof_request(request):
                 ]
             }
         ]
+        
         proof_data = {
             'proofName': 'ECSS Credentials',
             'proofAttributes': proof_attributes,
             'purpose' : purpose
         }
+        
+        # Debug: Log the request data
+        logger.debug(f"Request data: {json.dumps(proof_data, indent=2)}")
 
-        # Make request to verifier API
-        response = requests.post(verifier_api_url, headers=headers, data=json.dumps(proof_data), verify=False)
-        response.raise_for_status()  # Raise an exception for HTTP errors
-
+        # Make request with proper error handling
+        response = requests.post(
+            verifier_api_url, 
+            headers=headers, 
+            json=proof_data,  # This automatically sets Content-Type and serializes JSON
+            verify=False,
+            timeout=30
+        )
+        
+        # Log response details for debugging
+        logger.debug(f"Response status: {response.status_code}")
+        logger.debug(f"Response headers: {dict(response.headers)}")
+        logger.debug(f"Response body: {response.text}")
+        
+        # Try to get detailed error message from response
+        if response.status_code == 400:
+            try:
+                error_details = response.json()
+                logger.error(f"API Error Details: {error_details}")
+                return JsonResponse({
+                    'error': 'Bad Request',
+                    'details': error_details
+                }, status=400)
+            except:
+                logger.error(f"API Error Response: {response.text}")
+                return JsonResponse({
+                    'error': 'Bad Request',
+                    'response': response.text
+                }, status=400)
+        
+        response.raise_for_status()
         response_data = response.json()
         logger.debug(f"Proof request response: {response_data}")
 
-        # Get the thread_id from the response
         thread_id = response_data.get('data', {}).get('proofRequestThreadId', '')
-
-        # Insert the new session_id and thread_id into the database
-        with connection.cursor() as cursor:
-            cursor.execute(
-                "INSERT INTO proponent_t_ndi_login_temp (session_id, thread_id, category, created_date) VALUES (%s, %s, %s, CURRENT_DATE)",
-                [new_session_id, thread_id, category]
-            )
-
-        # Include session_id in the response data
-        response_data['session_id'] = new_session_id
-
+        response_data = _finalize_ndi_proof_request(response_data, category, thread_id)
         return JsonResponse(response_data)
+        
+    except requests.exceptions.SSLError as e:
+        logger.error(f"SSL Certificate error: {e}")
+        return JsonResponse({'error': f'SSL verification failed: {str(e)}'}, status=500)
     except requests.RequestException as e:
         logger.error(f"Error making request to verifier API: {e}")
-        return JsonResponse({'error': 'Error making request to verifier API'}, status=500)
+        if hasattr(e, 'response') and e.response is not None:
+            logger.error(f"Response content: {e.response.text}")
+        return JsonResponse({'error': f'Error making request to verifier API: {str(e)}'}, status=500)
     except Exception as e:
         logger.error(f"Unexpected error: {e}")
-        return JsonResponse({'error': 'Unexpected error occurred'}, status=500)
+        return JsonResponse({'error': f'Unexpected error occurred: {str(e)}'}, status=500)
 
 
 def proof_request_employee(request):
@@ -1425,20 +1445,9 @@ def proof_request_employee(request):
         purpose = 'ekyc'
 
     try:
-        # Invalidate existing session and create a new session
-        session_id = request.session.session_key
-        if session_id:
-            request.session.flush()
-            request.session.create()
-
-        request.session.create()  # Create a new session
-        new_session_id = request.session.session_key
-
-        # Get NDI access token
         ndi_token = get_access_token_ndi()
-
-        # Define verifier API URL and headers
-        verifier_api_url = 'https://demo-client.bhutanndi.com/verifier/v1/proof-request'
+        verifier_base = getattr(settings, 'NDI_VERIFIER_BASE', 'https://demo-client.bhutanndi.com')
+        verifier_api_url = f'{verifier_base}/verifier/v1/proof-request'
         headers = {'Authorization': f"Bearer {ndi_token}", 'Content-Type': 'application/json'}
 
         # Define proof request data
@@ -1465,20 +1474,11 @@ def proof_request_employee(request):
         response_data = response.json()
         logger.debug(f"Proof request response: {response_data}")
 
-        # Get the thread_id and revocation_id from the response
         thread_id = response_data.get('data', {}).get('proofRequestThreadId', '')
         revocation_id = response_data.get('data', {}).get('revocationId', '')
-
-        # Insert the new session_id, thread_id, and revocation_id into the database
-        with connection.cursor() as cursor:
-            cursor.execute(
-                "INSERT INTO proponent_t_ndi_login_temp (session_id, thread_id, revocation_id, category, created_date) VALUES (%s, %s, %s, %s, CURRENT_DATE)",
-                [new_session_id, thread_id, revocation_id, category]
-            )
-
-        # Include session_id in the response data
-        response_data['session_id'] = new_session_id
-
+        response_data = _finalize_ndi_proof_request(
+            response_data, category, thread_id, revocation_id=revocation_id
+        )
         return JsonResponse(response_data)
 
     except requests.RequestException as e:
@@ -1487,6 +1487,7 @@ def proof_request_employee(request):
     except Exception as e:
         logger.error(f"Unexpected error: {e}")
         return JsonResponse({'error': 'Unexpected error occurred'}, status=500)
+
 
 def fetch_relationship_data(request,thread_id):
     ndi_token = get_access_token_ndi()
@@ -1535,26 +1536,16 @@ def fetch_relationship_data(request,thread_id):
         return JsonResponse({'error': 'Failed to fetch data from verifier API'}, status=response.status_code)
 
 def proof_request_proponent(request):
-    category = request.GET.get('category', '')
+    category = request.GET.get('category', '')  # Get the category from query parameters
+
     if category == 'Employee':
         purpose = 'login'
     else:
         purpose = 'ekyc'
     try:
-        # Invalidate existing session and create a new session
-        session_id = request.session.session_key
-        if session_id:
-            request.session.flush()
-            request.session.create()
-
-        request.session.create()  # Create a new session
-        new_session_id = request.session.session_key
-
-        # Get NDI access token
         ndi_token = get_access_token_ndi()
-
-        # Define verifier API URL and headers
-        verifier_api_url = 'https://demo-client.bhutanndi.com/verifier/v1/proof-request'
+        verifier_base = getattr(settings, 'NDI_VERIFIER_BASE', 'https://demo-client.bhutanndi.com')
+        verifier_api_url = f'{verifier_base}/verifier/v1/proof-request'
         headers = {'Authorization': f"Bearer {ndi_token}", 'Content-Type': 'application/json'}
 
         # Define proof request data
@@ -1613,19 +1604,8 @@ def proof_request_proponent(request):
         response_data = response.json()
         logger.debug(f"Proof request response: {response_data}")
 
-        # Get the thread_id from the response
         thread_id = response_data.get('data', {}).get('proofRequestThreadId', '')
-
-        # Insert the new session_id, thread_id, and category into the database
-        with connection.cursor() as cursor:
-            cursor.execute(
-                "INSERT INTO proponent_t_ndi_login_temp (session_id, thread_id, category, created_date) VALUES (%s, %s, %s, CURRENT_DATE)",
-                [new_session_id, thread_id, category]
-            )
-
-        # Include session_id in the response data
-        response_data['session_id'] = new_session_id
-
+        response_data = _finalize_ndi_proof_request(response_data, category, thread_id)
         return JsonResponse(response_data)
 
     except requests.RequestException as e:
@@ -1637,6 +1617,90 @@ def proof_request_proponent(request):
 
 from django.views.decorators.http import require_GET
 
+NDI_PROOF_CACHE_TIMEOUT = 600
+
+
+def _ndi_proof_cache_key(thread_id):
+    return f'ndi_proof_{thread_id}'
+
+
+def cache_ndi_proof_for_polling(thread_id, payload):
+    """Store webhook payload so mobile clients can poll after returning from the NDI app."""
+    if thread_id:
+        client_payload = {k: v for k, v in payload.items() if k != 'type'}
+        cache.set(_ndi_proof_cache_key(thread_id), client_payload, timeout=NDI_PROOF_CACHE_TIMEOUT)
+
+
+def broadcast_ndi_proof(payload):
+    """Push proof to WebSocket clients and cache for HTTP polling fallback."""
+    thread_id = payload.get('thid')
+    cache_ndi_proof_for_polling(thread_id, payload)
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)('id_number_group', payload)
+
+
+def _normalize_proof_request_response(response_data):
+    """
+    Pass NDI verifier JSON through unchanged (statusCode, message, data.*).
+    Only normalizes alternate field spellings and copies URLs to the top level
+    for the browser. Never rewrite deepLinkURL or proofRequestURL values.
+    """
+    data = response_data.get('data')
+    if not isinstance(data, dict):
+        return response_data
+
+    deep_link = (
+        data.get('deepLinkURL')
+        or data.get('deepLinkUrl')
+        or data.get('deeplinkURL')
+    )
+    proof_url = data.get('proofRequestURL') or data.get('proofRequestUrl')
+    thread_id = data.get('proofRequestThreadId')
+
+    if deep_link:
+        data['deepLinkURL'] = deep_link
+        response_data['deepLinkURL'] = deep_link
+    if proof_url:
+        data['proofRequestURL'] = proof_url
+        response_data['proofRequestURL'] = proof_url
+    if thread_id:
+        data['proofRequestThreadId'] = thread_id
+        response_data['proofRequestThreadId'] = thread_id
+
+    logger.info(
+        'NDI proof-request URLs: deepLinkURL=%s proofRequestURL=%s threadId=%s',
+        deep_link,
+        proof_url,
+        thread_id,
+    )
+
+    return response_data
+
+
+def _finalize_ndi_proof_request(response_data, category, thread_id, revocation_id=None):
+    """Store NDI session, clear stale cache, return payload for the browser."""
+    cache.delete(_ndi_proof_cache_key(thread_id))
+
+    ndi_session_id = str(uuid.uuid4())
+    with connection.cursor() as cursor:
+        if revocation_id:
+            cursor.execute(
+                "INSERT INTO proponent_t_ndi_login_temp (session_id, thread_id, revocation_id, category, created_date) VALUES (%s, %s, %s, %s, CURRENT_DATE)",
+                [ndi_session_id, thread_id, revocation_id, category],
+            )
+        else:
+            cursor.execute(
+                "INSERT INTO proponent_t_ndi_login_temp (session_id, thread_id, category, created_date) VALUES (%s, %s, %s, CURRENT_DATE)",
+                [ndi_session_id, thread_id, category],
+            )
+
+    response_data = _normalize_proof_request_response(response_data)
+    response_data['session_id'] = ndi_session_id
+    response_data['ndi_environment'] = getattr(settings, 'NDI_ENVIRONMENT', 'demo')
+    response_data['ndi_mobile_show_qr_also'] = getattr(settings, 'NDI_MOBILE_SHOW_QR_ALSO', True)
+    return response_data
+
+
 @require_GET
 def fetch_verified_user_data(request):
     data = dict()
@@ -1645,6 +1709,11 @@ def fetch_verified_user_data(request):
     request.session['thread_id'] = thread_id
     request.session['value'] = value
     print(f"Value in fetch: {value}")
+
+    cached_proof = cache.get(_ndi_proof_cache_key(thread_id))
+    if cached_proof:
+        return JsonResponse(cached_proof, safe=False)
+
     BASE_URL = 'https://demo-client.bhutanndi.com/webhook/v1/subscribe/'
     token = get_access_token_ndi()
     print(token)
@@ -1652,7 +1721,7 @@ def fetch_verified_user_data(request):
         'Authorization': f"Bearer {token}",
     }
     post_data = {
-        "webhookId": "ecsstagingwebhookIdthree",
+        "webhookId": getattr(settings, 'NDI_WEBHOOK_ID', 'ecssserverid'),
         "threadId": thread_id
     }
 
@@ -1671,171 +1740,126 @@ def fetch_verified_user_data(request):
     except json.JSONDecodeError:
         return JsonResponse({"error": "Invalid JSON response from the server."}, status=500)
 
-    return JsonResponse(response_data, safe=False)
+    cached_proof = cache.get(_ndi_proof_cache_key(thread_id))
+    if cached_proof:
+        return JsonResponse(cached_proof, safe=False)
+
+    return JsonResponse({'pending': True}, status=200)
+
+def _ndi_revealed_attr(revealed_attrs, attr_name, default=None):
+    """Safely read the first revealed attribute value from the NDI webhook payload."""
+    entries = revealed_attrs.get(attr_name) or []
+    if not entries:
+        return default
+    return entries[0].get('value', default)
+
+
+def _ndi_webhook_lookup(thid):
+    if not thid:
+        return None, None
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "SELECT category, session_id FROM proponent_t_ndi_login_temp WHERE thread_id = %s",
+            [thid],
+        )
+        row = cursor.fetchone()
+    if not row:
+        return None, None
+    return row[0], row[1]
+
+
+def _ndi_accept_proof(payload):
+    payload = {k: v for k, v in payload.items() if v is not None}
+    print("Payload to be sent to WebSocket:", payload)
+    broadcast_ndi_proof(payload)
+    return JsonResponse({"statusCode": "202", "statusDescription": "Accepted"}, status=202)
+
 
 @csrf_exempt
 def webhook(request):
-
     print("Inside Webhook")
-
     try:
-
         cleaned_body = request.body.decode('utf-8')
         data = json.loads(cleaned_body)
+        print("NDI webhook payload:", data)
+
+        proof_type = data.get('type')
+        thid = data.get('thid')
+        category, session_id = _ndi_webhook_lookup(thid)
+
+        if session_id is None:
+            print(f"Session not found for thread_id={thid}")
+            return JsonResponse(
+                {"statusCode": "400", "statusDescription": "Session not found"},
+                status=400,
+            )
+
+        base_payload = {
+            'type': 'send_id_number',
+            'thid': thid,
+            'category': category,
+            'session_id': session_id,
+            'proof_type': proof_type,
+        }
+
+        # Handle rejection before parsing attributes (empty attrs otherwise default id_number to '1111')
+        if proof_type == 'present-proof/rejected':
+            return _ndi_accept_proof(base_payload)
 
         requested_presentation = data.get('requested_presentation', {})
         revealed_attrs = requested_presentation.get('revealed_attrs', {})
 
-        id_number = revealed_attrs.get('ID Number', [{}])[0].get('value', '1111')
-
-        eid = revealed_attrs.get('EID', [{}])[0].get('value', None)
-
-        full_name = revealed_attrs.get('Full Name', [{}])[0].get('value', None)
-
-        relationshipDid = data.get('relationship_did')
-
-        thid = data.get('thid')
-
+        eid = _ndi_revealed_attr(revealed_attrs, 'EID')
+        full_name = _ndi_revealed_attr(revealed_attrs, 'Full Name')
+        id_number = _ndi_revealed_attr(revealed_attrs, 'ID Number')
+        relationship_did = data.get('relationship_did')
         holder_did = data.get('holder_did')
 
-        proof_type = data.get('type')
-
-        if not thid:
-            return JsonResponse(
-                {
-                    "statusCode": "400",
-                    "statusDescription": "Missing thread id"
-                },
-                status=400
-            )
-
-        with connection.cursor() as cursor:
-
-            cursor.execute("""
-                SELECT category, session_id, is_used
-                FROM proponent_t_ndi_login_temp
-                WHERE thread_id = %s
-            """, [thid])
-
-            row = cursor.fetchone()
-
-            if not row:
-
+        # Employee login: EID only (placeholder CID 1111 for legacy client check)
+        if category == 'Employee':
+            if not eid:
                 return JsonResponse(
-                    {
-                        "statusCode": "400",
-                        "statusDescription": "Session not found"
-                    },
-                    status=400
+                    {"statusCode": "400", "statusDescription": "EID not found in proof"},
+                    status=400,
                 )
-
-            category, session_id, is_used = row
-
-            if is_used == 'Y':
-
-                return JsonResponse(
-                    {
-                        "statusCode": "403",
-                        "statusDescription": "Request already consumed"
-                    },
-                    status=403
-                )
-
-            payload = {
-                'type': 'send_id_number',
-                'id_number': id_number,
+            return _ndi_accept_proof({
+                **base_payload,
+                'id_number': id_number or '1111',
                 'eid': eid,
-                'full_name': full_name,
-                'relationshipDid': relationshipDid,
-                'thid': thid,
+                'relationshipDid': relationship_did,
                 'holder_did': holder_did,
-                'category': category,
-                'session_id': session_id,
-                'proof_type': proof_type
-            }
+            })
 
-            # Add optional fields
-            dzongkhag = revealed_attrs.get('Dzongkhag', [{}])[0].get('value')
+        # Proponent registration: CID + name + address fields
+        if full_name and id_number:
+            return _ndi_accept_proof({
+                **base_payload,
+                'id_number': id_number,
+                'full_name': full_name,
+                'dzongkhag': _ndi_revealed_attr(revealed_attrs, 'Dzongkhag'),
+                'gewog': _ndi_revealed_attr(revealed_attrs, 'Gewog'),
+                'village': _ndi_revealed_attr(revealed_attrs, 'Village'),
+            })
 
-            gewog = revealed_attrs.get('Gewog', [{}])[0].get('value')
+        # Proponent / issuance login: CID only
+        if id_number:
+            return _ndi_accept_proof({
+                **base_payload,
+                'id_number': id_number,
+                'relationshipDid': relationship_did,
+                'holder_did': holder_did,
+            })
 
-            village = revealed_attrs.get('Village', [{}])[0].get('value')
-
-            if dzongkhag:
-                payload['dzongkhag'] = dzongkhag
-
-            if gewog:
-                payload['gewog'] = gewog
-
-            if village:
-                payload['village'] = village
-
-            # Remove None values
-            payload = {
-                k: v for k, v in payload.items()
-                if v is not None
-            }
-
-            print("Payload to WebSocket:", payload)
-
-            channel_layer = get_channel_layer()
-
-            async_to_sync(channel_layer.group_send)(
-                f'ndi_{thid}',
-                payload
-            )
-
-            """
-            Mark request consumed
-            """
-
-            cursor.execute("""
-                UPDATE proponent_t_ndi_login_temp
-                SET is_used = 'Y'
-                WHERE thread_id = %s
-            """, [thid])
-
+        print(f"Unrecognized webhook payload for thread_id={thid}, category={category}, type={proof_type}")
         return JsonResponse(
-            {
-                "statusCode": "202",
-                "statusDescription": "Accepted"
-            },
-            status=202
+            {"statusCode": "400", "statusDescription": "Unrecognized proof payload"},
+            status=400,
         )
-
-    except KeyError as e:
-
-        print(f"KeyError: {e}")
-
-        return JsonResponse(
-            {
-                "statusCode": "400",
-                "statusDescription": "Invalid request payload"
-            },
-            status=400
-        )
-
+    except (KeyError, IndexError) as e:
+        print(f"Invalid webhook payload: {e}")
+        return JsonResponse({"statusCode": "400", "statusDescription": "Invalid request payload"}, status=400)
     except json.JSONDecodeError:
-
-        return JsonResponse(
-            {
-                "statusCode": "400",
-                "statusDescription": "Invalid JSON"
-            },
-            status=400
-        )
-
-    except Exception as e:
-
-        print(f"Unexpected Error: {e}")
-
-        return JsonResponse(
-            {
-                "statusCode": "500",
-                "statusDescription": "Internal Server Error"
-            },
-            status=500
-        )
+        return JsonResponse({"statusCode": "400", "statusDescription": "Invalid JSON"}, status=400)
 
 def ndi_dash(request):
     if request.method == 'POST':
@@ -2629,7 +2653,7 @@ def ec_renewal_details(request):
     # Fetch ALL EC terms for display (no DB writes here)
     ec_terms = t_ec_t2.objects.filter(
         ec_reference_no=ec_reference_no, ec_type='Terms'
-    ).order_by('order')  # adjust ordering if needed (e.g., seq_no)
+    ).order_by('record_id')  # adjust ordering if needed (e.g., seq_no)
 
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
@@ -2974,8 +2998,7 @@ def submit_oc_application(request):
                 buyer_proponent_type=applicant_details.proponent_type,
                 buyer_project_name=application_details.project_name,
                 buyer_focal_person=applicant_focal_person,
-                app_remarks=app_remarks,
-                cross_dzongkhag_locations=application_details.cross_dzongkhag_locations,
+                app_remarks=app_remarks
             )
 
             # B) Create workflow record
@@ -3323,7 +3346,6 @@ def submit_nc_application(request):
                 gewog_code=application_details.gewog_code,
                 village_code=application_details.village_code,
                 location_name=application_details.location_name,
-                cross_dzongkhag_locations=application_details.cross_dzongkhag_locations,
                 application_source=application_details.application_source,
                 dzongkhag_throm=application_details.dzongkhag_throm,
                 activity=application_details.activity,
@@ -3723,7 +3745,6 @@ def save_tor_form(request):
         dzongkhag_throm = request.POST.get('dzongkhag_throm')
         proponent_type = request.session['proponent_type']
         project_site = request.POST.get('project_site')
-        cross_dzongkhag_locations = request.POST.get('cross_dzongkhag_locations')
         mas_integration = request.POST.get('mas_integration')
         print(mas_integration)
 
@@ -3799,7 +3820,6 @@ def save_tor_form(request):
             gewog_code=gewog_code,
             village_code=village_code,
             location_name=project_site,
-            cross_dzongkhag_locations=cross_dzongkhag_locations,
             activity=activity,
             applicant_id=request.session['email'],
             ca_authority=ca_auth_id,
@@ -5733,7 +5753,6 @@ def save_old_ec_general_details(request):
             'village_code': village_code,
             'thromde_id': thromde_id,
             'location_name': request.POST.get('project_site'),
-            'cross_dzongkhag_locations': request.POST.get('cross_dzongkhag_locations'),
             'project_name': request.POST.get('project_name'),
             'project_description': request.POST.get('project_description'),
             'dzongkhag_throm': dzongkhag_throm,
@@ -5875,58 +5894,33 @@ def submit_old_ec_general_application(request):
     try:
         application_no = request.POST.get('general_disclaimer_application_no')
         ec_reference_no = request.POST.get('ec_reference_no')
-        reject_reason   = request.POST.get('reject_reason')
-        identifier      = request.GET.get('identifier')
-
-        print(application_no, ec_reference_no, reject_reason, identifier)
+        identifier = request.GET.get('identifier')
+        print(application_no, ec_reference_no, identifier)
 
         # Get application details
         application_details = t_ec_application_t1.objects.filter(application_no=application_no)
-        main_application    = application_details.filter(service_type='Main Activity').first()
+        main_application = application_details.filter(service_type='Main Activity').first()
 
         if not main_application:
             data['error'] = "No main application found"
             return JsonResponse(data, status=400)
 
-        applicant_name = main_application.applicant_name
-        email          = main_application.applicant_id
-
         if identifier in ['A', 'R']:
             main_application.application_status = identifier
-            main_application.assigned_by        = request.session['login_id']
-            main_application.assigned_date      = timezone.now()
+            main_application.assigned_by = request.session['login_id']
+            main_application.assigned_date = timezone.now()
             main_application.save()
 
             # Push to main/history tables ONLY when approved
             _handle_old_application_ec_tables(ec_reference_no, application_no)
 
             remarks = 'OLD EC Approved'
-
-            # ✅ Send approval email after DB commit
-            transaction.on_commit(
-                lambda: threading.Thread(
-                    target=_send_approval_mail_in_background,
-                    args=(applicant_name, email, application_no),
-                    daemon=True
-                ).start()
-            )
-
         else:
-            main_application.action_date         = timezone.now()
-            main_application.application_status  = identifier
-            main_application.reject_remarks      = reject_reason
+            main_application.action_date = timezone.now()
+            main_application.application_status = identifier
             main_application.save()
 
-            remarks = 'OLD EC Sent back for Resubmission'
-
-            # ✅ Send rejection email after DB commit
-            transaction.on_commit(
-                lambda: threading.Thread(
-                    target=_send_rejection_mail_in_background,
-                    args=(applicant_name, email, application_no, reject_reason),
-                    daemon=True
-                ).start()
-            )
+            remarks='OLD EC Sent back for Resubmission'
 
         # Update existing history row(s) for the main activity
         t_application_history.objects.filter(
@@ -5938,82 +5932,13 @@ def submit_old_ec_general_application(request):
             application_status=identifier
         )
 
-        data['message'] = "success"
 
+        data['message'] = "success"
     except Exception as e:
         data['error'] = str(e).split("\n")[0]
-
     return JsonResponse(data)
 
 # OLD EC UPDATE END
-
-#SEND EMAIL on APPROVE AND REJECT start
-# ──────────────────────────────────────────────
-# Background thread targets
-# ──────────────────────────────────────────────
-
-def _send_approval_mail_in_background(name, email, application_no):
-    try:
-        _send_approval_mail(name, email, application_no)
-    except Exception:
-        logger.exception(
-            "Failed to send approval email for application_no=%s", application_no
-        )
-
-
-def _send_rejection_mail_in_background(name, email, application_no, reject_reason):
-    try:
-        _send_rejection_mail(name, email, application_no, reject_reason)
-    except Exception:
-        logger.exception(
-            "Failed to send rejection email for application_no=%s", application_no
-        )
-
-
-# ──────────────────────────────────────────────
-# Actual mail senders
-# ──────────────────────────────────────────────
-
-def _send_approval_mail(name, email, application_no):
-    subject = "EC Application Approved"
-    message = (
-        f"Dear {name},\n\n"
-        f"Your application registered under the application number: {application_no} "
-        f"has been approved.\n\n"
-        f"Please log in to the portal for further steps.\n\n"
-        f"Regards,\n"
-        f"Environment Clearance Services"
-    )
-    send_mail(
-        subject=subject,
-        message=message,
-        from_email=getattr(settings, "DEFAULT_FROM_EMAIL", None),
-        recipient_list=[email],
-        fail_silently=False,
-    )
-
-
-def _send_rejection_mail(name, email, application_no, reject_reason):
-    subject = "EC Application Rejected / Sent for Resubmission"
-    message = (
-        f"Dear {name},\n\n"
-        f"Your application registered under the application number: {application_no} "
-        f"has been rejected / sent back for resubmission.\n\n"
-        f"Remarks: {reject_reason}\n\n"
-        f"Please log in to the portal to resubmit your application.\n\n"
-        f"Regards,\n"
-        f"Environment Clearance Services"
-    )
-    send_mail(
-        subject=subject,
-        message=message,
-        from_email=getattr(settings, "DEFAULT_FROM_EMAIL", None),
-        recipient_list=[email],
-        fail_silently=False,
-    )
-
-#SEND EMAIL on APPROVE AND REJECT start
-
 
 def _handle_old_application_ec_tables(ec_reference_no, application_no):
     source_t1_records = t_ec_application_t1.objects.filter(

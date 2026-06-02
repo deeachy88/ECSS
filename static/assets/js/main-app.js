@@ -257,10 +257,7 @@
         window.back = ModalManager.back.bind(ModalManager);
         //window.register_client = RegistrationHandler.registerClient.bind(RegistrationHandler);
         window.check_cid = RegistrationHandler.checkCID.bind(RegistrationHandler);
-        window.authenticate_ndi = (type) => {
-            Utils.showLoading(true);
-            // Your NDI authentication logic
-        };
+        // authenticate_ndi is defined in templates/index.html for NDI login/registration
 
         // Add more global function assignments as needed
     }

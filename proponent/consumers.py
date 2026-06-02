@@ -2,45 +2,32 @@ import json
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 
-
 class IdConsumer(WebsocketConsumer):
-
     def connect(self):
-
-        self.thread_id = self.scope['url_route']['kwargs']['thread_id']
-
-        self.group_name = f"ndi_{self.thread_id}"
-
         self.accept()
-
         async_to_sync(self.channel_layer.group_add)(
-            self.group_name,
+            'id_number_group',
             self.channel_name
         )
-
         self.send(text_data=json.dumps({
-            'type': 'connection_established',
-            'message': 'Connected successfully',
-            'thread_id': self.thread_id
+            'type': 'connection-established',
+            'message': 'You are now connected'
         }))
 
     def disconnect(self, close_code):
-
         async_to_sync(self.channel_layer.group_discard)(
-            self.group_name,
+            'id_number_group',
             self.channel_name
         )
 
     def receive(self, text_data):
-
         data = json.loads(text_data)
-
+        id_number = data['id_number']
         self.send(text_data=json.dumps({
-            'message': 'Message received successfully'
+            'message': f"ID number {id_number} received and processed."
         }))
 
     def send_id_number(self, event):
-
         self.send(text_data=json.dumps({
             'id_number': event.get('id_number'),
             'full_name': event.get('full_name'),

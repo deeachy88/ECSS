@@ -60,6 +60,7 @@
     <link rel="stylesheet" href="{% static 'assets/vendor/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css' %}" media="print" onload="this.media='all'">
     <link href="{% static 'assets/css/app-saas.min.css' %}" rel="stylesheet">
     <link href="{% static 'assets/css/ndi.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/ndi-components.css' %}" rel="stylesheet">
     <link href="{% static 'assets/css/icons.min.css' %}" rel="stylesheet">
     <link href="{% static 'assets/vendor/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet">
     <link href="{% static 'assets/vendor/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}" rel="stylesheet">
@@ -282,13 +283,13 @@
                 <div id="loginSelectionBox">
                     <div class="modal-body mx-4 d-flex gap-2 justify-content-center">
                         <button type="button"
-                                class="btn btn-outline-primary btn-sm active-login-btn"
+                                class="btn btn-outline-primary btn-sm login-type-btn active-login-btn"
                                 id="btnProponent"
                                 onclick="showLoginForm('proponent')">
                             Proponent Login
                         </button>
                         <button type="button"
-                                class="btn btn-outline-primary btn-sm"
+                                class="btn btn-outline-primary btn-sm login-type-btn"
                                 id="btnAgency"
                                 onclick="showLoginForm('agency')">
                             Agency Login
@@ -333,18 +334,13 @@
                             </div>
                         </div>
                     </form>
-                    <div class="splitter">
-                        <span style="background-color: rgb(255, 255, 255);">OR</span>
+                    <div class="splitter ndi-or-divider-login">
+                        <span>OR</span>
                     </div>
-
-                    <div class="modal-header mx-5 pt-3 mb-1 justify-content-center">
-                        <a href="#"
-                           id="ndiLoginId"
-                           onclick="authenticate_ndi('Login')"
-                           style="background-color: #124143; color:white; border-radius: 6px; padding: 5px 10px; font-size: 0.9rem; display: inline-flex; align-items: center;">
-                            <img src="{% static 'assets/images/NDI_logo.png' %}"
-                                 style="width: 20px; height: 20px; margin-right: 6px;">
-                            &nbsp; &nbsp; Login with Bhutan NDI  &nbsp; &nbsp;
+                    <div class="ndi-auth-wrap">
+                        <a href="#" id="ndiLoginId" onclick="startNdiLogin('Login'); return false;" class="ndi-auth-btn">
+                            <img src="{% static 'assets/images/NDI_logo.png' %}" alt="">
+                            Login with Bhutan NDI
                         </a>
                     </div>
 
@@ -402,13 +398,13 @@
                             </div>
                         </div>
                     </form>
-                    <div class="splitter">
-                        <span style="background-color: rgb(255, 255, 255);">OR</span>
+                    <div class="splitter ndi-or-divider-login">
+                        <span>OR</span>
                     </div>
-                    <div class="modal-header mx-5 pt-3 mb-1 justify-content-center">
-                        <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="ndiEmployeeId" onclick="authenticate_ndi_empid('Employee')">
-                            <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%" style="vertical-align: middle;">
-                            &nbsp; &nbsp; Login with Bhutan NDI
+                    <div class="ndi-auth-wrap">
+                        <a href="#" id="ndiEmployeeId" onclick="startNdiEmployeeLogin('Employee'); return false;" class="ndi-auth-btn">
+                            <img src="{% static 'assets/images/NDI_logo.png' %}" alt="">
+                            Login with Bhutan NDI
                         </a>
                     </div>
                 </div>
@@ -457,62 +453,56 @@
                 </div>
             </div>
             <div class="alert alert-danger" id="issuanceMessageError" role="alert" style="display: none;"></div>
-            <div id="ndi_div" style="display: none; text-align: center">
-                <h1 style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 800; color: black;">Environmental Clearance Services System</h1>
-                <div class="splitter"></div>
-
-                <div id="deepLink" class="col-md-5 text-center" style="display: none;">
-                    <button id="deepLinkBtn" class="button button1 text-white btn-bg cus-button">
-                        <img src="{% static 'assets/images/NDI_logo.png' %}" alt="NDI Logo" class="ndi-logo">Open Bhutan NDI App
-                    </button>
+            <div id="ndi_div" style="display: none;">
+                <h1>Environmental Clearance Services System</h1>
+                <h2 class="ndi-flow-title">Scan with <span class="ndi-brand">Bhutan NDI</span> wallet</h2>
+                <div id="deepLink" style="display: none;">
+                    <button type="button" id="deepLinkBtn" class="ndi-deeplink-btn">Open Bhutan NDI wallet</button>
                 </div>
-                <h2 style="font-size: 1.0rem; margin-bottom: .5rem; font-weight: 500; color: black;">Scan with <span style="color:#5AC994 ">Bhutan NDI </span> Wallet</h2>
-                <div class="splitter">
-                    <span style="background-color: rgb(255, 255, 255);">OR</span>
+                <div class="splitter ndi-or-divider-mobile" id="ndiOrDivider">
+                    <span>OR</span>
                 </div>
-                <div class="qr-img" style="margin-top: 10px">
-                    <div class="text-center" id="qrcode"><canvas width="200" height="200" style="display: none;"></canvas></div>
-                    <img id="logo" src="{% static 'assets/images/NDIlogobg.png' %}" style="display: none;" />
-                    <div class="row text-center">
-                        <div class="counter" id="clockdiv" style="display: none;">
-                            <div class="sq">
-                                <span class="seconds bord" id="timer"></span> <span class="smalltext">Secs</span>
-                            </div>
+                <div class="qr-img">
+                    <div id="qrcode"></div>
+                    <img id="logo" src="{% static 'assets/images/NDIlogobg.png' %}" alt="" style="display: none;" />
+                    <div class="counter" id="clockdiv" style="display: none;">
+                        <div class="sq">
+                            <span class="seconds bord" id="timer"></span>
+                            <span class="smalltext">Secs</span>
                         </div>
                     </div>
                 </div>
-
-                <div class="row justify-content-center">
-                    <div class="col-md-9 custom-vertical-align-left">
-                        <br>
-                        <ul class="list-unstyled" style="text-align: left;">
-                            <li data-sider-select-id="783988bc-fef7-4001-aa82-d6b788c97fe7" style="margin-bottom: 10px;">1. Open Bhutan NDI Wallet on your Phone</li>
-                            <li>2. Tab the Scan button located on the menu bar <img src="{% static 'assets/images/ScanButton.png' %}" alt="QR Code"> and capture code</li>
-                        </ul>
-                    </div>
-                </div>
+                <ul class="ndi-instructions list-unstyled">
+                    <li>1. Open Bhutan NDI Wallet on your Phone</li>
+                    <li>2. Tap the scan button located on the menu bar <img src="{% static 'assets/images/ScanButton.png' %}" alt="Scan"> and scan the QR code</li>
+                </ul>
                 <div class="modal-body-video-btn">
-                    <a href="https://www.youtube.com/watch?v=A_k79pml9k8" target="_blank" class="btn btn-ndi btn-pill">Watch Video Guide &nbsp;<i class="mdi mdi-motion-play"></i>
-                    </a>
+                    <a href="https://www.youtube.com/watch?v=A_k79pml9k8" target="_blank" rel="noopener">Watch Video Guide &nbsp;<i class="mdi mdi-motion-play"></i></a>
                 </div>
                 <div class="modal-body-question">
                     <ul>
                         <li>
-                            Download Now!
+                            <span class="ndi-download-label">Download <span class="ndi-download-highlight">Now!</span></span>
                             <div class="app-link">
-                                <a href="https://play.google.com/store/search?q=bhutan%20ndi&amp;c=apps&amp;hl=en_IN&amp;gl=US" target="_blank" ><img src="{% static 'assets/images/play_store.png' %}" style="height: 35px;"></a>
-                                <a href="https://apps.apple.com/in/app/bhutan-ndi/id1645493166" target="_blank" ><img src="{% static 'assets/images/app_store.png' %}" style="height: 35px;"></a>
-
+                                <a href="https://play.google.com/store/search?q=bhutan%20ndi&amp;c=apps&amp;hl=en_IN&amp;gl=US" target="_blank" rel="noopener"><img src="{% static 'assets/images/play_store.png' %}" alt="Google Play" style="height: 35px;"></a>
+                                <a href="https://apps.apple.com/in/app/bhutan-ndi/id1645493166" target="_blank" rel="noopener"><img src="{% static 'assets/images/app_store.png' %}" alt="App Store" style="height: 35px;"></a>
                             </div>
                         </li>
                     </ul>
                 </div>
-                <hr>
-                <div id="back_but" style="display: none;">
-                    <a href="#" onclick="back()" class="font-small blue-text d-flex justify-content-center">Back To Login</a>
+                <div class="ndi-support">
+                    <p class="ndi-support-title mb-1">Need help?</p>
+                    <p class="mb-0">
+                        <a href="tel:1199" class="ndi-support-link">1199</a>
+                        <span class="mx-1">|</span>
+                        <a href="mailto:support@bhutanndi.com" class="ndi-support-link">support@bhutanndi.com</a>
+                    </p>
                 </div>
-                <div id="cls_but" style="display: none;">
-                    <a href="#" data-bs-dismiss="modal" class="font-small blue-text d-flex justify-content-center mb-1">Close</a>
+                <div id="back_but" class="ndi-back-link" style="display: none;">
+                    <a href="#" onclick="back(); return false;">Back To Login</a>
+                </div>
+                <div id="cls_but" class="ndi-back-link" style="display: none;">
+                    <a href="#" data-bs-dismiss="modal">Close</a>
                 </div>
             </div>
 
@@ -539,10 +529,11 @@
 <!-- NDI loader overlay (shown after QR is scanned) -->
 <div id="ndiLoaderOverlay" class="ndi-loader-overlay" aria-live="polite" aria-busy="true">
     <div class="ndi-loader-card">
-        <p class="ndi-loader-text" id="ndiLoaderMainText">Waiting for response</p>
+        <p class="ndi-loader-text" id="ndiLoaderMainText">Generating QR code</p>
         <p class="ndi-loader-subtext" id="ndiLoaderSubText">Please wait</p>
     </div>
 </div>
+<div id="wsStatus" class="ws-status ws-disconnected" aria-hidden="true"></div>
 
 
 <div class="modal fade" id="registrationModalForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -586,10 +577,10 @@
                         <div class="cid_details" style="display: none;">
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <div class="modal-header justify-content-center">
-                                        <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="generateQRCode" onclick="registerauthenticateWithAPI('Registration')">
-                                            <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%" style="vertical-align: middle;">
-                                            &nbsp; &nbsp; Use Bhutan NDI
+                                    <div class="ndi-auth-wrap">
+                                        <a href="#" class="ndi-auth-btn" id="generateQRCode" onclick="registerauthenticateWithAPI('Registration'); return false;">
+                                            <img src="{% static 'assets/images/NDI_logo.png' %}" alt="">
+                                            Register with Bhutan NDI
                                         </a>
                                     </div>
                                     <div id="progressIndicator1" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">
@@ -693,48 +684,43 @@
                         </div>
                     </div>
                     </div>
-                    <div class="modal-body" id="ndi_div_proponent" style="display: none; text-align: center">
-                        <div class="qr-img" style="margin-top: 10px">
-                            <div id="deepLinkPro" class="col-md-5 text-center" style="display: none;">
-                                <button id="deepLinkBtnPro" class="button button1 text-white btn-bg cus-button">
-                                    <img src="{% static 'assets/images/NDI_logo.png' %}" alt="NDI Logo" class="ndi-logo">Open Bhutan NDI App
-                                </button>
-                            </div>
-                            <div class="text-center" id="qrcodeproponent">
-                                <canvas width="200" height="200" style="display: none;"></canvas>
-                            </div>
-                            <img id="logo" src="{% static 'assets/images/NDIlogobg.png' %}" style="display: none;" />
-                            <div class="row text-center">
-                                <div class="counter" id="clockdiv" style="display: none;">
-                                    <div class="sq">
-                                        <span class="seconds bord" id="timer"></span> <span class="smalltext">Secs</span>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="modal-body" id="ndi_div_proponent" style="display: none;">
+                        <h2 class="ndi-flow-title">Scan with <span class="ndi-brand">Bhutan NDI</span> wallet</h2>
+                        <div id="deepLinkPro" style="display: none;">
+                            <button type="button" id="deepLinkBtnPro" class="ndi-deeplink-btn">Open Bhutan NDI wallet</button>
                         </div>
-                        <div class="row justify-content-center">
-                            <div class="col-md-9 custom-vertical-align-left">
-                                <br>
-                                <ul class="list-unstyled" style="text-align: left;">
-                                    <li data-sider-select-id="783988bc-fef7-4001-aa82-d6b788c97fe7">1. Open Bhutan NDI on your Phone</li>
-                                    <li>2. Tab the Scan button located on the menu bar <img src="{% static 'assets/images/ScanButton.png' %}" alt="QR Code"> and capture code</li>
-                                </ul>
-                            </div>
+                        <div class="splitter ndi-or-divider-mobile" id="ndiOrDividerPro">
+                            <span>OR</span>
                         </div>
+                        <div class="qr-img">
+                            <div id="qrcodeproponent"></div>
+                            <img id="logoPro" src="{% static 'assets/images/NDIlogobg.png' %}" alt="" style="display: none;" />
+                        </div>
+                        <ul class="ndi-instructions list-unstyled">
+                            <li>1. Open Bhutan NDI Wallet on your Phone</li>
+                            <li>2. Tap the scan button located on the menu bar <img src="{% static 'assets/images/ScanButton.png' %}" alt="Scan"> and scan the QR code</li>
+                        </ul>
                         <div class="modal-body-video-btn">
-                            <a href="https://www.youtube.com/watch?v=A_k79pml9k8" target="_blank" class="btn btn-ndi btn-pill">Watch Video Guide &nbsp;<i class="mdi mdi-motion-play"></i>
-                            </a>
+                            <a href="https://www.youtube.com/watch?v=A_k79pml9k8" target="_blank" rel="noopener">Watch Video Guide &nbsp;<i class="mdi mdi-motion-play"></i></a>
                         </div>
                         <div class="modal-body-question">
                             <ul>
                                 <li>
-                                    Download Now!
+                                    <span class="ndi-download-label">Download <span class="ndi-download-highlight">Now!</span></span>
                                     <div class="app-link">
-                                        <a href="https://play.google.com/store/search?q=bhutan%20ndi&amp;c=apps&amp;hl=en_IN&amp;gl=US" target="_blank"><img src="{% static 'assets/images/play_store.png' %}" style="height: 35px;"></a>
-                                        <a href="https://apps.apple.com/in/app/bhutan-ndi/id1645493166" target="_blank"><img src="{% static 'assets/images/app_store.png' %}" style="height: 35px;"></a>
+                                        <a href="https://play.google.com/store/search?q=bhutan%20ndi&amp;c=apps&amp;hl=en_IN&amp;gl=US" target="_blank" rel="noopener"><img src="{% static 'assets/images/play_store.png' %}" alt="Google Play" style="height: 35px;"></a>
+                                        <a href="https://apps.apple.com/in/app/bhutan-ndi/id1645493166" target="_blank" rel="noopener"><img src="{% static 'assets/images/app_store.png' %}" alt="App Store" style="height: 35px;"></a>
                                     </div>
                                 </li>
                             </ul>
+                        </div>
+                        <div class="ndi-support">
+                            <p class="ndi-support-title mb-1">Need help?</p>
+                            <p class="mb-0">
+                                <a href="tel:1199" class="ndi-support-link">1199</a>
+                                <span class="mx-1">|</span>
+                                <a href="mailto:support@bhutanndi.com" class="ndi-support-link">support@bhutanndi.com</a>
+                            </p>
                         </div>
                     </div>
                     <div class="alert alert-success" id="client_registration_message_div" style="display:none"></div>
@@ -750,16 +736,21 @@
     </div>
 </div>
 
-<!-- Vendor js -->
-<!-- At the end of body, load scripts in optimal order -->
-<script src="{% static 'assets/js/vendor.min.js' %}" defer></script>
+<!-- Vendor js (jQuery in vendor.min.js must load before NDI scripts) -->
+<script src="{% static 'assets/js/vendor.min.js' %}"></script>
 <script src="{% static 'assets/vendor/daterangepicker/moment.min.js' %}" defer></script>
 <script src="{% static 'assets/vendor/daterangepicker/daterangepicker.js' %}" defer></script>
 <script src="{% static 'assets/js/app.min.js' %}" defer></script>
-<script src="{% static 'assets/js/jquery-qrcode.min.js' %}" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/nats@2.1.7/dist/nats-base-client.umd.min.js" defer></script>
-<script src="{% static 'assets/js/ndi.js' %}" defer></script>
-<script src="{% static 'assets/js/main-app.js' %}" defer></script>
+<script>
+    window.NDI_CONFIG = {
+        environment: 'demo',
+        mobileShowQrAlso: true
+    };
+</script>
+<script src="{% static 'assets/js/ndi.js' %}"></script>
+<script src="{% static 'assets/js/jquery-qrcode.min.js' %}"></script>
+<script src="{% static 'assets/js/ndi-page.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/nats@2.1.7/dist/nats-base-client.umd.min.js"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -836,20 +827,6 @@
             location.reload(); // Reload the page
         }
     });
-
-    function forgotPassword()
-    {
-        $('#loginBox').hide();
-        $('#ForgotBox').show();
-    }
-
-     function back()
-     {
-        $('#loginBox').show();
-        $('#ForgotBox').hide();
-        $('#ndi_div').hide();
-        $('#issuanceMessageDiv').hide();
-    }
 
     function get_gewog(dzongkhag_id)
     {
@@ -1430,452 +1407,6 @@
         });
     }
 
-    let socket = null;
-    let sessionId = null;
-
-    function authenticate_ndi(value) {
-
-        // Show progress indicator
-        if (value == "Issuance") {
-
-            $('#loginModalForm').modal('show');
-            $('#progressLoader').show();
-            $('#loginBox').hide();
-            $('#cls_but').show();
-
-            setTimeout(() => {
-                $('#progressLoader').hide();
-            }, 5000);
-
-        } else {
-
-            $('#back_but').show();
-        }
-
-        $('#progressIndicator').show();
-
-        $.ajax({
-            type: "GET",
-            url: `/proof_request/?category=${value}`,
-
-            success: function(data) {
-
-                var verifierData = data.data;
-
-                var proofRequestURL = verifierData.proofRequestURL;
-                var proofRequestThreadId = verifierData.proofRequestThreadId;
-                var deepLinkURL = verifierData.deepLinkURL;
-
-                // Store session id
-                sessionId = data.session_id;
-
-                console.log("Session ID:", sessionId);
-                console.log("Thread ID:", proofRequestThreadId);
-
-                /*
-                =========================================
-                CLOSE OLD SOCKET IF EXISTS
-                =========================================
-                */
-
-                if (socket) {
-                    socket.close();
-                }
-
-                /*
-                =========================================
-                CREATE SECURE WEBSOCKET
-                =========================================
-                */
-
-                const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-
-                socket = new WebSocket(
-                    `${protocol}${window.location.host}/ws/socketserver/${proofRequestThreadId}/`
-                );
-
-                /*
-                =========================================
-                WEBSOCKET CONNECTED
-                =========================================
-                */
-
-                socket.onopen = function() {
-
-                    console.log("WebSocket connected");
-
-                    /*
-                    Subscribe webhook after websocket ready
-                    */
-
-                    nats_call(proofRequestThreadId, value);
-                };
-
-                /*
-                =========================================
-                RECEIVE MESSAGE
-                =========================================
-                */
-
-                socket.onmessage = function(e) {
-
-                    const response = JSON.parse(e.data);
-
-                    console.log("WebSocket Response:", response);
-
-                    /*
-                    =========================================
-                    SECURITY CHECK
-                    =========================================
-                    */
-
-                    if (
-                        response.session_id &&
-                        response.session_id !== sessionId
-                    ) {
-
-                        console.warn("Session mismatch detected");
-
-                        return;
-                    }
-
-                    // After the QR is scanned, wallet responses come back here.
-                    if (typeof window.showNdiWaitingLoader === 'function') {
-                        window.showNdiWaitingLoader();
-                    }
-
-                    /*
-                    =========================================
-                    HANDLE REJECTED PROOF
-                    =========================================
-                    */
-
-                    if (response.proof_type === 'present-proof/rejected') {
-
-                        if (typeof window.hideNdiLoader === 'function') {
-                            window.hideNdiLoader();
-                        }
-
-                        $('#ndi_login_error')
-                            .html("NDI verification rejected")
-                            .show()
-                            .delay(5000)
-                            .fadeOut('slow');
-
-                        return;
-                    }
-
-                    /*
-                    =========================================
-                    EID LOGIN
-                    =========================================
-                    */
-
-                    if (response.eid) {
-
-                        makeNdiDashCallEID(response.eid);
-
-                        return;
-                    }
-
-                    /*
-                    =========================================
-                    CID LOGIN
-                    =========================================
-                    */
-
-                    if (response.id_number && response.id_number !== '1111') {
-
-                        makeNdiDashCall(response.id_number);
-
-                        return;
-                    }
-
-                    /*
-                    =========================================
-                    PROPONENT FLOW
-                    =========================================
-                    */
-
-                    if (
-                        response.full_name &&
-                        response.id_number
-                    ) {
-
-                        console.log("Proponent verified");
-
-                        // your proponent logic here
-
-                        if (typeof window.hideNdiLoader === 'function') {
-                            window.hideNdiLoader();
-                        }
-                    }
-                };
-
-                /*
-                =========================================
-                SOCKET CLOSED
-                =========================================
-                */
-
-                socket.onclose = function(event) {
-
-                    console.log("WebSocket closed", event);
-                };
-
-                /*
-                =========================================
-                SOCKET ERROR
-                =========================================
-                */
-
-                socket.onerror = function(error) {
-
-                    console.error("WebSocket error:", error);
-                };
-
-                /*
-                =========================================
-                UPDATE QR DISPLAY
-                =========================================
-                */
-
-                $('.modal-footer').hide();
-
-                updateDisplay(
-                    proofRequestURL,
-                    deepLinkURL,
-                    proofRequestThreadId,
-                    value
-                );
-
-                $('#progressIndicator').hide();
-            },
-
-            error: function(error) {
-
-                console.error("Proof request error:", error);
-
-                $('#progressIndicator').hide();
-            }
-        });
-    }
-
-    function updateDisplay(proofRequestURL, deepLinkURL, proofRequestThreadId, value) {
-        $('#loginBox').hide();
-        $("#ndi_div").show();
-
-        if (isMobileDevice()) {
-            // Show button on mobile devices
-            $("#deepLink").show();
-            $("#deepLinkBtn").attr("onclick", `window.open('${deepLinkURL}', '_blank')`);
-            $('#qrcode').show();
-        } else {
-            // Show QR code on larger screens
-            $("#deepLink").hide();
-            $('#qrcode').empty(); // Clear previous QR code
-            $('#qrcode').qrcode({
-                render: 'canvas',
-                minVersion: 1,
-                maxVersion: 40,
-                ecLevel: 'L',
-                left: 0,
-                top: 0,
-                size: 200,
-                fill: '#000',
-                background: '#fff',
-                text: proofRequestURL,
-                radius: 0,
-                quiet: 0,
-                mode: 4,
-                mSize: 0.15,
-                mPosX: 0.5,
-                mPosY: 0.5,
-                label: '',
-                fontcolor: '#000',
-                fontname: 'sans',
-                image: document.getElementById('logo'),
-            });
-            $('#qrcode').show(); // Show the QR code
-        }
-        nats_call(proofRequestThreadId, value);
-    }
-
-    function isMobileDevice() {
-        return /Mobi|Android/i.test(navigator.userAgent);
-    }
-
-
-    function authenticate_ndi_empid(value) {
-        // Show progress indicator
-        $('#progressIndicator').show();
-
-        $.ajax({
-            type: "GET",
-            url: `/proof_request_employee/?category=${value}`, // Pass category as a query parameter
-            success: function(data) {
-                var verifierData = data.data;
-                var proofRequestURL = verifierData.proofRequestURL;
-                var proofRequestThreadId = verifierData.proofRequestThreadId;
-                var deepLinkURL = verifierData.deepLinkURL;
-                sessionId = data.session_id; // Store session ID from response
-
-                $('.modal-footer').hide();
-                updateDisplayEmp(proofRequestURL, deepLinkURL, proofRequestThreadId, value);
-
-            // Hide progress indicator
-                $('#progressIndicator').hide();
-            },
-            error: function() {
-                // Hide progress indicator in case of error
-                $('#progressIndicator').hide();
-            }
-        });
-    }
-
-    function updateDisplayEmp(proofRequestURL, deepLinkURL, proofRequestThreadId, value) {
-        $('#loginBox').hide();
-        $("#ndi_div").show();
-
-        if (isMobileDevice()) {
-            // Show button on mobile devices
-            $("#deepLink").show();
-            $("#deepLinkBtn").attr("onclick", `window.open('${deepLinkURL}', '_blank')`);
-            $('#qrcode').show();
-        } else {
-            // Show QR code on larger screens
-            // Clear previous QR code
-            $('#qrcode').empty();
-
-            // Generate new QR code
-            $('#qrcode').qrcode({
-                render: 'canvas',
-                minVersion: 1,
-                maxVersion: 40,
-                ecLevel: 'L',
-                left: 0,
-                top: 0,
-                size: 200,
-                fill: '#000',
-                background: '#fff',
-                text: proofRequestURL,
-                radius: 0,
-                quiet: 0,
-                mode: 4,
-                mSize: 0.15,
-                mPosX: 0.5,
-                mPosY: 0.5,
-                label: '',
-                fontcolor: '#000',
-                fontname: 'sans',
-                image: document.getElementById('logo'),
-            });
-            $('#qrcode').show(); // Show the QR code
-        }
-        nats_call(proofRequestThreadId, value);
-    }
-
-    function registerauthenticateWithAPI(value) {
-        // Show progress indicator
-        $('#progressIndicator1').show();
-
-        $.ajax({
-            type: "GET",
-            url: `/proof_request_proponent/?category=${value}`, // Pass the category as a query parameter
-            success: function(data) {
-                var verifierData = data.data;
-                var proofRequestURL = verifierData.proofRequestURL;
-                var proofRequestThreadId = verifierData.proofRequestThreadId;
-                var deepLinkURL = verifierData.deepLinkURL;
-                sessionId = data.session_id; // Store session ID from response
-
-                $('.modal-footer').hide();
-                updateDisplayProponent(proofRequestURL, deepLinkURL, proofRequestThreadId, value);
-                // Hide progress indicator
-                $('#progressIndicator1').hide();
-            },
-            error: function() {
-                // Hide progress indicator in case of error
-                $('#progressIndicator1').hide();
-            }
-        });
-    }
-
-    function updateDisplayProponent(proofRequestURL, deepLinkURL, proofRequestThreadId, value) {
-
-        if (isMobileDevice()) {
-            // Show button on mobile devices
-            // Ensure that the required elements are shown/hidden without refreshing or closing the modal
-            $('#registration_div').hide();
-            $("#ndi_div_proponent").show();
-            $("#deepLinkPro").show();
-            $("#deepLinkBtnPro").attr("onclick", `window.open('${deepLinkURL}', '_blank')`);
-            $('#qrcode').show();
-        } else {
-            // Show QR code on larger screens
-            $('#registration_div').hide();
-            $("#ndi_div_proponent").show();
-
-            // Clear previous QR code
-            $('#qrcodeproponent').empty();
-
-            // Generate new QR code
-            $('#qrcodeproponent').qrcode({
-                render: 'canvas',
-                minVersion: 1,
-                maxVersion: 40,
-                ecLevel: 'L',
-                left: 0,
-                top: 0,
-                size: 200,
-                fill: '#000',
-                background: '#fff',
-                text: proofRequestURL,
-                radius: 0,
-                quiet: 0,
-                mode: 4,
-                mSize: 0.15,
-                mPosX: 0.5,
-                mPosY: 0.5,
-                label: '',
-                fontcolor: '#000',
-                fontname: 'sans',
-                image: document.getElementById('logo'),
-            });
-
-            $('#qrcodeproponent').show(); // Show the QR code
-            $("#ndi_button").hide();
-        }
-        nats_proponent_call(proofRequestThreadId, value);
-    }
-
-    function showLoginForm(type) {
-        // Update button styles
-        document.getElementById('btnProponent').classList.remove('active-login-btn');
-        document.getElementById('btnAgency').classList.remove('active-login-btn');
-
-        if (type === 'proponent') {
-            document.getElementById('btnProponent').classList.add('active-login-btn');
-            document.getElementById('proponentLoginForm').style.display = 'block';
-            document.getElementById('agencyLoginForm').style.display = 'none';
-        } else {
-            document.getElementById('btnAgency').classList.add('active-login-btn');
-            document.getElementById('proponentLoginForm').style.display = 'none';
-            document.getElementById('agencyLoginForm').style.display = 'block';
-        }
-    }
-
-    socket.onmessage = function(e) {
-
-        const data = JSON.parse(e.data);
-
-        if (data.session_id !== sessionId) {
-            console.log("Ignoring чужой session");
-            return;
-        }
-
-        // continue login flow
-    }
 </script>
 <script>
 document.querySelectorAll('.input-group-text[data-password]').forEach(item => {

@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-!y+j-du+@82@b*2^^%fq84f!=&$rd#o3=vbg6!p2xhmda4&rgf
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','192.168.30.215', '192.168.134.31','localhost','staging-datahub-apim.dit.gov.bt', '172.30.78.130','192.168.0.111', '3d51-118-103-138-102.ngrok-free.app','192.168.218.31']
+ALLOWED_HOSTS = ['127.0.0.1','192.168.30.215','192.168.30.151','192.168.30.155', '192.168.134.31','localhost','staging-datahub-apim.dit.gov.bt', '172.30.78.130','192.168.0.111', '6961-118-103-141-153.ngrok-free.app','192.168.218.31']
 
 
 # Application definition
@@ -85,6 +85,13 @@ CHANNEL_LAYERS = {
     },
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'ndi-proof-cache',
+    }
+}
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -109,13 +116,16 @@ EC_PUBLIC_TOKEN = "ecss_2026_secure_X9kLmP78"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# Laptop / local dev: HOST = 'localhost'
+# Production (app server): change HOST to your database server IP or hostname
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ecss_db',
+        'NAME': 'ecs_db',
         'USER': 'postgres',
-        'PASSWORD': 'root',
-        'HOST': 'localhost'
+        'PASSWORD': 'Sp@rklesecss@2022',
+        'HOST': '172.30.69.10',
+        'PORT': '5432',
     }
 }
 
@@ -154,6 +164,14 @@ os.environ["NDI_NATS_SEED"] = "SUAPXY7TJFUFE3IX3OEMSLE3JFZJ3FZZRSRSOGSG2ANDIFN77
 os.environ["NATS_SERVER_URL"] = "nats://13.229.203.54:4222"
 NATS_SERVER_URL = "nats://13.229.203.54:4222"
 NDI_NATS_SEED = "SUAPXY7TJFUFE3IX3OEMSLE3JFZJ3FZZRSRSOGSG2ANDIFN77O2MIBHWUM"
+
+# Bhutan NDI integration (demo environment)
+NDI_ENVIRONMENT = 'demo'
+NDI_VERIFIER_BASE = 'https://demo-client.bhutanndi.com'
+NDI_WEBHOOK_ID = 'ecssserverid'
+# On mobile, show QR below the deep link button (scan with demo wallet if needed)
+NDI_MOBILE_SHOW_QR_ALSO = True
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
@@ -175,7 +193,9 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'systems@moenr.gov.bt'
-EMAIL_HOST_PASSWORD = 'ggpwmypzuesmfzol'
+EMAIL_HOST_PASSWORD = 'wdiigzpprtutwmdc'
+
+
 
 #EMAIL_HOST = 'smtp.gmail.com'
 #EMAIL_PORT = 587
@@ -211,7 +231,7 @@ USE_TZ = True
 CELERY_BEAT_SCHEDULE = {
     'send-ai-reminders-daily': {
         'task': 'ecs_admin.tasks.send_additional_info_reminder',
-        'schedule': crontab(hour=12, minute=00),   # 8 AM Thimphu time
+        'schedule': crontab(hour=22, minute=14),   # 8 AM Thimphu time
     },
 }
 

@@ -172,3 +172,173 @@ ul.ndi-content {
 .app-link img {
     width: 120px;
 }
+
+/* ===== Bhutan NDI redesign overrides ===== */
+#ndi_div,
+#ndi_div_proponent {
+    background: #F8F8F8;
+    border-radius: 12px;
+    padding: 24px 20px 28px;
+    font-family: Inter, sans-serif;
+    max-width: 590px;
+    margin: 0 auto;
+}
+
+.ndi-flow-title {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: #000 !important;
+    margin: 0 0 18px !important;
+    line-height: 1.35;
+}
+
+#ndi_div a[onclick*="authenticate_ndi"],
+#ndi_div_proponent a[onclick*="registerauthenticateWithAPI"],
+#ndiLoginId,
+#ndiEmployeeId,
+#generateQRCode {
+    min-width: 330px;
+    min-height: 50px;
+    border-radius: 6px !important;
+    border: 1px solid #124143 !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+#deepLinkBtn,
+#deepLinkBtnPro,
+.ndi-app-open-link {
+    min-width: 300px;
+    min-height: 50px;
+    border-radius: 6px !important;
+    border: 1px solid #5AC994 !important;
+    background: #5AC994 !important;
+    color: #fff !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-decoration: none !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.1px;
+}
+
+#deepLink,
+#deepLinkPro {
+    width: 100%;
+    text-align: center !important;
+}
+
+#ndi_div .qr-img,
+#ndi_div_proponent .qr-img {
+    border: 2px solid #5AC994;
+    border-radius: 14px;
+    background: #fff;
+}
+
+#ndi_div .modal-body-video-btn a,
+#ndi_div_proponent .modal-body-video-btn a {
+    width: 200px;
+    min-height: 40px;
+    border: 2px solid #5AC994 !important;
+    border-radius: 6px !important;
+    background: transparent !important;
+    color: #5AC994 !important;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+#ndi_div .modal-body-video-btn a:hover,
+#ndi_div_proponent .modal-body-video-btn a:hover {
+    background: #5AC994 !important;
+    color: #fff !important;
+}
+
+#ndi_div .modal-body-question,
+#ndi_div_proponent .modal-body-question,
+#ndi_div ul,
+#ndi_div_proponent ul {
+    color: #A1A0A0;
+}
+
+#ndi_div .row.justify-content-center,
+#ndi_div_proponent .row.justify-content-center,
+#ndi_div .modal-body-video-btn,
+#ndi_div_proponent .modal-body-video-btn,
+#ndi_div .modal-body-question,
+#ndi_div_proponent .modal-body-question {
+    margin-top: 24px;
+}
+
+#ndi_div .modal-body-question li,
+#ndi_div_proponent .modal-body-question li {
+    list-style: none;
+}
+
+#ndi_div .modal-body-question li,
+#ndi_div_proponent .modal-body-question li {
+    font-size: 16px;
+    color: #A1A0A0;
+}
+
+#ndi_div .modal-body-question li::first-line,
+#ndi_div_proponent .modal-body-question li::first-line {
+    color: #5AC994;
+    font-weight: 600;
+}
+
+.ndi-support {
+    margin-top: 16px;
+    text-align: center;
+}
+
+.ndi-support-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #5AC994;
+}
+
+.ndi-support-link {
+    color: #6f6f6f;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.ndi-support-link:hover {
+    color: #124143;
+    text-decoration: underline;
+}
+
+/* Desktop web: QR only (hide deeplink + OR) */
+@media (min-width: 769px) {
+    #deepLink,
+    #deepLinkPro,
+    #ndiOrDivider,
+    #ndiOrDividerPro {
+        display: none !important;
+    }
+}
+
+/* Mobile: show OR only for NDI popup area */
+@media (max-width: 768px) {
+    .ndi-or-divider-login {
+        display: block;
+    }
+    .ndi-or-divider-mobile {
+        display: block;
+    }
+
+    #ndi_div,
+    #ndi_div_proponent {
+        padding: 18px 14px 22px;
+    }
+}

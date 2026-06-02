@@ -1,0 +1,356 @@
+/* NDI-only UI (login button, modals, loader) ÿ does not affect rest of site */
+
+/* Login type toggle */
+#loginModalForm .login-type-btn {
+    border-color: #124143 !important;
+    color: #124143 !important;
+    background: #fff !important;
+    font-weight: 600;
+    min-width: 140px;
+}
+
+#loginModalForm .login-type-btn.active-login-btn {
+    background: #124143 !important;
+    color: #fff !important;
+    border-color: #124143 !important;
+    box-shadow: 0 4px 10px rgba(18, 65, 67, 0.18);
+}
+
+/* Login with Bhutan NDI ÿ official button */
+.ndi-auth-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 8px 16px 20px;
+    width: 100%;
+}
+
+.ndi-auth-btn {
+    background-color: #124143 !important;
+    color: #fff !important;
+    border: 1px solid #124143 !important;
+    border-radius: 6px !important;
+    width: min(330px, 100%);
+    min-height: 50px;
+    padding: 10px 18px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-decoration: none !important;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: none !important;
+}
+
+.ndi-auth-btn:hover,
+.ndi-auth-btn:focus {
+    color: #fff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(18, 65, 67, 0.28) !important;
+    text-decoration: none !important;
+}
+
+.ndi-auth-btn img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+/* OR divider in login form */
+#loginModalForm .splitter.ndi-or-divider-login span {
+    background-color: #fff;
+}
+
+/* NDI scan popup inside modals */
+#loginModalForm.ndi-flow-active .modal-dialog,
+#registrationModalForm.ndi-flow-active .modal-dialog {
+    max-width: 620px;
+}
+
+#loginModalForm.ndi-flow-active .modal-content,
+#registrationModalForm.ndi-flow-active .modal-content {
+    background: #f8f8f8;
+    border: none;
+    border-radius: 12px;
+}
+
+#ndi_div,
+#ndi_div_proponent {
+    background: #f8f8f8;
+    border-radius: 12px;
+    padding: 28px 24px 32px;
+    font-family: Inter, sans-serif;
+    max-width: 590px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#ndi_div > h1:first-child {
+    font-size: 1.125rem !important;
+    font-weight: 800 !important;
+    color: #000 !important;
+    margin: 0 0 24px !important;
+}
+
+.ndi-flow-title {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: #000 !important;
+    margin: 0 0 24px !important;
+    line-height: 1.35;
+}
+
+.ndi-flow-title .ndi-brand,
+.ndi-flow-title span[style*="#5AC994"] {
+    color: #5ac994 !important;
+}
+
+/* Deeplink ÿ green button, no legacy .button purple */
+#deepLinkBtn,
+#deepLinkBtnPro,
+.ndi-deeplink-btn,
+.ndi-app-open-link,
+#ndi_div .button,
+#ndi_div_proponent .button {
+    min-width: 300px;
+    max-width: 100%;
+    min-height: 50px;
+    border-radius: 6px !important;
+    border: 1px solid #5ac994 !important;
+    background: #5ac994 !important;
+    color: #fff !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-decoration: none !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    padding: 12px 20px !important;
+    margin: 0 auto;
+    box-shadow: none !important;
+}
+
+#deepLink,
+#deepLinkPro {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0;
+}
+
+#ndi_div .splitter.ndi-or-divider-mobile span,
+#ndi_div_proponent .splitter.ndi-or-divider-mobile span {
+    background-color: #f8f8f8;
+}
+
+#ndi_div .qr-img,
+#ndi_div_proponent .qr-img {
+    display: inline-block;
+    margin: 24px auto;
+    padding: 12px;
+    border: 2px solid #5ac994;
+    border-radius: 14px;
+    background: #fff;
+}
+
+#ndi_div #qrcode,
+#ndi_div_proponent #qrcodeproponent {
+    display: inline-block;
+}
+
+#ndi_div .ndi-instructions,
+#ndi_div_proponent .ndi-instructions {
+    max-width: 420px;
+    margin: 24px auto 0;
+    text-align: left;
+    color: #a1a0a0;
+    font-size: 16px;
+    padding: 0;
+    list-style: none;
+}
+
+#ndi_div .ndi-instructions li,
+#ndi_div_proponent .ndi-instructions li {
+    margin-bottom: 10px;
+}
+
+#ndi_div .ndi-instructions li:last-child,
+#ndi_div_proponent .ndi-instructions li:last-child {
+    margin-bottom: 0;
+}
+
+#ndi_div .modal-body-video-btn,
+#ndi_div_proponent .modal-body-video-btn {
+    margin-top: 24px;
+    text-align: center;
+}
+
+#ndi_div .modal-body-video-btn a,
+#ndi_div_proponent .modal-body-video-btn a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    max-width: 100%;
+    min-height: 40px;
+    border: 2px solid #5ac994 !important;
+    border-radius: 6px !important;
+    background: transparent !important;
+    color: #5ac994 !important;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none !important;
+    padding: 8px 16px;
+}
+
+#ndi_div .modal-body-video-btn a:hover,
+#ndi_div_proponent .modal-body-video-btn a:hover {
+    background: #5ac994 !important;
+    color: #fff !important;
+}
+
+#ndi_div .modal-body-question,
+#ndi_div_proponent .modal-body-question {
+    margin-top: 24px;
+    text-align: center;
+}
+
+#ndi_div .modal-body-question ul,
+#ndi_div_proponent .modal-body-question ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#ndi_div .modal-body-question .ndi-download-label,
+#ndi_div_proponent .modal-body-question .ndi-download-label {
+    font-size: 16px;
+    color: #a1a0a0;
+    margin-bottom: 8px;
+}
+
+#ndi_div .modal-body-question .ndi-download-highlight,
+#ndi_div_proponent .modal-body-question .ndi-download-highlight {
+    color: #5ac994;
+    font-weight: 600;
+}
+
+.ndi-support {
+    margin-top: 24px;
+    text-align: center;
+}
+
+.ndi-support-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #5ac994;
+    margin-bottom: 8px;
+}
+
+.ndi-support-link {
+    color: #6f6f6f;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.ndi-support-link:hover {
+    color: #124143;
+    text-decoration: underline;
+}
+
+#ndi_div .ndi-back-link,
+#registrationModalForm #ndi_div_proponent + .modal-footer,
+#ndi_div #back_but {
+    margin-top: 24px;
+}
+
+#ndi_div .ndi-back-link a,
+#ndi_div #back_but a {
+    color: #124143;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* Loader */
+.ndi-loader-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(18, 65, 67, 0.55);
+    z-index: 20000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.ndi-loader-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 22px;
+    width: min(360px, 92vw);
+    text-align: center;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.24);
+    font-family: Inter, sans-serif;
+}
+
+.ndi-loader-text {
+    margin: 0 0 6px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #222;
+}
+
+.ndi-loader-subtext {
+    margin: 0;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.ws-status {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    z-index: 9999;
+}
+
+.ws-connected {
+    background-color: #4caf50;
+    box-shadow: 0 0 5px #4caf50;
+}
+
+.ws-disconnected {
+    background-color: #f44336;
+    box-shadow: 0 0 5px #f44336;
+}
+
+/* Desktop: QR only */
+@media (min-width: 769px) {
+    #deepLink,
+    #deepLinkPro,
+    #ndiOrDivider,
+    #ndiOrDividerPro {
+        display: none !important;
+    }
+}
+
+@media (max-width: 768px) {
+    #ndi_div,
+    #ndi_div_proponent {
+        padding: 20px 16px 24px;
+    }
+
+    .ndi-auth-btn {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    #deepLinkBtn,
+    #deepLinkBtnPro {
+        width: 100%;
+    }
+}
