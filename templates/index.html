@@ -574,38 +574,36 @@
                             </div>
                             <div id="proponent_typeErrorMsg" class="alert alert-danger" style="display: none;"></div>
                         </div>
-                        <div class="cid_details" style="display: none;">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="ndi-auth-wrap">
-                                        <a href="#" class="ndi-auth-btn" id="generateQRCode" onclick="registerauthenticateWithAPI('Registration'); return false;">
-                                            <img src="{% static 'assets/images/NDI_logo.png' %}" alt="">
-                                            Register with Bhutan NDI
-                                        </a>
-                                    </div>
-                                    <div id="progressIndicator1" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">
-                                        <div class="spinner-border spinner-border-custom" role="status" style="width: 3rem; height: 3rem;">
-                                            <span class="visually-hidden">Loading...</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">CID</label>
-                                        <input type="text" oninput="if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength); check_cid(this.value);"  class="form-control" id="cid" name="cid" maxlength="11">
-                                        <div id="cidErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
-                                    </div>
+                    </div>
+                    <div class="row cid_details" style="display: none;">
+                        <div class="col-12">
+                            <div class="ndi-auth-wrap ndi-auth-wrap--registration">
+                                <a href="#" class="ndi-auth-btn" id="generateQRCode" onclick="registerauthenticateWithAPI('Registration'); return false;">
+                                    <img src="{% static 'assets/images/NDI_logo.png' %}" alt="">
+                                    Register with Bhutan NDI
+                                </a>
+                            </div>
+                            <div id="progressIndicator1" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">
+                                <div class="spinner-border spinner-border-custom" role="status" style="width: 3rem; height: 3rem;">
+                                    <span class="visually-hidden">Loading...</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Proponent Name</label>
-                                    <input type="text" name="proponent_name" class="form-control" id="proponent_name">
-                                </div>
-                                <div id="proponent_nameErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">CID</label>
+                                <input type="text" oninput="if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength); check_cid(this.value);" class="form-control" id="cid" name="cid" maxlength="11">
+                                <div id="cidErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Proponent Name</label>
+                                <input type="text" name="proponent_name" class="form-control" id="proponent_name">
+                            </div>
+                            <div id="proponent_nameErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                         </div>
                     </div>
                     <div class="row">
@@ -683,46 +681,6 @@
                             <div id="villageErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                         </div>
                     </div>
-                    </div>
-                    <div class="modal-body" id="ndi_div_proponent" style="display: none;">
-                        <h2 class="ndi-flow-title">Scan with <span class="ndi-brand">Bhutan NDI</span> wallet</h2>
-                        <div id="deepLinkPro" style="display: none;">
-                            <button type="button" id="deepLinkBtnPro" class="ndi-deeplink-btn">Open Bhutan NDI wallet</button>
-                        </div>
-                        <div class="splitter ndi-or-divider-mobile" id="ndiOrDividerPro">
-                            <span>OR</span>
-                        </div>
-                        <div class="qr-img">
-                            <div id="qrcodeproponent"></div>
-                            <img id="logoPro" src="{% static 'assets/images/NDIlogobg.png' %}" alt="" style="display: none;" />
-                        </div>
-                        <ul class="ndi-instructions list-unstyled">
-                            <li>1. Open Bhutan NDI Wallet on your Phone</li>
-                            <li>2. Tap the scan button located on the menu bar <img src="{% static 'assets/images/ScanButton.png' %}" alt="Scan"> and scan the QR code</li>
-                        </ul>
-                        <div class="modal-body-video-btn">
-                            <a href="https://www.youtube.com/watch?v=A_k79pml9k8" target="_blank" rel="noopener">Watch Video Guide &nbsp;<i class="mdi mdi-motion-play"></i></a>
-                        </div>
-                        <div class="modal-body-question">
-                            <ul>
-                                <li>
-                                    <span class="ndi-download-label">Download <span class="ndi-download-highlight">Now!</span></span>
-                                    <div class="app-link">
-                                        <a href="https://play.google.com/store/search?q=bhutan%20ndi&amp;c=apps&amp;hl=en_IN&amp;gl=US" target="_blank" rel="noopener"><img src="{% static 'assets/images/play_store.png' %}" alt="Google Play" style="height: 35px;"></a>
-                                        <a href="https://apps.apple.com/in/app/bhutan-ndi/id1645493166" target="_blank" rel="noopener"><img src="{% static 'assets/images/app_store.png' %}" alt="App Store" style="height: 35px;"></a>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="ndi-support">
-                            <p class="ndi-support-title mb-1">Need help?</p>
-                            <p class="mb-0">
-                                <a href="tel:1199" class="ndi-support-link">1199</a>
-                                <span class="mx-1">|</span>
-                                <a href="mailto:support@bhutanndi.com" class="ndi-support-link">support@bhutanndi.com</a>
-                            </p>
-                        </div>
-                    </div>
                     <div class="alert alert-success" id="client_registration_message_div" style="display:none"></div>
                     <div class="alert alert-danger" id="client_registration_error_message_div" style="display:none"></div>
                     <div class="modal-footer flex-center justify-content-center">
@@ -730,6 +688,46 @@
                         <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Cancel</button>
                     </div>
                 </form>
+            </div>
+            <div class="modal-body mx-4" id="ndi_div_proponent" style="display: none;">
+                <h2 class="ndi-flow-title">Scan with <span class="ndi-brand">Bhutan NDI</span> wallet</h2>
+                <div id="deepLinkPro" style="display: none;">
+                    <button type="button" id="deepLinkBtnPro" class="ndi-deeplink-btn">Open Bhutan NDI wallet</button>
+                </div>
+                <div class="splitter ndi-or-divider-mobile" id="ndiOrDividerPro">
+                    <span>OR</span>
+                </div>
+                <div class="qr-img">
+                    <div id="qrcodeproponent"></div>
+                    <img id="logoPro" src="{% static 'assets/images/NDIlogobg.png' %}" alt="" style="display: none;" />
+                </div>
+                <ul class="ndi-instructions list-unstyled">
+                    <li>1. Open Bhutan NDI Wallet on your Phone</li>
+                    <li>2. Tap the scan button located on the menu bar <img src="{% static 'assets/images/ScanButton.png' %}" alt="Scan"> and scan the QR code</li>
+                </ul>
+                <div class="modal-body-video-btn">
+                    <a href="https://www.youtube.com/watch?v=A_k79pml9k8" target="_blank" rel="noopener">Watch Video Guide &nbsp;<i class="mdi mdi-motion-play"></i></a>
+                </div>
+                <div class="modal-body-question">
+                    <ul>
+                        <li>
+                            <span class="ndi-download-label">Download <span class="ndi-download-highlight">Now!</span></span>
+                            <div class="app-link">
+                                <a href="https://play.google.com/store/search?q=bhutan%20ndi&amp;c=apps&amp;hl=en_IN&amp;gl=US" target="_blank" rel="noopener"><img src="{% static 'assets/images/play_store.png' %}" alt="Google Play" style="height: 35px;"></a>
+                                <a href="https://apps.apple.com/in/app/bhutan-ndi/id1645493166" target="_blank" rel="noopener"><img src="{% static 'assets/images/app_store.png' %}" alt="App Store" style="height: 35px;"></a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="ndi-support">
+                    <p class="ndi-support-title mb-1">Need help?</p>
+                    <p class="mb-0">
+                        <a href="tel:1199" class="ndi-support-link">1199</a>
+                        <span class="mx-1">|</span>
+                        <a href="mailto:support@bhutanndi.com" class="ndi-support-link">support@bhutanndi.com</a>
+                    </p>
+                </div>
+            </div>
 
             <!--/.Content-->
         </div>

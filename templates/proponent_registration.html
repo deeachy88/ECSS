@@ -32,11 +32,11 @@
                         </div>
                         <div class="cid_details" style="display: none;">
                             <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="modal-header justify-content-center">
-                                        <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="generateQRCode" onclick="registerauthenticateWithAPI('Registration')">
-                                            <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%" style="vertical-align: middle;">
-                                            &nbsp; &nbsp; Use Bhutan NDI
+                                <div class="col-12 col-lg-6">
+                                    <div class="ndi-auth-wrap ndi-auth-wrap--registration">
+                                        <a href="#" class="ndi-auth-btn" id="generateQRCode" onclick="registerauthenticateWithAPI('Registration'); return false;">
+                                            <img src="{% static 'assets/images/NDI_logo.png' %}" alt="">
+                                            Register with Bhutan NDI
                                         </a>
                                     </div>
                                     <div id="progressIndicator1" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">
@@ -141,15 +141,14 @@
                     </div>
                 </div>
                     <div id="ndi_div_proponent" style="display: none; text-align: center">
-                        <h2 style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 500;">
-                            Scan QR code from <span style="color:#5AC994 ">Bhutan NDI </span> app
-                        </h2>
+                        <h2 class="ndi-flow-title">Scan with <span class="ndi-brand">Bhutan NDI</span> wallet</h2>
+                        <div id="deepLinkPro" style="display: none;">
+                            <button type="button" id="deepLinkBtnPro" class="ndi-deeplink-btn">Open Bhutan NDI wallet</button>
+                        </div>
+                        <div class="splitter ndi-or-divider-mobile" id="ndiOrDividerPro">
+                            <span>OR</span>
+                        </div>
                         <div class="qr-img" style="margin-top: 10px">
-                            <div id="deepLinkPro" class="col-md-5 text-center" style="display: none;">
-                                <button id="deepLinkBtnPro" class="button button1 text-white btn-bg cus-button">
-                                    <img src="{% static 'assets/images/NDI_logo.png' %}" alt="NDI Logo" class="ndi-logo">Open Bhutan NDI App
-                                </button>
-                            </div>
                             <div class="text-center" id="qrcodeproponent">
                                 <canvas width="200" height="200" style="display: none;"></canvas>
                             </div>

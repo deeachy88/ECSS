@@ -223,6 +223,7 @@
     window.getProponentNdiPanel = getProponentNdiPanel;
 
     window.backToRegistration = function() {
+        $('#registrationModalForm').removeClass('ndi-flow-active');
         getProponentNdiPanel().hide();
         $('#registration_div').show();
         $('.modal-footer').show();
@@ -561,6 +562,7 @@
                     bootstrap.Modal.getOrCreateInstance($registrationModal[0]).show();
                 }
             }
+            $registrationModal.addClass('ndi-flow-active');
             $('#registrationModalForm .modal-footer').hide();
         }
 
@@ -576,6 +578,7 @@
         if ($('#registrationModalForm').length && !$('#registrationModalForm').hasClass('show')) {
             $('#registrationModalForm').modal('show');
         }
+        $('#registrationModalForm').removeClass('ndi-flow-active');
         getProponentNdiPanel().hide();
         $('#registration_div').show();
         $('.modal-footer').show();
