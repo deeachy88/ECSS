@@ -60,11 +60,11 @@
     <link rel="stylesheet" href="{% static 'assets/vendor/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css' %}" media="print" onload="this.media='all'">
     <link href="{% static 'assets/css/app-saas.min.css' %}" rel="stylesheet">
     <link href="{% static 'assets/css/ndi.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/css/ndi-components.css' %}" rel="stylesheet">
     <link href="{% static 'assets/css/icons.min.css' %}" rel="stylesheet">
     <link href="{% static 'assets/vendor/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet">
     <link href="{% static 'assets/vendor/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'assets/css/main.css' %}">
+    <link href="{% static 'assets/css/ndi-components.css' %}" rel="stylesheet">
 
     <!-- Theme Config -->
     <script src="{% static 'assets/js/hyper-config.js' %}" defer></script>
@@ -86,9 +86,9 @@
                     <div class="col-xl-8 col-lg-7">
                         <div class="card text-center mb-4 custom-shadow">
                             <div class="card-body">
-                                {% for homepage_details in homepage_details %}
+                                <!-- {% for homepage_details in homepage_details %}
                                     <h4 class="m-0">{{homepage_details.homepage_title}}</h4>
-                                {% endfor %}<br>
+                                {% endfor %}<br> -->
                                 <a href="javascript: void(0);" class="text-center d-block mb-4">
                                 {% for home_attachment in home_attachment %}
                                     <img src="{{home_attachment.file_path }}" class="img-fluid rounded"  alt="Product-img">
@@ -124,6 +124,19 @@
                                     </p>
                                 </div>
                                 <!-- Hidden Registration Form Inside the Same Card -->
+                            </div>
+                        </div>
+                        <div class="card text-center mb-3 custom-shadow border-custom">
+                            <div class="card-body">
+                                <h4 class="header-title mb-1 acts">📄 User Manual</h4>
+                                <hr class="acts" style="display: none;">
+                                <div class="inbox-widget">
+                                   <p class="mb-0 text-muted">
+                                      <a href="{% static 'assets/images/ECSS_UserManual_V1.pdf' %}" target="_blank">
+                                        Download the User Manual
+                                      </a>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                         <!-- <div class="card text-center mb-3 custom-shadow border-custom">
@@ -689,7 +702,7 @@
                     </div>
                 </form>
             </div>
-            <div class="modal-body mx-4" id="ndi_div_proponent" style="display: none;">
+            <div class="ndi-scan-panel" id="ndi_div_proponent" style="display: none;">
                 <h2 class="ndi-flow-title">Scan with <span class="ndi-brand">Bhutan NDI</span> wallet</h2>
                 <div id="deepLinkPro" style="display: none;">
                     <button type="button" id="deepLinkBtnPro" class="ndi-deeplink-btn">Open Bhutan NDI wallet</button>

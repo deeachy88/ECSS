@@ -40,12 +40,6 @@ function hideNdiLoaderIfAvailable() {
     }
 }
 
-function showNdiWaitingIfAvailable() {
-    if (typeof window.showNdiWaitingLoader === 'function') {
-        window.showNdiWaitingLoader();
-    }
-}
-
 function handleNdiProofData(data) {
     if (!data || data.type === 'connection-established') {
         return false;
@@ -62,8 +56,6 @@ function handleNdiProofData(data) {
         console.log('Session ID does not match. Ignoring message.');
         return false;
     }
-
-    showNdiWaitingIfAvailable();
 
     const eid = data.eid;
     const id_number = data.id_number;

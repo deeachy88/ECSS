@@ -117,7 +117,7 @@ ul.ndi-content {
     height: 200px;
 }
 .qr-loader, .qr-img {
-    border: 2px solid var(--ndi-green);
+    border: 3px solid var(--ndi-green);
     border-radius: 15px;
     padding: 10px;
 }
@@ -196,8 +196,10 @@ ul.ndi-content {
 #ndi_div_proponent a[onclick*="registerauthenticateWithAPI"],
 #ndiLoginId,
 #ndiEmployeeId,
-#generateQRCode {
-    min-width: 330px;
+#generateQRCode,
+.ndi-auth-btn {
+    min-width: 0;
+    max-width: 100%;
     min-height: 50px;
     border-radius: 6px !important;
     border: 1px solid #124143 !important;
@@ -209,12 +211,29 @@ ul.ndi-content {
     font-weight: 600;
     margin-left: auto !important;
     margin-right: auto !important;
+    box-sizing: border-box;
+    white-space: normal;
+    line-height: 1.3;
+}
+
+@media (min-width: 769px) {
+    #ndi_div a[onclick*="authenticate_ndi"],
+    #ndi_div_proponent a[onclick*="registerauthenticateWithAPI"],
+    #ndiLoginId,
+    #ndiEmployeeId,
+    #generateQRCode,
+    .ndi-auth-btn {
+        min-width: 330px;
+        width: min(330px, 100%);
+    }
 }
 
 #deepLinkBtn,
 #deepLinkBtnPro,
-.ndi-app-open-link {
-    min-width: 300px;
+.ndi-app-open-link,
+.ndi-deeplink-btn {
+    min-width: 0;
+    max-width: 100%;
     min-height: 50px;
     border-radius: 6px !important;
     border: 1px solid #5AC994 !important;
@@ -230,6 +249,18 @@ ul.ndi-content {
     font-size: 16px;
     font-weight: 600;
     letter-spacing: 0.1px;
+    box-sizing: border-box;
+    white-space: normal;
+    line-height: 1.3;
+}
+
+@media (min-width: 769px) {
+    #deepLinkBtn,
+    #deepLinkBtnPro,
+    .ndi-deeplink-btn,
+    .ndi-app-open-link {
+        min-width: 300px;
+    }
 }
 
 #deepLink,
@@ -240,7 +271,7 @@ ul.ndi-content {
 
 #ndi_div .qr-img,
 #ndi_div_proponent .qr-img {
-    border: 2px solid #5AC994;
+    border: 3px solid #5AC994;
     border-radius: 14px;
     background: #fff;
 }
@@ -249,7 +280,7 @@ ul.ndi-content {
 #ndi_div_proponent .modal-body-video-btn a {
     width: 200px;
     min-height: 40px;
-    border: 2px solid #5AC994 !important;
+    border: 3px solid #5AC994 !important;
     border-radius: 6px !important;
     background: transparent !important;
     color: #5AC994 !important;
@@ -361,12 +392,14 @@ ul.ndi-content {
     #generateQRCode,
     .ndi-auth-btn {
         min-width: 0 !important;
-        width: 100% !important;
-        max-width: 100% !important;
+        width: auto !important;
+        max-width: min(300px, calc(100% - 24px)) !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
         box-sizing: border-box;
         white-space: normal;
         line-height: 1.3;
-        padding: 10px 12px !important;
+        padding: 10px 16px !important;
         font-size: 15px !important;
     }
 

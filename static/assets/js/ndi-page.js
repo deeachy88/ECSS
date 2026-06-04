@@ -35,9 +35,6 @@
                 try {
                     const data = JSON.parse(e.data);
                     console.log('Data received:', data);
-                    if (isRelevantNdiMessage(data)) {
-                        window.showNdiWaitingLoader();
-                    }
                     if (typeof handleNdiProofData === 'function') {
                         handleNdiProofData(data);
                     }
@@ -101,9 +98,8 @@
 
     window.hideNdiLoader = hideNdiLoader;
 
-    window.showNdiWaitingLoader = function() {
-        showNdiLoader('Waiting for response', 'Please wait');
-    };
+    /* Disabled: do not show "Waiting for response" until proof handling is wired again */
+    window.showNdiWaitingLoader = function() {};
 
     function isNdiAwaitingProof() {
         return !!sessionStorage.getItem('ndi_thread_id');
@@ -308,6 +304,8 @@
 
     function renderQrCode($container, proofRequestURL, logoElementId) {
         const logoEl = document.getElementById(logoElementId || 'logo');
+        const viewportW = window.innerWidth || document.documentElement.clientWidth || 360;
+        const qrSize = Math.min(200, Math.max(150, viewportW - 88));
         $container.empty().qrcode({
             render: 'canvas',
             minVersion: 1,
@@ -315,7 +313,7 @@
             ecLevel: 'L',
             left: 0,
             top: 0,
-            size: 200,
+            size: qrSize,
             fill: '#000',
             background: '#fff',
             text: proofRequestURL,
@@ -368,10 +366,6 @@
 
         $link.attr('href', deepLinkHref);
         $link.html(btnHtml);
-        $link.off('click.ndiWaiting').on('click.ndiWaiting', function() {
-            window.showNdiWaitingLoader();
-        });
-
         // Intentionally no HTTPS/ngrok helper line in UI copy.
 
         // Keep popup copy strictly aligned to Bhutan NDI UI copy.
@@ -612,9 +606,6 @@
             }
             if (!socket || socket.readyState !== WebSocket.OPEN) {
                 connectWebSocket();
-            }
-            if (isNdiAwaitingProof() && ndiPanelIsVisible()) {
-                window.showNdiWaitingLoader();
             }
         });
         $('.modal').on('hidden.bs.modal', function() {

@@ -121,10 +121,10 @@ EC_PUBLIC_TOKEN = "ecss_2026_secure_X9kLmP78"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ecs_db',
+        'NAME': 'ecss_db',
         'USER': 'postgres',
-        'PASSWORD': 'Sp@rklesecss@2022',
-        'HOST': '172.30.69.10',
+        'PASSWORD': 'Land1988!#',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }

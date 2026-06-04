@@ -1,0 +1,62 @@
+{% load static %}
+<style>
+    .card-vertical {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+    }
+
+    .img-square-wrapper img {
+        width: 100%;
+        max-width: 800px;
+        height: 400px;
+        object-fit: cover;
+        display: block;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 mt-3">
+            <div class="card">
+                <div class="card-vertical">
+                    {% if identifier == 'M' %}
+                        {% for menu_detail in menu_details %}
+
+                            {% for attachment in file_attachment %}
+                                {% if attachment.document_id == menu_detail.document_id %}
+                                    <div class="img-square-wrapper">
+                                        <img src="{{ attachment.file_path }}" alt="Card image cap">
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+
+                            <div class="card-body">
+                                <h4 class="card-title">{{ menu_detail.menu_name }}</h4>
+                                <p class="card-text">{{ menu_detail.menu_content|safe }}</p>
+                            </div>
+
+                        {% endfor %}
+                    {% else %}
+                        {% for sub_menu_detail in menu_details %}
+
+                            {% for attachment in file_attachment %}
+                                {% if attachment.document_id == sub_menu_detail.document_id %}
+                                    <div class="img-square-wrapper">
+                                        <img src="{{ attachment.file_path }}" alt="Card image cap">
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+
+                            <div class="card-body">
+                                <h4 class="card-title">{{ sub_menu_detail.sub_menu_name }}</h4>
+                                <p class="card-text">{{ sub_menu_detail.sub_menu_content|safe }}</p>
+                            </div>
+
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
