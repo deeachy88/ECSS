@@ -59,12 +59,12 @@
     <link rel="stylesheet" href="{% static 'assets/vendor/daterangepicker/daterangepicker.css' %}" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="{% static 'assets/vendor/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css' %}" media="print" onload="this.media='all'">
     <link href="{% static 'assets/css/app-saas.min.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/css/ndi.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/ndi.css' %}?v=ndi-mob5" rel="stylesheet">
     <link href="{% static 'assets/css/icons.min.css' %}" rel="stylesheet">
     <link href="{% static 'assets/vendor/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet">
     <link href="{% static 'assets/vendor/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'assets/css/main.css' %}">
-    <link href="{% static 'assets/css/ndi-components.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'assets/css/main.css' %}?v=ndi-mob5">
+    <link href="{% static 'assets/css/ndi-components.css' %}?v=ndi-mob5" rel="stylesheet">
 
     <!-- Theme Config -->
     <script src="{% static 'assets/js/hyper-config.js' %}" defer></script>
@@ -276,7 +276,8 @@
 <!-- LOGIN Modal -->
  <div class="modal fade" id="loginModalForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content modal-custom non-issuance">
+        <div class="modal-content modal-custom non-issuance position-relative">
+            <button type="button" class="btn-close modal-corner-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
             <div id="progressLoader" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">
                 <div class="spinner-border spinner-border-custom" role="status" style="width: 3rem; height: 3rem;">
                     <span class="visually-hidden">Loading...</span>
@@ -290,7 +291,6 @@
                         style="height: 100px; width: auto;"
                     >
                     <h1 class="modal-title w-100" style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 800; color: black;">Environmental Clearance Services System</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
                 </div>
                 <div class="alert alert-danger" id="ndi_login_error" style="display: none;"></div>
                 <div id="loginSelectionBox">
@@ -350,16 +350,16 @@
                     <div class="splitter ndi-or-divider-login">
                         <span>OR</span>
                     </div>
-                    <div class="ndi-auth-wrap">
+                    <div class="ndi-auth-wrap ndi-auth-wrap--login">
                         <a href="#" id="ndiLoginId" onclick="startNdiLogin('Login'); return false;" class="ndi-auth-btn">
-                            <img src="{% static 'assets/images/NDI_logo.png' %}" alt="">
+                            <img src="{% static 'assets/images/ndi/ButtonNDILogo.svg' %}" alt="">
                             Login with Bhutan NDI
                         </a>
                     </div>
 
                     <!-- <div class="modal-header mx-5 pt-3 mb-1 justify-content-center">
                         <a href="#" style="background-color: #124143; color:white; border-radius: 8px; padding: 5px 10px; display: inline-block;" id="ndiCredentialId" onclick="authenticate_ndi('Issuance')">
-                            <img src="{% static 'assets/images/NDI_logo.png' %}" width="10%" height="10%" style="vertical-align: middle;">
+                            <img src="{% static 'assets/images/NDIlogobg.png' %}" width="10%" height="10%" style="vertical-align: middle;">
                             &nbsp; &nbsp; Receive Credential
                         </a>
                     </div> -->
@@ -414,12 +414,17 @@
                     <div class="splitter ndi-or-divider-login">
                         <span>OR</span>
                     </div>
-                    <div class="ndi-auth-wrap">
+                    <div class="ndi-auth-wrap ndi-auth-wrap--login">
                         <a href="#" id="ndiEmployeeId" onclick="startNdiEmployeeLogin('Employee'); return false;" class="ndi-auth-btn">
-                            <img src="{% static 'assets/images/NDI_logo.png' %}" alt="">
+                            <img src="{% static 'assets/images/ndi/ButtonNDILogo.svg' %}" alt="">
                             Login with Bhutan NDI
                         </a>
                     </div>
+                </div>
+                <div class="login-back-link text-center">
+                    <a href="#" onclick="backToRegistrationFromLogin(); return false;">
+                        <i class="uil uil-arrow-left me-1"></i>Back to Registration
+                    </a>
                 </div>
             </div>
 
@@ -466,18 +471,19 @@
                 </div>
             </div>
             <div class="alert alert-danger" id="issuanceMessageError" role="alert" style="display: none;"></div>
-            <div id="ndi_div" style="display: none;">
-                <h1>Environmental Clearance Services System</h1>
-                <h2 class="ndi-flow-title">Scan with <span class="ndi-brand">Bhutan NDI</span> wallet</h2>
-                <div id="deepLink" style="display: none;">
+            <div id="ndi_div" class="ndi-scan-panel" style="display: none; text-align: center;">
+                <h1 class="ndi-ecss-title">Environmental Clearance Services System</h1>
+                <hr class="ndi-scan-divider">
+                <h2 class="ndi-flow-title">Scan with <span class="ndi-brand">Bhutan NDI</span> Wallet</h2>
+                <div id="deepLink" class="text-center mb-3" style="display: none;">
                     <button type="button" id="deepLinkBtn" class="ndi-deeplink-btn">Open Bhutan NDI wallet</button>
                 </div>
                 <div class="splitter ndi-or-divider-mobile" id="ndiOrDivider">
                     <span>OR</span>
                 </div>
                 <div class="qr-img">
-                    <div id="qrcode"></div>
-                    <img id="logo" src="{% static 'assets/images/NDIlogobg.png' %}" alt="" style="display: none;" />
+                    <div class="text-center" id="qrcode"></div>
+                    <img id="logo" src="{% static 'assets/images/ndi/QRlogo.svg' %}" alt="" style="display: none;" crossorigin="anonymous" />
                     <div class="counter" id="clockdiv" style="display: none;">
                         <div class="sq">
                             <span class="seconds bord" id="timer"></span>
@@ -485,12 +491,16 @@
                         </div>
                     </div>
                 </div>
-                <ul class="ndi-instructions list-unstyled">
-                    <li>1. Open Bhutan NDI Wallet on your Phone</li>
-                    <li>2. Tap the scan button located on the menu bar <img src="{% static 'assets/images/ScanButton.png' %}" alt="Scan"> and scan the QR code</li>
-                </ul>
+                <div class="row justify-content-center ndi-instructions-row">
+                    <div class="col-md-9 custom-vertical-align-left">
+                        <ul class="ndi-instructions list-unstyled">
+                            <li>1. Open Bhutan NDI Wallet on your Phone</li>
+                            <li>2. Tap the scan button located on the menu bar <img src="{% static 'assets/images/ScanButton.png' %}" alt="Scan"> and capture code</li>
+                        </ul>
+                    </div>
+                </div>
                 <div class="modal-body-video-btn">
-                    <a href="https://www.youtube.com/watch?v=A_k79pml9k8" target="_blank" rel="noopener">Watch Video Guide &nbsp;<i class="mdi mdi-motion-play"></i></a>
+                    <a href="https://www.youtube.com/watch?v=A_k79pml9k8" target="_blank" rel="noopener" class="btn btn-ndi btn-pill">Watch Video Guide &nbsp;<i class="mdi mdi-motion-play"></i></a>
                 </div>
                 <div class="modal-body-question">
                     <ul>
@@ -552,8 +562,10 @@
 <div class="modal fade" id="registrationModalForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <!--Content-->
-        <div class="modal-content modal-custom">
+        <div class="modal-content modal-custom position-relative">
+            <button type="button" class="btn-close modal-corner-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
             <div id="proponent_ErrorMsg" class="alert alert-danger" style="display: none;"></div>
+            <div class="ndi-registration-chrome">
             <!--Header-->
             <div class="modal-body mx-4 d-flex gap-2 justify-content-center">
                 <img
@@ -562,14 +574,14 @@
                     style="height: 100px; width: auto;"
                 >
             </div>
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-right: 20px;">
+            <div style="display: flex; align-items: center; justify-content: center; margin-right: 20px; margin-left: 20px;">
                 <h1 style="font-size: 1.125rem; margin-bottom: .5rem; font-weight: 800; color: black; text-align: center; margin-top: 20px; flex: 1;">Environmental Clearance Services System</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
             <div style="text-align: center; margin-left: 20px;">
                 <h2 style="font-size: 1.0rem; margin-bottom: .5rem; font-weight: 500; color: black;">Proponent Registration</h2>
             </div>
             <hr>
+            </div>
             <div class="modal-body mx-4" id="registration_div">
                 <form method="post" id="client_registration_form">
                     {% csrf_token %}
@@ -592,7 +604,7 @@
                         <div class="col-12">
                             <div class="ndi-auth-wrap ndi-auth-wrap--registration">
                                 <a href="#" class="ndi-auth-btn" id="generateQRCode" onclick="registerauthenticateWithAPI('Registration'); return false;">
-                                    <img src="{% static 'assets/images/NDI_logo.png' %}" alt="">
+                                    <img src="{% static 'assets/images/NDIlogobg.png' %}" alt="">
                                     Register with Bhutan NDI
                                 </a>
                             </div>
@@ -702,24 +714,30 @@
                     </div>
                 </form>
             </div>
-            <div class="ndi-scan-panel" id="ndi_div_proponent" style="display: none;">
-                <h2 class="ndi-flow-title">Scan with <span class="ndi-brand">Bhutan NDI</span> wallet</h2>
-                <div id="deepLinkPro" style="display: none;">
+            <div class="ndi-scan-panel" id="ndi_div_proponent" style="display: none; text-align: center;">
+                <h1 class="ndi-ecss-title">Environmental Clearance Services System</h1>
+                <hr class="ndi-scan-divider">
+                <h2 class="ndi-flow-title">Scan with <span class="ndi-brand">Bhutan NDI</span> Wallet</h2>
+                <div id="deepLinkPro" class="text-center mb-3" style="display: none;">
                     <button type="button" id="deepLinkBtnPro" class="ndi-deeplink-btn">Open Bhutan NDI wallet</button>
                 </div>
                 <div class="splitter ndi-or-divider-mobile" id="ndiOrDividerPro">
                     <span>OR</span>
                 </div>
                 <div class="qr-img">
-                    <div id="qrcodeproponent"></div>
-                    <img id="logoPro" src="{% static 'assets/images/NDIlogobg.png' %}" alt="" style="display: none;" />
+                    <div class="text-center" id="qrcodeproponent"></div>
+                    <img id="logoPro" src="{% static 'assets/images/ndi/QRlogo.svg' %}" alt="" style="display: none;" crossorigin="anonymous" />
                 </div>
-                <ul class="ndi-instructions list-unstyled">
-                    <li>1. Open Bhutan NDI Wallet on your Phone</li>
-                    <li>2. Tap the scan button located on the menu bar <img src="{% static 'assets/images/ScanButton.png' %}" alt="Scan"> and scan the QR code</li>
-                </ul>
+                <div class="row justify-content-center ndi-instructions-row">
+                    <div class="col-md-9 custom-vertical-align-left">
+                        <ul class="ndi-instructions list-unstyled">
+                            <li>1. Open Bhutan NDI Wallet on your Phone</li>
+                            <li>2. Tap the scan button located on the menu bar <img src="{% static 'assets/images/ScanButton.png' %}" alt="Scan"> and capture code</li>
+                        </ul>
+                    </div>
+                </div>
                 <div class="modal-body-video-btn">
-                    <a href="https://www.youtube.com/watch?v=A_k79pml9k8" target="_blank" rel="noopener">Watch Video Guide &nbsp;<i class="mdi mdi-motion-play"></i></a>
+                    <a href="https://www.youtube.com/watch?v=A_k79pml9k8" target="_blank" rel="noopener" class="btn btn-ndi btn-pill">Watch Video Guide &nbsp;<i class="mdi mdi-motion-play"></i></a>
                 </div>
                 <div class="modal-body-question">
                     <ul>

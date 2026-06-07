@@ -16,6 +16,31 @@
     box-shadow: 0 4px 10px rgba(18, 65, 67, 0.18);
 }
 
+#loginModalForm .modal-corner-close,
+#registrationModalForm .modal-corner-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    margin: 0;
+    z-index: 10;
+}
+
+#loginModalForm .login-back-link {
+    padding: 4px 12px 20px;
+}
+
+#loginModalForm .login-back-link a {
+    color: #124143;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+#loginModalForm .login-back-link a:hover {
+    color: #124143;
+    text-decoration: underline;
+}
+
 /* Login with Bhutan NDI — official button */
 .ndi-auth-wrap {
     display: flex;
@@ -101,6 +126,10 @@
     max-width: 620px;
 }
 
+#registrationModalForm.ndi-flow-active .ndi-registration-chrome {
+    display: none;
+}
+
 @media (min-width: 992px) {
     #registrationModalForm .row.cid_details .col-12 {
         flex: 0 0 100%;
@@ -126,27 +155,40 @@
 
 #loginModalForm.ndi-flow-active .modal-content,
 #registrationModalForm.ndi-flow-active .modal-content {
-    background: #f8f8f8;
+    background: #ffffff;
     border: none;
     border-radius: 12px;
 }
 
 #ndi_div,
-#ndi_div_proponent {
-    background: #f8f8f8;
+#ndi_div_proponent,
+.ndi-scan-panel {
+    background: #ffffff;
     border-radius: 12px;
-    padding: 28px 24px 32px;
+    padding: 24px 20px 28px;
     font-family: Inter, sans-serif;
-    max-width: 590px;
+    max-width: 420px;
+    width: 100%;
     margin: 0 auto;
     text-align: center;
+    box-sizing: border-box;
 }
 
-#ndi_div > h1:first-child {
+.ndi-scan-panel .ndi-ecss-title {
     font-size: 1.125rem !important;
     font-weight: 800 !important;
     color: #000 !important;
-    margin: 0 0 24px !important;
+    margin: 0 0 12px !important;
+    line-height: 1.3;
+    text-align: center;
+}
+
+.ndi-scan-panel .ndi-scan-divider {
+    border: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.18);
+    margin: 0 0 20px;
+    opacity: 1;
+    width: 100%;
 }
 
 .ndi-flow-title {
@@ -197,20 +239,21 @@
 }
 
 #ndi_div .splitter.ndi-or-divider-mobile span,
-#ndi_div_proponent .splitter.ndi-or-divider-mobile span {
-    background-color: #f8f8f8;
+#ndi_div_proponent .splitter.ndi-or-divider-mobile span,
+.ndi-scan-panel .splitter.ndi-or-divider-mobile span {
+    background-color: #ffffff;
 }
 
 #ndi_div .qr-img,
 #ndi_div_proponent .qr-img,
 .ndi-scan-panel .qr-img {
-    display: block;
-    margin: 24px auto;
-    padding: 12px;
+    display: inline-block;
+    margin: 16px auto 20px;
+    padding: 16px;
     border: 3px solid #5ac994;
     border-radius: 14px;
     background: #fff;
-    max-width: 100%;
+    max-width: calc(100% - 16px);
     box-sizing: border-box;
 }
 
@@ -227,10 +270,16 @@
     display: inline-block;
 }
 
+.ndi-instructions-row {
+    margin: 0 auto;
+    max-width: 100%;
+}
+
 #ndi_div .ndi-instructions,
-#ndi_div_proponent .ndi-instructions {
-    max-width: 420px;
-    margin: 24px auto 0;
+#ndi_div_proponent .ndi-instructions,
+.ndi-scan-panel .ndi-instructions {
+    max-width: 100%;
+    margin: 0;
     text-align: left;
     color: #a1a0a0;
     font-size: 16px;
@@ -239,8 +288,19 @@
 }
 
 #ndi_div .ndi-instructions li,
-#ndi_div_proponent .ndi-instructions li {
+#ndi_div_proponent .ndi-instructions li,
+.ndi-scan-panel .ndi-instructions li {
     margin-bottom: 10px;
+    line-height: 1.45;
+}
+
+#ndi_div .ndi-instructions li img,
+#ndi_div_proponent .ndi-instructions li img,
+.ndi-scan-panel .ndi-instructions li img {
+    height: 28px;
+    width: auto;
+    vertical-align: middle;
+    margin-left: 4px;
 }
 
 #ndi_div .ndi-instructions li:last-child,
@@ -255,26 +315,31 @@
 }
 
 #ndi_div .modal-body-video-btn a,
-#ndi_div_proponent .modal-body-video-btn a {
-    display: inline-flex;
+#ndi_div_proponent .modal-body-video-btn a,
+.ndi-scan-panel .modal-body-video-btn a,
+.ndi-scan-panel .modal-body-video-btn .btn-ndi {
+    display: inline-flex !important;
     align-items: center;
     justify-content: center;
-    width: 200px;
-    max-width: 100%;
-    min-height: 40px;
-    border: 3px solid #5ac994 !important;
-    border-radius: 6px !important;
-    background: transparent !important;
-    color: #5ac994 !important;
+    width: auto !important;
+    min-width: 200px;
+    max-width: calc(100% - 24px);
+    min-height: 44px;
+    border: none !important;
+    border-radius: 999px !important;
+    background: #5ac994 !important;
+    color: #fff !important;
     font-size: 16px;
     font-weight: 500;
     text-decoration: none !important;
-    padding: 8px 16px;
+    padding: 10px 24px !important;
+    box-shadow: none !important;
 }
 
 #ndi_div .modal-body-video-btn a:hover,
-#ndi_div_proponent .modal-body-video-btn a:hover {
-    background: #5ac994 !important;
+#ndi_div_proponent .modal-body-video-btn a:hover,
+.ndi-scan-panel .modal-body-video-btn a:hover {
+    background: #4db888 !important;
     color: #fff !important;
 }
 
@@ -302,6 +367,31 @@
 #ndi_div_proponent .modal-body-question .ndi-download-highlight {
     color: #5ac994;
     font-weight: 600;
+}
+
+#ndi_div .modal-body-question .app-link,
+#ndi_div_proponent .modal-body-question .app-link,
+.ndi-scan-panel .modal-body-question .app-link {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+#ndi_div .modal-body-question .app-link img,
+#ndi_div_proponent .modal-body-question .app-link img,
+.ndi-scan-panel .modal-body-question .app-link img {
+    width: auto;
+    max-width: 140px;
+    height: 35px;
+    object-fit: contain;
+}
+
+/* Hide help block on scan screen to match official NDI layout */
+.ndi-scan-panel .ndi-support {
+    display: none;
 }
 
 .ndi-support {
@@ -419,10 +509,17 @@
     }
 
     #loginModalForm #loginBox,
-    #loginModalForm #agencyLoginForm,
     #registrationModalForm #registration_div {
         padding-left: 12px;
         padding-right: 12px;
+        overflow-x: hidden;
+        box-sizing: border-box;
+    }
+
+    #loginModalForm #proponentLoginForm,
+    #loginModalForm #agencyLoginForm {
+        padding-left: 0;
+        padding-right: 0;
         overflow-x: hidden;
         box-sizing: border-box;
     }
@@ -433,10 +530,10 @@
         max-width: 100%;
     }
 
-    .ndi-auth-btn,
-    #ndiLoginId,
-    #ndiEmployeeId,
-    #generateQRCode {
+    #registrationModalForm .ndi-auth-btn,
+    #registrationModalForm #generateQRCode,
+    #registration_div .ndi-auth-btn,
+    #registration_div #generateQRCode {
         display: flex !important;
         width: auto !important;
         max-width: min(300px, calc(100% - 24px)) !important;
@@ -480,6 +577,12 @@
         width: 100%;
         box-sizing: border-box;
         overflow-x: hidden;
+    }
+
+    .ndi-scan-panel .ndi-ecss-title {
+        font-size: 1rem !important;
+        padding: 0 4px;
+        overflow-wrap: anywhere;
     }
 
     .ndi-flow-title {
@@ -538,19 +641,28 @@
 
 /* iPhone 15 Pro and similar (~393px) */
 @media (max-width: 430px) {
-    .ndi-auth-btn,
-    #ndiLoginId,
-    #ndiEmployeeId,
-    #generateQRCode {
+    #registrationModalForm .ndi-auth-btn,
+    #registrationModalForm #generateQRCode {
         font-size: 13px !important;
         padding: 9px 10px !important;
         gap: 6px !important;
     }
 
+    #loginModalForm #proponentLoginForm .ndi-auth-btn,
+    #loginModalForm #agencyLoginForm .ndi-auth-btn {
+        font-size: 13px !important;
+        padding: 10px 12px !important;
+        gap: 6px !important;
+    }
+
     .ndi-auth-btn img,
-    #ndiLoginId img,
-    #ndiEmployeeId img,
     #generateQRCode img {
+        width: 20px !important;
+        height: 20px !important;
+    }
+
+    #loginModalForm #proponentLoginForm .ndi-auth-btn img,
+    #loginModalForm #agencyLoginForm .ndi-auth-btn img {
         width: 20px !important;
         height: 20px !important;
     }
@@ -560,5 +672,92 @@
     .ndi-deeplink-btn {
         font-size: 13px !important;
         padding: 10px 10px !important;
+    }
+}
+
+/* Login modal — mobile NDI button (full width inside modal, no horizontal scroll) */
+@media (max-width: 768px) {
+    #loginModalForm .modal-content.modal-custom {
+        width: 100% !important;
+        max-width: calc(100vw - 1rem) !important;
+        overflow-x: hidden;
+    }
+
+    #loginModalForm .modal-header {
+        padding: 12px 40px 8px 12px;
+    }
+
+    #loginModalForm .modal-header .modal-title {
+        font-size: 0.95rem !important;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+    }
+
+    #loginModalForm #loginSelectionBox .modal-body.mx-4 {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding: 0 12px 20px !important;
+    }
+
+    #loginModalForm #proponentLoginForm .modal-body.mx-4,
+    #loginModalForm #agencyLoginForm .modal-body.mx-4 {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding: 16px 12px 0 !important;
+    }
+
+    #loginModalForm .login-type-btn {
+        flex: 1 1 calc(50% - 6px);
+        min-width: 0 !important;
+        max-width: 100%;
+        font-size: 12px !important;
+        padding: 8px 6px !important;
+        white-space: normal;
+        line-height: 1.2;
+    }
+
+    #loginModalForm #proponentLoginForm .ndi-auth-wrap--login,
+    #loginModalForm #agencyLoginForm .ndi-auth-wrap--login {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding: 8px 8px 32px !important;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    #loginModalForm #proponentLoginForm .ndi-auth-btn,
+    #loginModalForm #agencyLoginForm .ndi-auth-btn,
+    #loginModalForm #proponentLoginForm #ndiLoginId,
+    #loginModalForm #agencyLoginForm #ndiEmployeeId {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: min(330px, 100%) !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        min-height: 48px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        font-size: 14px !important;
+        padding: 10px 14px !important;
+        line-height: 1.3 !important;
+        white-space: normal !important;
+        box-sizing: border-box !important;
+        gap: 8px !important;
+    }
+
+    #loginModalForm #proponentLoginForm .ndi-auth-btn img,
+    #loginModalForm #agencyLoginForm .ndi-auth-btn img {
+        width: 22px !important;
+        height: 22px !important;
+        flex-shrink: 0;
+    }
+
+    #loginModalForm #proponentLoginForm .splitter.ndi-or-divider-login,
+    #loginModalForm #agencyLoginForm .splitter.ndi-or-divider-login {
+        margin-left: 4px;
+        margin-right: 4px;
     }
 }

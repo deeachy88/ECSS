@@ -742,10 +742,22 @@ html body textarea.form-control[readonly]:focus {
         font-size: 1.2rem;
     }
 
-    #ndiLoginId,
-    #ndiEmployeeId,
-    #generateQRCode,
-    .ndi-auth-btn {
+    #loginModalForm #proponentLoginForm #ndiLoginId,
+    #loginModalForm #agencyLoginForm #ndiEmployeeId,
+    #loginModalForm #proponentLoginForm .ndi-auth-btn,
+    #loginModalForm #agencyLoginForm .ndi-auth-btn {
+        font-size: 14px;
+        padding: 10px 14px;
+        max-width: 100% !important;
+        width: min(330px, 100%) !important;
+        white-space: normal !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    #registrationModalForm .ndi-auth-btn,
+    #registrationModalForm #generateQRCode,
+    #generateQRCode {
         font-size: 13px;
         padding: 9px 14px;
         max-width: min(300px, calc(100% - 24px)) !important;

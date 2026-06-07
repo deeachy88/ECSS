@@ -225,6 +225,38 @@
         $('.modal-footer').show();
     };
 
+    window.backToRegistrationFromLogin = function() {
+        var loginEl = document.getElementById('loginModalForm');
+        var regEl = document.getElementById('registrationModalForm');
+
+        $('#loginModalForm').removeClass('ndi-flow-active');
+        $('#loginBox').show();
+        $('#ForgotBox').hide();
+        $('#ndi_div').hide();
+        $('#ndi_login_error').hide();
+        $('#back_but').hide();
+        $('#cls_but').hide();
+        if (typeof window.showLoginForm === 'function') {
+            window.showLoginForm('proponent');
+        }
+
+        $('#registrationModalForm').removeClass('ndi-flow-active');
+        $('#registration_div').show();
+        getProponentNdiPanel().hide();
+        $('.modal-footer').show();
+
+        $(loginEl).one('hidden.bs.modal', function() {
+            bootstrap.Modal.getOrCreateInstance(regEl).show();
+        });
+
+        var loginModal = bootstrap.Modal.getInstance(loginEl);
+        if (loginModal) {
+            loginModal.hide();
+        } else if (typeof $(loginEl).modal === 'function') {
+            $(loginEl).modal('hide');
+        }
+    };
+
     function isMobileDevice() {
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
@@ -306,29 +338,52 @@
         const logoEl = document.getElementById(logoElementId || 'logo');
         const viewportW = window.innerWidth || document.documentElement.clientWidth || 360;
         const qrSize = Math.min(200, Math.max(150, viewportW - 88));
-        $container.empty().qrcode({
-            render: 'canvas',
-            minVersion: 1,
-            maxVersion: 40,
-            ecLevel: 'L',
-            left: 0,
-            top: 0,
-            size: qrSize,
-            fill: '#000',
-            background: '#fff',
-            text: proofRequestURL,
-            radius: 0,
-            quiet: 0,
-            mode: 4,
-            mSize: 0.15,
-            mPosX: 0.5,
-            mPosY: 0.5,
-            label: '',
-            fontcolor: '#000',
-            fontname: 'sans',
-            image: logoEl,
-        });
-        $container.show();
+
+        function drawQr() {
+            const useLogo = logoEl && logoEl.complete && logoEl.naturalWidth > 0;
+            const options = {
+                render: 'canvas',
+                minVersion: 1,
+                maxVersion: 40,
+                ecLevel: 'L',
+                left: 0,
+                top: 0,
+                size: qrSize,
+                fill: '#000',
+                background: '#fff',
+                text: proofRequestURL,
+                radius: 0,
+                quiet: 0,
+                mode: useLogo ? 4 : 0,
+                mSize: 0.2,
+                mPosX: 0.5,
+                mPosY: 0.5,
+                label: '',
+                fontcolor: '#000',
+                fontname: 'sans',
+            };
+            if (useLogo) {
+                options.image = logoEl;
+            }
+            $container.empty().qrcode(options);
+            $container.show();
+        }
+
+        if (!logoEl) {
+            drawQr();
+            return;
+        }
+        if (logoEl.complete && logoEl.naturalWidth > 0) {
+            drawQr();
+            return;
+        }
+        logoEl.onload = function() {
+            drawQr();
+        };
+        logoEl.onerror = function() {
+            console.warn('QR center logo failed to load:', logoEl.src);
+            drawQr();
+        };
     }
 
     /**
@@ -379,9 +434,9 @@
     function updateLoginNdiDisplay(proofRequestURL, deepLinkURL) {
         $('#ndi_div').show();
         if (isMobileDevice()) {
-            $('#ndi_div .ndi-flow-title').html('Login with <span style="color:#5AC994">Bhutan NDI</span> Wallet');
+            $('#ndi_div .ndi-flow-title').html('Login with <span class="ndi-brand">Bhutan NDI</span> Wallet');
         } else {
-            $('#ndi_div .ndi-flow-title').html('Scan with <span style="color:#5AC994">Bhutan NDI</span> wallet');
+            $('#ndi_div .ndi-flow-title').html('Scan with <span class="ndi-brand">Bhutan NDI</span> Wallet');
         }
         if (isMobileDevice()) {
             bindDeepLinkButton($('#deepLink'), $('#deepLinkBtn'), deepLinkURL, proofRequestURL);
@@ -404,7 +459,7 @@
 
     function updateProponentNdiDisplay($panel, proofRequestURL, deepLinkURL) {
         // Registration flow title must stay "Scan with Bhutan NDI wallet" on all devices.
-        $panel.find('.ndi-flow-title').html('Scan with <span style="color:#5AC994">Bhutan NDI</span> wallet');
+        $panel.find('.ndi-flow-title').html('Scan with <span class="ndi-brand">Bhutan NDI</span> Wallet');
         const $deepLink = $panel.find('#deepLinkPro');
         const $deepLinkBtn = $panel.find('#deepLinkBtnPro');
         const $qr = $panel.find('#qrcodeproponent');
