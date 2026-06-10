@@ -22,6 +22,7 @@ function setNdiSession(id) {
 
 function clearNdiSession() {
     window.sessionId = null;
+    window.ndiWalletActionStarted = false;
     sessionStorage.removeItem('ndi_session_id');
     sessionStorage.removeItem('ndi_category');
     sessionStorage.removeItem('ndi_thread_id');
@@ -38,6 +39,30 @@ function hideNdiLoaderIfAvailable() {
     if (typeof window.hideNdiLoader === 'function') {
         window.hideNdiLoader();
     }
+}
+
+function showNdiWaitingIfAvailable() {
+    if (typeof window.showNdiWaitingLoader === 'function') {
+        window.showNdiWaitingLoader();
+    }
+}
+
+function showNdiProcessingIfAvailable() {
+    if (typeof window.showNdiProcessingLoader === 'function') {
+        window.showNdiProcessingLoader();
+    } else {
+        showNdiWaitingIfAvailable();
+    }
+}
+
+function ndiHasActionableProof(data) {
+    if (!data || data.pending || data.error) {
+        return false;
+    }
+    if (data.proof_type === 'present-proof/rejected') {
+        return false;
+    }
+    return !!(data.eid || data.id_number || data.full_name || data.relationshipDid);
 }
 
 function handleNdiProofData(data) {
@@ -70,6 +95,7 @@ function handleNdiProofData(data) {
     const proof_type = data.proof_type;
 
     if (proof_type === 'present-proof/rejected') {
+        hideNdiLoaderIfAvailable();
         if (typeof hideAllSpinners === 'function') {
             hideAllSpinners();
         }
@@ -89,6 +115,10 @@ function handleNdiProofData(data) {
         stopProofPolling();
         clearNdiSession();
         return true;
+    }
+
+    if (ndiHasActionableProof(data)) {
+        showNdiProcessingIfAvailable();
     }
 
     if (eid && category === 'Employee' && String(id_number) === '1111') {
@@ -122,6 +152,7 @@ function handleNdiProofData(data) {
     }
 
     if (full_name && category === 'Registration') {
+        hideNdiLoaderIfAvailable();
         if (typeof hideAllSpinners === 'function') {
             hideAllSpinners();
         }
@@ -153,9 +184,13 @@ function startProofPolling(proofRequestThreadId, value) {
                 value: value
             },
             success: function(response) {
-                if (!response || response.pending || response.error) {
+                if (!response || response.error) {
                     return;
                 }
+                if (response.pending) {
+                    return;
+                }
+                showNdiProcessingIfAvailable();
                 handleNdiProofData(response);
             },
             error: function(xhr, status, error) {

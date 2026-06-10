@@ -68,13 +68,16 @@
         $('#ndiLoaderOverlay').hide();
     };
 
+    let ndiLoaderSubBase = 'Please wait';
+
     function showNdiLoader(mainText, subText) {
-        const defaultMain = 'Generating QR code';
+        const defaultMain = 'Waiting for Bhutan NDI';
         const defaultSub = 'Please wait';
         const $main = $('#ndiLoaderMainText');
         const $sub = $('#ndiLoaderSubText');
         $main.text(mainText || defaultMain);
-        $sub.text(subText || defaultSub);
+        ndiLoaderSubBase = subText || defaultSub;
+        $sub.text(ndiLoaderSubBase);
         $('#ndiLoaderOverlay').css('display', 'flex');
 
         let dots = 0;
@@ -84,7 +87,7 @@
         ndiLoaderTimer = setInterval(function() {
             dots = (dots + 1) % 4;
             const suffix = '.'.repeat(dots);
-            $sub.text('Please wait' + suffix);
+            $sub.text(ndiLoaderSubBase + suffix);
         }, 500);
     }
 
@@ -98,8 +101,27 @@
 
     window.hideNdiLoader = hideNdiLoader;
 
-    /* Disabled: do not show "Waiting for response" until proof handling is wired again */
-    window.showNdiWaitingLoader = function() {};
+    window.ndiWalletActionStarted = false;
+
+    function resetNdiWalletAction() {
+        window.ndiWalletActionStarted = false;
+    }
+
+    window.showNdiWaitingLoader = function() {
+        showNdiLoader('Waiting for Bhutan NDI', 'Please complete in your wallet');
+    };
+
+    window.showNdiProcessingLoader = function() {
+        showNdiLoader('Verifying with Bhutan NDI', 'Please wait while we complete your request');
+    };
+
+    function markNdiWalletActionStarted() {
+        if (!isNdiAwaitingProof()) {
+            return;
+        }
+        window.ndiWalletActionStarted = true;
+        window.showNdiWaitingLoader();
+    }
 
     function isNdiAwaitingProof() {
         return !!sessionStorage.getItem('ndi_thread_id');
@@ -144,6 +166,11 @@
             $('#btnProponent').removeClass('active-login-btn');
         }
         $('#ndi_login_error').hide();
+        $('#loginModalForm').removeClass('ndi-flow-active');
+        resetNdiWalletAction();
+        hideNdiLoader();
+        $('#progressIndicator').hide();
+        $('#progressIndicator1').hide();
     };
 
     function requireLoginTypeSelection() {
@@ -194,11 +221,26 @@
     };
 
     window.back = function() {
+        $('#loginModalForm').removeClass('ndi-flow-active');
         $('#loginBox').show();
         $('#ForgotBox').hide();
         $('#ndi_div').hide();
         $('#issuanceMessageDiv').hide();
     };
+
+    function applyLoginScanInstruction() {
+        const category = sessionStorage.getItem('ndi_category');
+        const $scanText = $('#ndi_div .ndi-instruction-scan-text');
+        const $icon = $('#ndi_div .ndi-scan-icon');
+        if (!$scanText.length) {
+            return;
+        }
+        const iconHtml = $icon.length ? $icon[0].outerHTML : '';
+        const action = category === 'Issuance'
+            ? 'and capture code'
+            : 'and scan the QR code';
+        $scanText.html('Tap the Scan button ' + iconHtml + ' located on the menu bar ' + action);
+    }
 
     function getProponentNdiPanel() {
         const $modalPanel = $('#registrationModalForm #ndi_div_proponent');
@@ -334,56 +376,116 @@
         }
     }
 
-    function renderQrCode($container, proofRequestURL, logoElementId) {
-        const logoEl = document.getElementById(logoElementId || 'logo');
-        const viewportW = window.innerWidth || document.documentElement.clientWidth || 360;
-        const qrSize = Math.min(200, Math.max(150, viewportW - 88));
-
-        function drawQr() {
-            const useLogo = logoEl && logoEl.complete && logoEl.naturalWidth > 0;
-            const options = {
-                render: 'canvas',
-                minVersion: 1,
-                maxVersion: 40,
-                ecLevel: 'L',
-                left: 0,
-                top: 0,
-                size: qrSize,
-                fill: '#000',
-                background: '#fff',
-                text: proofRequestURL,
-                radius: 0,
-                quiet: 0,
-                mode: useLogo ? 4 : 0,
-                mSize: 0.2,
-                mPosX: 0.5,
-                mPosY: 0.5,
-                label: '',
-                fontcolor: '#000',
-                fontname: 'sans',
-            };
-            if (useLogo) {
-                options.image = logoEl;
-            }
-            $container.empty().qrcode(options);
-            $container.show();
-        }
-
+    function loadQrLogoSource(logoEl, done) {
         if (!logoEl) {
-            drawQr();
+            done(null);
             return;
         }
         if (logoEl.complete && logoEl.naturalWidth > 0) {
-            drawQr();
+            done(logoEl);
             return;
         }
-        logoEl.onload = function() {
-            drawQr();
-        };
+        logoEl.onload = function() { done(logoEl); };
         logoEl.onerror = function() {
             console.warn('QR center logo failed to load:', logoEl.src);
-            drawQr();
+            done(null);
         };
+    }
+
+    /** Official Bhutan NDI branded QR — center logo diameter as fraction of code width. */
+    var NDI_QR_LOGO_DIAMETER = 0.224;
+
+    /** Clip QRlogo.svg to a perfect circle (asset viewBox is square). */
+    function rasterizeCircularLogo(logoSource, pixelSize) {
+        var scratch = document.createElement('canvas');
+        scratch.width = pixelSize;
+        scratch.height = pixelSize;
+        var sctx = scratch.getContext('2d');
+        if (!sctx) {
+            return null;
+        }
+        sctx.beginPath();
+        sctx.arc(pixelSize / 2, pixelSize / 2, pixelSize / 2, 0, Math.PI * 2);
+        sctx.closePath();
+        sctx.clip();
+        sctx.drawImage(logoSource, 0, 0, pixelSize, pixelSize);
+        return scratch;
+    }
+
+    /**
+     * Bhutan NDI branded QR: full matrix (mode 0) + circular center.
+     * mode 4 in jquery-qrcode always blanks a square — never use it.
+     * QRlogo.svg already includes the white quiet ring and green emblem.
+     */
+    function paintCircularLogoOnQrCanvas(canvas, logoSource) {
+        var ctx = canvas.getContext('2d');
+        if (!ctx) {
+            return;
+        }
+
+        var size = canvas.width;
+        var cx = size / 2;
+        var cy = size / 2;
+        var diameter = size * NDI_QR_LOGO_DIAMETER;
+        var radius = diameter / 2;
+        var logoPx = Math.round(diameter);
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius + 1, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+
+        var logoCanvas = rasterizeCircularLogo(logoSource, logoPx);
+        if (logoCanvas) {
+            ctx.drawImage(logoCanvas, cx - radius, cy - radius, diameter, diameter);
+        }
+    }
+
+    function renderQrCode($container, proofRequestURL, logoElementId) {
+        var url = String(proofRequestURL || '').trim();
+        if (!url) {
+            console.error('renderQrCode: missing proofRequestURL');
+            $container.empty().hide();
+            return;
+        }
+
+        var logoEl = document.getElementById(logoElementId || 'logo');
+        var displaySize = 200;
+        var renderScale = 2;
+        var renderSize = displaySize * renderScale;
+
+        loadQrLogoSource(logoEl, function(logoSource) {
+            var useLogo = !!logoSource;
+
+            $container.empty().qrcode({
+                render: 'canvas',
+                minVersion: 1,
+                maxVersion: 40,
+                ecLevel: useLogo ? 'H' : 'M',
+                left: 0,
+                top: 0,
+                size: renderSize,
+                fill: '#000000',
+                background: '#ffffff',
+                text: url,
+                radius: 0,
+                quiet: 2,
+                mode: 0,
+            });
+
+            var canvas = $container.find('canvas')[0];
+            if (canvas) {
+                canvas.style.width = displaySize + 'px';
+                canvas.style.height = displaySize + 'px';
+                if (useLogo) {
+                    paintCircularLogoOnQrCanvas(canvas, logoSource);
+                }
+            }
+
+            $container.addClass('ndi-qr-rendered');
+            $container.closest('.qr-img').addClass('ndi-qr-framed');
+            $container.show();
+        });
     }
 
     /**
@@ -404,7 +506,7 @@
         $wrap.show();
 
         // Hard reset wrapper so mobile shows exactly one Open Wallet control.
-        const btnHtml = '<span>Open Bhutan NDI wallet</span>';
+        const btnHtml = '<span>Open Bhutan NDI Wallet</span>';
         const btnClass = $btn.length ? ($btn.attr('class') || '') : '';
         $wrap.find('a.ndi-app-open-link, button').remove();
 
@@ -421,6 +523,10 @@
 
         $link.attr('href', deepLinkHref);
         $link.html(btnHtml);
+        $link.off('click.ndiWaiting').on('click.ndiWaiting', function() {
+            markNdiWalletActionStarted();
+        });
+
         // Intentionally no HTTPS/ngrok helper line in UI copy.
 
         // Keep popup copy strictly aligned to Bhutan NDI UI copy.
@@ -431,60 +537,68 @@
         return cfg.mobileShowQrAlso !== false;
     }
 
-    function updateLoginNdiDisplay(proofRequestURL, deepLinkURL) {
-        $('#ndi_div').show();
-        if (isMobileDevice()) {
-            $('#ndi_div .ndi-flow-title').html('Login with <span class="ndi-brand">Bhutan NDI</span> Wallet');
-        } else {
-            $('#ndi_div .ndi-flow-title').html('Scan with <span class="ndi-brand">Bhutan NDI</span> Wallet');
-        }
-        if (isMobileDevice()) {
-            bindDeepLinkButton($('#deepLink'), $('#deepLinkBtn'), deepLinkURL, proofRequestURL);
-            if (shouldShowQrAlso() && proofRequestURL) {
-                renderQrCode($('#qrcode'), proofRequestURL, 'logo');
-            } else {
-                $('#qrcode').hide();
-            }
-        } else {
-            $('#deepLink').hide();
-            $('#ndiOrDivider').hide();
-            renderQrCode($('#qrcode'), proofRequestURL, 'logo');
-        }
-        if (isMobileDevice() && $('#deepLink').is(':visible') && $('#qrcode').is(':visible')) {
-            $('#ndiOrDivider').show();
-        } else {
-            $('#ndiOrDivider').hide();
-        }
-    }
+    function updateNdiScanPanelDisplay($panel, proofRequestURL, deepLinkURL, config) {
+        const $deepLink = $panel.find(config.deeplinkWrap);
+        const $deepLinkBtn = $panel.find(config.deeplinkBtn);
+        const $orDivider = $panel.find(config.orDivider);
+        const $qr = $panel.find(config.qrContainer);
 
-    function updateProponentNdiDisplay($panel, proofRequestURL, deepLinkURL) {
-        // Registration flow title must stay "Scan with Bhutan NDI wallet" on all devices.
-        $panel.find('.ndi-flow-title').html('Scan with <span class="ndi-brand">Bhutan NDI</span> Wallet');
-        const $deepLink = $panel.find('#deepLinkPro');
-        const $deepLinkBtn = $panel.find('#deepLinkBtnPro');
-        const $qr = $panel.find('#qrcodeproponent');
+        $panel.find('.ndi-flow-title').html(config.titleHtml);
 
         if (isMobileDevice()) {
             bindDeepLinkButton($deepLink, $deepLinkBtn, deepLinkURL, proofRequestURL);
+            if (shouldShowQrAlso() && proofRequestURL) {
+                $qr.show();
+                renderQrCode($qr, proofRequestURL, config.logoId);
+            } else if ($qr.length) {
+                $qr.hide();
+            }
         } else {
             $deepLink.hide();
-            $('#ndiOrDividerPro').hide();
+            $orDivider.hide();
+            $qr.show();
+            renderQrCode($qr, proofRequestURL, config.logoId);
         }
-        if (shouldShowQrAlso() && proofRequestURL) {
-            renderQrCode($qr, proofRequestURL, 'logoPro');
-        } else if ($qr.length) {
-            $qr.hide();
-        }
+
         if (isMobileDevice() && $deepLink.is(':visible') && $qr.is(':visible')) {
-            $('#ndiOrDividerPro').show();
+            $orDivider.show();
         } else {
-            $('#ndiOrDividerPro').hide();
+            $orDivider.hide();
         }
+    }
+
+    function updateLoginNdiDisplay(proofRequestURL, deepLinkURL) {
+        $('#loginModalForm').addClass('ndi-flow-active');
+        $('#ndi_div').show();
+        applyLoginScanInstruction();
+        const titleHtml = isMobileDevice()
+            ? 'Login with <span class="ndi-brand">Bhutan NDI</span> Wallet'
+            : 'Scan with <span class="ndi-brand">Bhutan NDI Wallet</span>';
+        updateNdiScanPanelDisplay($('#ndi_div'), proofRequestURL, deepLinkURL, {
+            titleHtml: titleHtml,
+            deeplinkWrap: '#deepLink',
+            deeplinkBtn: '#deepLinkBtn',
+            orDivider: '#ndiOrDivider',
+            qrContainer: '#qrcode',
+            logoId: 'logo'
+        });
+    }
+
+    function updateProponentNdiDisplay($panel, proofRequestURL, deepLinkURL) {
+        updateNdiScanPanelDisplay($panel, proofRequestURL, deepLinkURL, {
+            titleHtml: 'Scan with <span class="ndi-brand">Bhutan NDI Wallet</span>',
+            deeplinkWrap: '#deepLinkPro',
+            deeplinkBtn: '#deepLinkBtnPro',
+            orDivider: '#ndiOrDividerPro',
+            qrContainer: '#qrcodeproponent',
+            logoId: 'logoPro'
+        });
     }
 
     window.authenticate_ndi = function(value) {
         if (value === 'Issuance') {
             $('#loginModalForm').modal('show');
+            $('#loginModalForm').addClass('ndi-flow-active');
             $('#progressLoader').show();
             $('#loginBox').hide();
             $('#cls_but').show();
@@ -493,8 +607,6 @@
             $('#back_but').show();
         }
 
-        $('#progressIndicator').show();
-        showNdiLoader('Generating QR code', 'Please wait');
         $.ajax({
             type: 'GET',
             url: `/proof_request/?category=${value}`,
@@ -520,6 +632,8 @@
     };
 
     window.updateDisplay = function(proofRequestURL, deepLinkURL, proofRequestThreadId, value) {
+        resetNdiWalletAction();
+        hideNdiLoader();
         $('#loginBox').hide();
         updateLoginNdiDisplay(proofRequestURL, deepLinkURL);
         if (typeof nats_call === 'function') {
@@ -528,8 +642,6 @@
     };
 
     window.authenticate_ndi_empid = function(value) {
-        $('#progressIndicator').show();
-        showNdiLoader('Generating QR code', 'Please wait');
         $.ajax({
             type: 'GET',
             url: `/proof_request_employee/?category=${value}`,
@@ -555,6 +667,8 @@
     };
 
     window.updateDisplayEmp = function(proofRequestURL, deepLinkURL, proofRequestThreadId, value) {
+        resetNdiWalletAction();
+        hideNdiLoader();
         $('#loginBox').hide();
         updateLoginNdiDisplay(proofRequestURL, deepLinkURL);
         if (typeof nats_call === 'function') {
@@ -563,8 +677,6 @@
     };
 
     window.registerauthenticateWithAPI = function(value) {
-        $('#progressIndicator1').show();
-        showNdiLoader('Generating QR code', 'Please wait');
         $.ajax({
             type: 'GET',
             url: `/proof_request_proponent/?category=${value}`,
@@ -599,6 +711,8 @@
     };
 
     window.updateDisplayProponent = function(proofRequestURL, deepLinkURL, proofRequestThreadId, value) {
+        resetNdiWalletAction();
+        hideNdiLoader();
         const $ndiPanel = getProponentNdiPanel();
         const inModal = $ndiPanel.closest('#registrationModalForm').length > 0;
 
@@ -656,14 +770,27 @@
             sessionStorage.removeItem('ndi_thread_id');
         }
         document.addEventListener('visibilitychange', function() {
-            if (document.visibilityState !== 'visible') {
+            if (document.visibilityState === 'hidden') {
+                if (!window.ndiWalletActionStarted) {
+                    hideNdiLoader();
+                }
                 return;
             }
             if (!socket || socket.readyState !== WebSocket.OPEN) {
                 connectWebSocket();
             }
+            if (
+                window.ndiWalletActionStarted &&
+                isNdiAwaitingProof() &&
+                ndiPanelIsVisible()
+            ) {
+                window.showNdiWaitingLoader();
+            } else if (!window.ndiWalletActionStarted) {
+                hideNdiLoader();
+            }
         });
         $('.modal').on('hidden.bs.modal', function() {
+            $('#loginModalForm').removeClass('ndi-flow-active');
             sessionStorage.removeItem('modalShown');
             if (typeof stopProofPolling === 'function') {
                 stopProofPolling();
@@ -671,6 +798,7 @@
             if (typeof clearNdiSession === 'function') {
                 clearNdiSession();
             }
+            resetNdiWalletAction();
             hideNdiLoader();
             $('#registration_div').show();
             $('#ndi_div_proponent').hide();

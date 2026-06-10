@@ -1,6 +1,8 @@
-/* NDI-only UI (login button, modals, loader) � does not affect rest of site */
+/* NDI-only UI (login button, modals, loader) - does not affect rest of site */
 
 /* Login type toggle */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 #loginModalForm .login-type-btn {
     border-color: #124143 !important;
     color: #124143 !important;
@@ -25,23 +27,17 @@
     z-index: 10;
 }
 
-#loginModalForm .login-back-link {
-    padding: 4px 12px 20px;
+/* Space between Proponent/Agency tabs and email field */
+#loginModalForm #loginSelectionBox .modal-body.mx-4 {
+    padding-bottom: 12px;
 }
 
-#loginModalForm .login-back-link a {
-    color: #124143;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 14px;
+#loginModalForm #proponentLoginForm > form > .modal-body.mx-4,
+#loginModalForm #agencyLoginForm > form > .modal-body.mx-4 {
+    padding-top: 12px;
 }
 
-#loginModalForm .login-back-link a:hover {
-    color: #124143;
-    text-decoration: underline;
-}
-
-/* Login with Bhutan NDI — official button */
+/* Login with Bhutan NDI - official button */
 .ndi-auth-wrap {
     display: flex;
     justify-content: center;
@@ -68,7 +64,7 @@
     display: flex !important;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
     text-decoration: none !important;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
     box-shadow: none !important;
@@ -123,7 +119,7 @@
 }
 
 #registrationModalForm.ndi-flow-active .modal-dialog {
-    max-width: 620px;
+    max-width: 590px;
 }
 
 #registrationModalForm.ndi-flow-active .ndi-registration-chrome {
@@ -150,28 +146,61 @@
 /* NDI scan popup inside modals */
 #loginModalForm.ndi-flow-active .modal-dialog,
 #registrationModalForm.ndi-flow-active .modal-dialog {
-    max-width: 620px;
+    max-width: 590px;
+    width: calc(100% - 2rem);
 }
 
 #loginModalForm.ndi-flow-active .modal-content,
 #registrationModalForm.ndi-flow-active .modal-content {
-    background: #ffffff;
+    background: #f8f8f8;
     border: none;
-    border-radius: 12px;
+    border-radius: 40px;
+    font-family: Inter, system-ui, sans-serif;
+    padding: 0;
+}
+
+#loginModalForm.ndi-flow-active .modal-content > .ndi-scan-panel,
+#registrationModalForm.ndi-flow-active .modal-content > .ndi-scan-panel,
+#loginModalForm.ndi-flow-active #ndi_div,
+#registrationModalForm.ndi-flow-active #ndi_div_proponent {
+    padding-top: var(--ndi-gap-major, 30px);
+    padding-bottom: var(--ndi-gap-major, 30px);
 }
 
 #ndi_div,
 #ndi_div_proponent,
 .ndi-scan-panel {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 24px 20px 28px;
-    font-family: Inter, sans-serif;
-    max-width: 420px;
+    --ndi-gap-major: 30px;
+    --ndi-gap-minor: 10px;
+    background: transparent;
+    border-radius: 0;
+    padding: var(--ndi-gap-major) 24px;
+    font-family: Inter, system-ui, sans-serif;
+    font-size: 16px;
+    max-width: 100%;
     width: 100%;
     margin: 0 auto;
     text-align: center;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--ndi-gap-major);
+}
+
+.ndi-scan-panel > .ndi-element,
+.ndi-scan-panel > .ndi-nav-back-wrap {
+    margin: 0;
+    width: 100%;
+}
+
+.ndi-scan-panel > .ndi-element.qr-img,
+.ndi-scan-panel > .ndi-element.modal-body-video-btn,
+.ndi-scan-panel > .ndi-element.modal-body-question,
+.ndi-scan-panel > .ndi-element.ndi-support,
+.ndi-scan-panel > #deepLink,
+.ndi-scan-panel > #deepLinkPro {
+    width: auto;
 }
 
 .ndi-scan-panel .ndi-ecss-title {
@@ -193,9 +222,9 @@
 
 .ndi-flow-title {
     font-size: 18px !important;
-    font-weight: 600 !important;
+    font-weight: 700 !important;
     color: #000 !important;
-    margin: 0 0 24px !important;
+    margin: 0 !important;
     line-height: 1.35;
 }
 
@@ -204,7 +233,7 @@
     color: #5ac994 !important;
 }
 
-/* Deeplink � green button, no legacy .button purple */
+/* Deeplink - green button, no legacy .button purple */
 #deepLinkBtn,
 #deepLinkBtnPro,
 .ndi-deeplink-btn,
@@ -212,7 +241,7 @@
 #ndi_div .button,
 #ndi_div_proponent .button {
     min-width: 0;
-    max-width: 100%;
+    max-width: 300px;
     width: 100%;
     min-height: 50px;
     border-radius: 6px !important;
@@ -228,7 +257,7 @@
     font-weight: 600 !important;
     padding: 12px 20px !important;
     margin: 0 auto;
-    box-shadow: none !important;
+    box-shadow: 0 4px 12px rgba(90, 201, 148, 0.35) !important;
 }
 
 #deepLink,
@@ -238,36 +267,71 @@
     margin-bottom: 0;
 }
 
+.ndi-scan-panel .splitter.ndi-or-divider-mobile {
+    margin: 0;
+}
+
 #ndi_div .splitter.ndi-or-divider-mobile span,
 #ndi_div_proponent .splitter.ndi-or-divider-mobile span,
 .ndi-scan-panel .splitter.ndi-or-divider-mobile span {
-    background-color: #ffffff;
+    background-color: #f8f8f8;
 }
 
+/* Bhutan NDI QR frame - green border + rounded corners (all flows) */
 #ndi_div .qr-img,
 #ndi_div_proponent .qr-img,
-.ndi-scan-panel .qr-img {
-    display: inline-block;
-    margin: 16px auto 20px;
-    padding: 16px;
+.ndi-scan-panel .qr-img,
+.ndi-popup__qr .qr-img,
+.ndi-qr-framed {
+    display: block;
+    margin: 0;
+    padding: 14px;
     border: 3px solid #5ac994;
     border-radius: 14px;
     background: #fff;
     max-width: calc(100% - 16px);
     box-sizing: border-box;
+    line-height: 0;
+}
+
+#ndi_div #qrcode,
+#ndi_div_proponent #qrcodeproponent,
+.ndi-scan-panel #qrcode,
+.ndi-scan-panel #qrcodeproponent,
+.ndi-popup__qr #qrcode,
+.ndi-popup__qr #qrcodeproponent {
+    display: inline-block;
+    line-height: 0;
 }
 
 #ndi_div #qrcode canvas,
 #ndi_div_proponent #qrcodeproponent canvas,
-.ndi-scan-panel #qrcodeproponent canvas {
+.ndi-scan-panel #qrcode canvas,
+.ndi-scan-panel #qrcodeproponent canvas,
+.ndi-popup__qr #qrcode canvas,
+.ndi-popup__qr #qrcodeproponent canvas {
     display: block;
-    max-width: 100% !important;
+    width: 200px;
+    max-width: 100%;
     height: auto !important;
 }
 
-#ndi_div #qrcode,
-#ndi_div_proponent #qrcodeproponent {
-    display: inline-block;
+#ndi_div #logo,
+#ndi_div #logoPro,
+#ndi_div_proponent #logo,
+#ndi_div_proponent #logoPro,
+.ndi-scan-panel #logo,
+.ndi-scan-panel #logoPro,
+.ndi-qr-logo-source {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 .ndi-instructions-row {
@@ -279,8 +343,8 @@
 #ndi_div_proponent .ndi-instructions,
 .ndi-scan-panel .ndi-instructions {
     max-width: 100%;
-    margin: 0;
-    text-align: left;
+    margin: 0 auto;
+    text-align: center;
     color: #a1a0a0;
     font-size: 16px;
     padding: 0;
@@ -294,13 +358,18 @@
     line-height: 1.45;
 }
 
+.ndi-scan-icon,
 #ndi_div .ndi-instructions li img,
 #ndi_div_proponent .ndi-instructions li img,
 .ndi-scan-panel .ndi-instructions li img {
     height: 28px;
     width: auto;
     vertical-align: middle;
-    margin-left: 4px;
+    margin: 0 4px;
+}
+
+.ndi-instruction-num {
+    font-weight: 500;
 }
 
 #ndi_div .ndi-instructions li:last-child,
@@ -309,58 +378,108 @@
 }
 
 #ndi_div .modal-body-video-btn,
-#ndi_div_proponent .modal-body-video-btn {
-    margin-top: 24px;
+#ndi_div_proponent .modal-body-video-btn,
+.ndi-scan-panel .modal-body-video-btn {
     text-align: center;
+    padding: 0;
+    margin: 0;
 }
 
-#ndi_div .modal-body-video-btn a,
-#ndi_div_proponent .modal-body-video-btn a,
-.ndi-scan-panel .modal-body-video-btn a,
-.ndi-scan-panel .modal-body-video-btn .btn-ndi {
+.ndi-btn-video-guide {
     display: inline-flex !important;
     align-items: center;
     justify-content: center;
-    width: auto !important;
-    min-width: 200px;
-    max-width: calc(100% - 24px);
-    min-height: 44px;
-    border: none !important;
-    border-radius: 999px !important;
-    background: #5ac994 !important;
-    color: #fff !important;
+    flex-wrap: nowrap;
+    gap: 10px;
+    width: auto;
+    min-width: 0;
+    max-width: 100%;
+    min-height: 40px;
+    padding: 8px 24px;
+    border: 1.5px solid #5ac994 !important;
+    border-radius: 999px;
+    background: #fff !important;
+    color: #5ac994 !important;
+    font-family: Inter, system-ui, sans-serif;
     font-size: 16px;
     font-weight: 500;
     text-decoration: none !important;
-    padding: 10px 24px !important;
-    box-shadow: none !important;
+    box-sizing: border-box;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-#ndi_div .modal-body-video-btn a:hover,
-#ndi_div_proponent .modal-body-video-btn a:hover,
-.ndi-scan-panel .modal-body-video-btn a:hover {
-    background: #4db888 !important;
+.ndi-btn-video-guide__label {
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.ndi-btn-video-guide:hover,
+.ndi-btn-video-guide:focus,
+.ndi-btn-video-guide:focus-visible {
+    background: #5ac994 !important;
     color: #fff !important;
+    border-color: #5ac994 !important;
+    text-decoration: none !important;
+}
+
+.ndi-play-icon-slot {
+    position: relative;
+    width: 22px;
+    height: 22px;
+    flex: 0 0 22px;
+    display: inline-block;
+}
+
+.ndi-play-icon-slot .ndi-play-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    transition: opacity 0.15s ease;
+}
+
+.ndi-play-icon-slot .ndi-play-icon--default {
+    opacity: 1;
+}
+
+.ndi-play-icon-slot .ndi-play-icon--hover {
+    opacity: 0;
+}
+
+.ndi-btn-video-guide:hover .ndi-play-icon-slot .ndi-play-icon--default,
+.ndi-btn-video-guide:focus .ndi-play-icon-slot .ndi-play-icon--default,
+.ndi-btn-video-guide:focus-visible .ndi-play-icon-slot .ndi-play-icon--default {
+    opacity: 0;
+}
+
+.ndi-btn-video-guide:hover .ndi-play-icon-slot .ndi-play-icon--hover,
+.ndi-btn-video-guide:focus .ndi-play-icon-slot .ndi-play-icon--hover,
+.ndi-btn-video-guide:focus-visible .ndi-play-icon-slot .ndi-play-icon--hover {
+    opacity: 1;
 }
 
 #ndi_div .modal-body-question,
-#ndi_div_proponent .modal-body-question {
-    margin-top: 24px;
+#ndi_div_proponent .modal-body-question,
+.ndi-scan-panel .modal-body-question {
     text-align: center;
-}
-
-#ndi_div .modal-body-question ul,
-#ndi_div_proponent .modal-body-question ul {
-    margin: 0;
     padding: 0;
-    list-style: none;
+    margin: 0;
 }
 
 #ndi_div .modal-body-question .ndi-download-label,
-#ndi_div_proponent .modal-body-question .ndi-download-label {
+#ndi_div_proponent .modal-body-question .ndi-download-label,
+.ndi-scan-panel .modal-body-question .ndi-download-label {
     font-size: 16px;
     color: #a1a0a0;
-    margin-bottom: 8px;
+    margin: 0 0 var(--ndi-gap-minor, 10px);
+}
+
+.ndi-download-muted {
+    color: #a1a0a0;
+    font-weight: 400;
 }
 
 #ndi_div .modal-body-question .ndi-download-highlight,
@@ -376,8 +495,9 @@
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: 10px;
-    margin-top: 8px;
+    gap: var(--ndi-gap-minor, 10px);
+    margin: 0;
+    padding: 0;
 }
 
 #ndi_div .modal-body-question .app-link img,
@@ -389,13 +509,7 @@
     object-fit: contain;
 }
 
-/* Hide help block on scan screen to match official NDI layout */
-.ndi-scan-panel .ndi-support {
-    display: none;
-}
-
 .ndi-support {
-    margin-top: 24px;
     text-align: center;
 }
 
@@ -403,11 +517,34 @@
     font-size: 16px;
     font-weight: 600;
     color: #5ac994;
-    margin-bottom: 8px;
+    margin: 0 0 var(--ndi-gap-minor, 10px);
+}
+
+.ndi-support-contacts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 16px 24px;
+}
+
+.ndi-support-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 0;
+}
+
+.ndi-support-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    flex-shrink: 0;
 }
 
 .ndi-support-link {
-    color: #6f6f6f;
+    color: #000;
     font-size: 14px;
     text-decoration: none;
 }
@@ -417,17 +554,100 @@
     text-decoration: underline;
 }
 
-#ndi_div .ndi-back-link,
-#registrationModalForm #ndi_div_proponent + .modal-footer,
-#ndi_div #back_but {
+/* Back to Login / Registration - NDI scan & forgot-password */
+.ndi-nav-back-wrap {
     margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(18, 65, 67, 0.12);
+    text-align: center;
+    width: 100%;
 }
 
-#ndi_div .ndi-back-link a,
-#ndi_div #back_but a {
+.ndi-nav-back-wrap--forgot {
+    margin-top: 8px;
+    padding-top: 0;
+    border-top: none;
+    padding-bottom: 12px;
+}
+
+#ndi_div .ndi-nav-back-wrap,
+#ndi_div_proponent .ndi-nav-back-wrap,
+.ndi-popup-shell .ndi-nav-back-wrap,
+#registrationModalForm #ndi_div_proponent .ndi-nav-back-wrap {
+    margin-top: 20px;
+}
+
+.ndi-scan-panel > .ndi-nav-back-wrap {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+}
+
+/* Standalone proponent registration page - match modal NDI card */
+.ndi-scan-panel--page {
+    background: #f8f8f8;
+    border-radius: 40px;
+    max-width: 590px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#registration_div > .ndi-scan-panel--page {
+    width: 100%;
+}
+
+.ndi-nav-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 10px 22px;
+    font-family: Inter, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: #124143 !important;
+    text-decoration: none !important;
+    border: 1.5px solid #124143;
+    border-radius: 8px;
+    background: #fff;
+    box-sizing: border-box;
+    transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.ndi-nav-back i {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.ndi-nav-back:hover,
+.ndi-nav-back:focus {
+    color: #fff !important;
+    background: #124143;
+    border-color: #124143;
+    box-shadow: 0 4px 14px rgba(18, 65, 67, 0.22);
+    text-decoration: none !important;
+}
+
+.ndi-nav-back--ghost {
+    border-color: rgba(18, 65, 67, 0.35);
+    color: #124143 !important;
+    background: #f8f8f8;
+}
+
+.ndi-nav-back--ghost:hover,
+.ndi-nav-back--ghost:focus {
+    background: #124143;
+    border-color: #124143;
+    color: #fff !important;
+}
+
+/* Legacy alias */
+.ndi-back-link {
     color: #124143;
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 /* Loader */
@@ -572,7 +792,7 @@
     #ndi_div,
     #ndi_div_proponent,
     .ndi-scan-panel {
-        padding: 16px 12px 20px;
+        padding: 30px 16px;
         max-width: 100%;
         width: 100%;
         box-sizing: border-box;
@@ -675,7 +895,7 @@
     }
 }
 
-/* Login modal — mobile NDI button (full width inside modal, no horizontal scroll) */
+/* Login modal - mobile NDI button (full width inside modal, no horizontal scroll) */
 @media (max-width: 768px) {
     #loginModalForm .modal-content.modal-custom {
         width: 100% !important;
@@ -696,14 +916,15 @@
     #loginModalForm #loginSelectionBox .modal-body.mx-4 {
         margin-left: 0 !important;
         margin-right: 0 !important;
-        padding: 0 12px 20px !important;
+        margin-bottom: 8px !important;
+        padding: 0 16px 24px !important;
     }
 
-    #loginModalForm #proponentLoginForm .modal-body.mx-4,
-    #loginModalForm #agencyLoginForm .modal-body.mx-4 {
+    #loginModalForm #proponentLoginForm > form > .modal-body.mx-4,
+    #loginModalForm #agencyLoginForm > form > .modal-body.mx-4 {
         margin-left: 0 !important;
         margin-right: 0 !important;
-        padding: 16px 12px 0 !important;
+        padding: 20px 16px 0 !important;
     }
 
     #loginModalForm .login-type-btn {

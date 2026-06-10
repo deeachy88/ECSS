@@ -140,43 +140,7 @@
                         </div>
                     </div>
                 </div>
-                    <div class="ndi-scan-panel" id="ndi_div_proponent" style="display: none; text-align: center">
-                        <h1 class="ndi-ecss-title">Environmental Clearance Services System</h1>
-                        <hr class="ndi-scan-divider">
-                        <h2 class="ndi-flow-title">Scan with <span class="ndi-brand">Bhutan NDI</span> Wallet</h2>
-                        <div id="deepLinkPro" class="text-center mb-3" style="display: none;">
-                            <button type="button" id="deepLinkBtnPro" class="ndi-deeplink-btn">Open Bhutan NDI wallet</button>
-                        </div>
-                        <div class="splitter ndi-or-divider-mobile" id="ndiOrDividerPro">
-                            <span>OR</span>
-                        </div>
-                        <div class="qr-img">
-                            <div class="text-center" id="qrcodeproponent"></div>
-                            <img id="logoPro" src="{% static 'assets/images/ndi/QRlogo.svg' %}" alt="" style="display: none;" crossorigin="anonymous" />
-                        </div>
-                        <div class="row justify-content-center ndi-instructions-row">
-                            <div class="col-md-9 custom-vertical-align-left">
-                                <ul class="ndi-instructions list-unstyled">
-                                    <li>1. Open Bhutan NDI Wallet on your Phone</li>
-                                    <li>2. Tap the scan button located on the menu bar <img src="{% static 'assets/images/ScanButton.png' %}" alt="Scan"> and capture code</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="modal-body-video-btn">
-                            <a href="https://www.youtube.com/watch?v=A_k79pml9k8" target="_blank" rel="noopener" class="btn btn-ndi btn-pill">Watch Video Guide &nbsp;<i class="mdi mdi-motion-play"></i></a>
-                        </div>
-                        <div class="modal-body-question">
-                            <ul>
-                                <li>
-                                    <span class="ndi-download-label">Download <span class="ndi-download-highlight">Now!</span></span>
-                                    <div class="app-link">
-                                        <a href="https://play.google.com/store/search?q=bhutan%20ndi&amp;c=apps&amp;hl=en_IN&amp;gl=US" target="_blank"><img src="{% static 'assets/images/play_store.png' %}" style="height: 35px;"></a>
-                                        <a href="https://apps.apple.com/in/app/bhutan-ndi/id1645493166" target="_blank"><img src="{% static 'assets/images/app_store.png' %}" style="height: 35px;"></a>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                    {% include 'ndi_scan_panel.html' with ndi_panel_variant='registration' ndi_panel_id='ndi_div_proponent' ndi_qr_id='qrcodeproponent' ndi_logo_id='logoPro' ndi_deeplink_wrap_id='deepLinkPro' ndi_deeplink_btn_id='deepLinkBtnPro' ndi_or_divider_id='ndiOrDividerPro' ndi_panel_page=True %}
                     <div class="alert alert-success" id="client_registration_message_div" style="display:none"></div>
                     <div class="alert alert-danger" id="client_registration_error_message_div" style="display:none"></div>
                     <div class="card-footer flex-center justify-content-center">

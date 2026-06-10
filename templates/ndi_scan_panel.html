@@ -1,0 +1,83 @@
+{% load static %}
+{# Shared Bhutan NDI QR scan UI - used for login (proponent/agency) and registration #}
+<div
+    class="ndi-scan-panel{% if ndi_panel_page %} ndi-scan-panel--page{% endif %}"
+    id="{{ ndi_panel_id }}"
+    style="display: none; text-align: center;"
+>
+    <div class="ndi-element">
+        <h2 class="ndi-flow-title">Scan with <span class="ndi-brand">Bhutan NDI Wallet</span></h2>
+    </div>
+    <div class="ndi-element" id="{{ ndi_deeplink_wrap_id }}" style="display: none;">
+        <button type="button" id="{{ ndi_deeplink_btn_id }}" class="ndi-deeplink-btn">Open Bhutan NDI Wallet</button>
+    </div>
+    <div class="ndi-element splitter ndi-or-divider-mobile" id="{{ ndi_or_divider_id }}">
+        <span>OR</span>
+    </div>
+    <div class="ndi-element qr-img">
+        <div class="text-center" id="{{ ndi_qr_id }}"></div>
+        <img id="{{ ndi_logo_id }}" src="{% static 'assets/images/ndi/QRlogo.svg' %}" alt="" class="ndi-qr-logo-source" crossorigin="anonymous" />
+        {% if ndi_panel_variant == 'login' %}
+        <div class="counter" id="clockdiv" style="display: none;">
+            <div class="sq">
+                <span class="seconds bord" id="timer"></span>
+                <span class="smalltext">Secs</span>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <div class="ndi-element ndi-instructions-row">
+        <ul class="ndi-instructions list-unstyled">
+            <li><span class="ndi-instruction-num">1.</span> Open Bhutan NDI Wallet on your phone</li>
+            <li class="ndi-instruction-scan-line">
+                <span class="ndi-instruction-num">2.</span>
+                <span class="ndi-instruction-scan-text">Tap the Scan button <img src="{% static 'assets/images/ndi/scaniconimg.svg' %}" alt="Scan" class="ndi-scan-icon"> located on the menu bar and scan the QR code</span>
+            </li>
+        </ul>
+    </div>
+    <div class="ndi-element modal-body-video-btn">
+        <a href="https://www.youtube.com/watch?v=A_k79pml9k8" target="_blank" rel="noopener" class="ndi-btn-video-guide">
+            <span class="ndi-btn-video-guide__label">Watch video guide</span>
+            <span class="ndi-play-icon-slot" aria-hidden="true">
+                <img src="{% static 'assets/images/ndi/PlayButton.svg' %}" alt="" class="ndi-play-icon ndi-play-icon--default">
+                <img src="{% static 'assets/images/Play Button on hover.svg' %}" alt="" class="ndi-play-icon ndi-play-icon--hover">
+            </span>
+        </a>
+    </div>
+    <div class="ndi-element modal-body-question">
+        <p class="ndi-download-label"><span class="ndi-download-muted">Don't have the Bhutan NDI Wallet?</span> <span class="ndi-download-highlight">Download Now!</span></p>
+        <div class="app-link">
+            <a href="https://play.google.com/store/search?q=bhutan%20ndi&amp;c=apps&amp;hl=en_IN&amp;gl=US" target="_blank" rel="noopener"><img src="{% static 'assets/images/play_store.png' %}" alt="Google Play"></a>
+            <a href="https://apps.apple.com/in/app/bhutan-ndi/id1645493166" target="_blank" rel="noopener"><img src="{% static 'assets/images/app_store.png' %}" alt="App Store"></a>
+        </div>
+    </div>
+    <div class="ndi-element ndi-support">
+        <p class="ndi-support-title">Get Support</p>
+        <div class="ndi-support-contacts">
+            <p class="ndi-support-line">
+                <img src="{% static 'assets/images/ndi/Mail.svg' %}" alt="" class="ndi-support-icon" aria-hidden="true">
+                <a href="mailto:ndifeedback@bhutanndi.bt" class="ndi-support-link">ndifeedback@bhutanndi.bt</a>
+            </p>
+            <p class="ndi-support-line">
+                <img src="{% static 'assets/images/ndi/Call.svg' %}" alt="" class="ndi-support-icon" aria-hidden="true">
+                <a href="tel:1199" class="ndi-support-link">1199</a>
+            </p>
+        </div>
+    </div>
+    {% if ndi_panel_variant == 'login' %}
+    <div id="back_but" class="ndi-nav-back-wrap" style="display: none;">
+        <a href="#" onclick="back(); return false;" class="ndi-nav-back">
+            <i class="uil uil-arrow-left" aria-hidden="true"></i> Back to Login
+        </a>
+    </div>
+    <div id="cls_but" class="ndi-nav-back-wrap" style="display: none;">
+        <a href="#" data-bs-dismiss="modal" class="ndi-nav-back ndi-nav-back--ghost">Close</a>
+    </div>
+    {% else %}
+    <div class="ndi-nav-back-wrap">
+        <a href="#" onclick="backToRegistration(); return false;" class="ndi-nav-back">
+            <i class="uil uil-arrow-left" aria-hidden="true"></i> Back to Registration
+        </a>
+    </div>
+    {% endif %}
+</div>

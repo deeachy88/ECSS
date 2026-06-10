@@ -121,6 +121,11 @@ ul.ndi-content {
     border-radius: 15px;
     padding: 10px;
 }
+.ndi-scan-panel .qr-img {
+    display: block;
+    margin: 0;
+}
+
 .qr-img {
     display: inline-block;
 }
@@ -166,8 +171,14 @@ ul.ndi-content {
         background: #F8F8F8;
         padding: 0px 10px;
     }
-.app-link{
+.app-link {
     margin-top: 5px;
+}
+
+.ndi-scan-panel .app-link,
+#ndi_div .app-link,
+#ndi_div_proponent .app-link {
+    margin-top: 0;
 }
 .app-link img {
     width: 120px;
@@ -177,21 +188,29 @@ ul.ndi-content {
 #ndi_div,
 #ndi_div_proponent,
 .ndi-scan-panel {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 24px 20px 28px;
-    font-family: Inter, sans-serif;
-    max-width: 420px;
+    background: transparent;
+    border-radius: 0;
+    padding: var(--ndi-gap-major, 30px) 24px;
+    font-family: Inter, system-ui, sans-serif;
+    max-width: 100%;
     width: 100%;
     margin: 0 auto;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--ndi-gap-major, 30px);
+}
+
+.ndi-scan-panel > .ndi-element {
+    margin-bottom: 0;
 }
 
 .ndi-flow-title {
     font-size: 18px !important;
-    font-weight: 600 !important;
+    font-weight: 700 !important;
     color: #000 !important;
-    margin: 0 0 18px !important;
+    margin: 0 !important;
     line-height: 1.35;
 }
 
@@ -255,6 +274,7 @@ ul.ndi-content {
     box-sizing: border-box;
     white-space: normal;
     line-height: 1.3;
+    box-shadow: 0 4px 12px rgba(90, 201, 148, 0.35);
 }
 
 @media (min-width: 769px) {
@@ -279,14 +299,7 @@ ul.ndi-content {
     background: #fff;
 }
 
-#ndi_div .modal-body-video-btn a.btn-ndi,
-#ndi_div_proponent .modal-body-video-btn a.btn-ndi,
-.ndi-scan-panel .modal-body-video-btn a.btn-ndi {
-    border: none !important;
-    border-radius: 999px !important;
-    background: #5ac994 !important;
-    color: #fff !important;
-}
+/* Video guide outline button — see ndi-components.css .ndi-btn-video-guide */
 
 #ndi_div .modal-body-question,
 #ndi_div_proponent .modal-body-question,
@@ -296,12 +309,8 @@ ul.ndi-content {
 }
 
 #ndi_div .row.justify-content-center,
-#ndi_div_proponent .row.justify-content-center,
-#ndi_div .modal-body-video-btn,
-#ndi_div_proponent .modal-body-video-btn,
-#ndi_div .modal-body-question,
-#ndi_div_proponent .modal-body-question {
-    margin-top: 24px;
+#ndi_div_proponent .row.justify-content-center {
+    margin-top: 0;
 }
 
 #ndi_div .modal-body-question li,
@@ -322,7 +331,7 @@ ul.ndi-content {
 }
 
 .ndi-support {
-    margin-top: 16px;
+    margin-top: 0;
     text-align: center;
 }
 
@@ -373,7 +382,7 @@ ul.ndi-content {
 
     #ndi_div,
     #ndi_div_proponent {
-        padding: 18px 12px 22px;
+        padding: 30px 16px;
         max-width: 100%;
         width: 100%;
         box-sizing: border-box;
@@ -443,7 +452,7 @@ ul.ndi-content {
 
     #ndi_div .modal-body-video-btn a,
     #ndi_div_proponent .modal-body-video-btn a {
-        width: 100%;
+        width: auto;
         max-width: 100%;
         box-sizing: border-box;
     }
