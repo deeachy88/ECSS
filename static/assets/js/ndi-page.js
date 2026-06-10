@@ -572,8 +572,8 @@
         $('#ndi_div').show();
         applyLoginScanInstruction();
         const titleHtml = isMobileDevice()
-            ? 'Login with <span class="ndi-brand">Bhutan NDI</span> Wallet'
-            : 'Scan with <span class="ndi-brand">Bhutan NDI Wallet</span>';
+            ? 'Login with <span class="ndi-brand">Bhutan NDI</span><span class="ndi-title-suffix"> Wallet</span>'
+            : 'Scan with <span class="ndi-brand">Bhutan NDI</span><span class="ndi-title-suffix"> wallet</span>';
         updateNdiScanPanelDisplay($('#ndi_div'), proofRequestURL, deepLinkURL, {
             titleHtml: titleHtml,
             deeplinkWrap: '#deepLink',
@@ -586,7 +586,7 @@
 
     function updateProponentNdiDisplay($panel, proofRequestURL, deepLinkURL) {
         updateNdiScanPanelDisplay($panel, proofRequestURL, deepLinkURL, {
-            titleHtml: 'Scan with <span class="ndi-brand">Bhutan NDI Wallet</span>',
+            titleHtml: 'Scan with <span class="ndi-brand">Bhutan NDI</span><span class="ndi-title-suffix"> wallet</span>',
             deeplinkWrap: '#deepLinkPro',
             deeplinkBtn: '#deepLinkBtnPro',
             orDivider: '#ndiOrDividerPro',

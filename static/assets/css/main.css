@@ -786,12 +786,12 @@ html body textarea.form-control[readonly]:focus {
         width: 100%;
     }
 
-    #deepLinkBtn {
-        padding: 4px;
-    }
-
-    #deepLinkBtnPro {
-        padding: 10px;
+    #deepLinkBtn,
+    #deepLinkBtnPro,
+    .ndi-deeplink-btn,
+    .ndi-app-open-link {
+        padding: 14px 32px !important;
+        min-height: 50px !important;
     }
 
     #deepLinkBtn img,

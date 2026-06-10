@@ -428,10 +428,12 @@ ul.ndi-content {
         min-width: 0 !important;
         width: 100% !important;
         max-width: 100% !important;
+        min-height: 50px !important;
+        height: auto !important;
         box-sizing: border-box;
         white-space: normal;
         line-height: 1.3;
-        padding: 12px 14px !important;
+        padding: 14px 32px !important;
         font-size: 15px !important;
     }
 
@@ -470,9 +472,10 @@ ul.ndi-content {
     #generateQRCode,
     #deepLinkBtn,
     #deepLinkBtnPro,
-    .ndi-deeplink-btn {
+    .ndi-deeplink-btn,
+    .ndi-app-open-link {
         font-size: 14px !important;
-        padding: 10px 10px !important;
+        padding: 14px 28px !important;
     }
 
     .ndi-flow-title {
