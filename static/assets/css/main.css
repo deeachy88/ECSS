@@ -779,19 +779,24 @@ html body textarea.form-control[readonly]:focus {
     #deepLinkPro {
         width: 100%;
         margin-bottom: 10px;
-    }
-
-    #deepLinkBtn,
-    #deepLinkBtnPro {
-        width: 100%;
+        display: flex;
+        justify-content: center;
     }
 
     #deepLinkBtn,
     #deepLinkBtnPro,
     .ndi-deeplink-btn,
     .ndi-app-open-link {
-        padding: 14px 32px !important;
+        display: inline-flex !important;
+        width: auto !important;
+        max-width: calc(100% - 24px) !important;
+        padding-top: 14px !important;
+        padding-bottom: 14px !important;
+        padding-left: 80px !important;
+        padding-right: 80px !important;
         min-height: 50px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
 
     #deepLinkBtn img,

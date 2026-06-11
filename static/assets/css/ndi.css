@@ -425,16 +425,22 @@ ul.ndi-content {
     .ndi-app-open-link,
     #ndi_div .button,
     #ndi_div_proponent .button {
+        display: inline-flex !important;
         min-width: 0 !important;
-        width: 100% !important;
-        max-width: 100% !important;
+        width: auto !important;
+        max-width: calc(100% - 24px) !important;
         min-height: 50px !important;
         height: auto !important;
         box-sizing: border-box;
         white-space: normal;
         line-height: 1.3;
-        padding: 14px 32px !important;
+        padding-top: 14px !important;
+        padding-bottom: 14px !important;
+        padding-left: 80px !important;
+        padding-right: 80px !important;
         font-size: 15px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
 
     #deepLink,
@@ -443,6 +449,8 @@ ul.ndi-content {
         max-width: 100%;
         padding: 0 4px;
         box-sizing: border-box;
+        display: flex;
+        justify-content: center;
     }
 
     #ndi_div .qr-img,
@@ -469,13 +477,17 @@ ul.ndi-content {
 @media (max-width: 480px) {
     #ndiLoginId,
     #ndiEmployeeId,
-    #generateQRCode,
+    #generateQRCode {
+        font-size: 14px !important;
+    }
+
     #deepLinkBtn,
     #deepLinkBtnPro,
     .ndi-deeplink-btn,
     .ndi-app-open-link {
+        padding-left: 48px !important;
+        padding-right: 48px !important;
         font-size: 14px !important;
-        padding: 14px 28px !important;
     }
 
     .ndi-flow-title {
