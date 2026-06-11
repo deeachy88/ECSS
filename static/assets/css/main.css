@@ -788,13 +788,14 @@ html body textarea.form-control[readonly]:focus {
     .ndi-deeplink-btn,
     .ndi-app-open-link {
         display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
         width: auto !important;
         max-width: calc(100% - 24px) !important;
-        padding-top: 14px !important;
-        padding-bottom: 14px !important;
-        padding-left: 80px !important;
-        padding-right: 80px !important;
-        min-height: 50px !important;
+        min-width: min(300px, 100%) !important;
+        padding: 12px 56px !important;
+        min-height: 44px !important;
+        white-space: nowrap !important;
         margin-left: auto !important;
         margin-right: auto !important;
     }
