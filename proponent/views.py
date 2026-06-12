@@ -45,6 +45,13 @@ from ecs_admin.models import (
 )
 from ecs_main.models import t_application_history
 from ecs_main.views import get_birms_token, get_random_tax_no, insert_app_payment_details, make_payment_request
+from proponent.payment_webhook_auth import (
+    PaymentWebhookAuthError,
+    extract_bearer_token,
+    generate_payment_access_token,
+    validate_client_credentials,
+    validate_payment_access_token,
+)
 from proponent.models import (
     t_ec_application_t2, t_ec_application_t1, t_ec_compliance, t_payment_details,
     t_report_submission_t1, t_report_submission_t2, t_workflow_dtls, t_ec_t1,
@@ -5318,10 +5325,74 @@ def other_modifications(request):
 
 # PAYMENT DETAILS
 @csrf_exempt
+def ecss_payment_token(request):
+    """Issue a short-lived Bearer token for payment webhook calls."""
+    if request.method != 'POST':
+        return JsonResponse({
+            'statusCode': '405',
+            'statusDescription': 'Method not allowed. Only POST requests are accepted.',
+        }, status=405)
+
+    try:
+        raw_body = request.body.decode('utf-8').strip()
+        if not raw_body:
+            return JsonResponse({
+                'statusCode': '400',
+                'statusDescription': 'Empty request body',
+            }, status=400)
+
+        data = json.loads(raw_body)
+        client_id = data.get('clientId') or data.get('username')
+        client_secret = data.get('clientSecret') or data.get('password')
+
+        if not client_id or not client_secret:
+            return JsonResponse({
+                'statusCode': '400',
+                'statusDescription': 'Missing clientId/clientSecret (or username/password)',
+            }, status=400)
+
+        if not validate_client_credentials(client_id, client_secret):
+            return JsonResponse({
+                'statusCode': '401',
+                'statusDescription': 'Invalid client credentials',
+            }, status=401)
+
+        access_token, expires_in = generate_payment_access_token()
+        return JsonResponse({
+            'statusCode': '200',
+            'statusDescription': 'Token generated successfully',
+            'content': {
+                'accessToken': access_token,
+                'expiresIn': expires_in,
+                'tokenType': 'Bearer',
+            },
+        })
+
+    except json.JSONDecodeError as exc:
+        return JsonResponse({
+            'statusCode': '400',
+            'statusDescription': f'Invalid JSON payload: {str(exc)}',
+        }, status=400)
+    except Exception as exc:
+        return JsonResponse({
+            'statusCode': '500',
+            'statusDescription': f'Server Error: {str(exc)}',
+        }, status=500)
+
+
+@csrf_exempt
 def ecss_payment_update(request):
     # Check if the request method is POST
     if request.method == "POST":
         try:
+            try:
+                validate_payment_access_token(extract_bearer_token(request))
+            except PaymentWebhookAuthError as exc:
+                return JsonResponse({
+                    'statusCode': '401',
+                    'statusDescription': str(exc),
+                }, status=401)
+
             # Decode and strip raw body
             raw_body = request.body.decode('utf-8').strip()
 

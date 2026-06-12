@@ -205,6 +205,11 @@ EMAIL_HOST_PASSWORD = 'wdiigzpprtutwmdc'
 
 NATS_SERVER_URL = 'nats://13.229.203.54:4222'
 
+# Payment webhook (BIRMS -> ECSS callback) — client credentials + token TTL
+PAYMENT_WEBHOOK_CLIENT_ID = os.environ.get('PAYMENT_WEBHOOK_CLIENT_ID', 'ECSS')
+PAYMENT_WEBHOOK_CLIENT_SECRET = os.environ.get('PAYMENT_WEBHOOK_CLIENT_SECRET', 'ECSs@2024!')
+PAYMENT_WEBHOOK_TOKEN_MAX_AGE = int(os.environ.get('PAYMENT_WEBHOOK_TOKEN_MAX_AGE', '3600'))
+
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'attachments')
 MEDIA_URL = '/attachments/'
 

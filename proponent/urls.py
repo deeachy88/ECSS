@@ -113,6 +113,7 @@ urlpatterns = [
     path('revoke_ec', views.revoke_ec, name='revoke_ec'),
 
     #Payment_part
+    path('ecss_payment_token', views.ecss_payment_token, name='ecss_payment_token'),
     path('ecss_payment_update', views.ecss_payment_update, name='ecss_payment_update'),
     path('ecss_payment_reversal', views.ecss_payment_reversal, name='ecss_payment_reversal'),
 
