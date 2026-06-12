@@ -8,6 +8,9 @@ import threading
 import requests
 import traceback
 import uuid
+import base64
+import tempfile
+from io import BytesIO
 
 from datetime import date, datetime, timedelta, timezone as dt_timezone
 
@@ -4885,52 +4888,125 @@ def view_ec(request, ec_reference_no):
 
 
 # DOWNLOAD EC START
-def download_ec_details(request):
-    ec_reference_no = request.GET.get('ec_reference_no')
-    ca_authority = request.GET.get('ca_authority')
+def link_callback(uri, rel):
+    import os
+    from django.conf import settings
 
-    # Retrieve competent_authority
+    # ✅ Use STATICFILES_DIRS (your actual static/ folder)
+    static_dir = settings.STATICFILES_DIRS[0]  # /Users/.../ECSS/static
+
+    if uri.startswith(settings.STATIC_URL):
+        relative = uri.replace(settings.STATIC_URL, "")
+        path = os.path.join(static_dir, relative)
+        if os.path.isfile(path):
+            return path
+
+    # Fallback: STATIC_ROOT (assets/)
+    if uri.startswith(settings.STATIC_URL):
+        path = os.path.join(
+            settings.STATIC_ROOT,
+            uri.replace(settings.STATIC_URL, "")
+        )
+        if os.path.isfile(path):
+            return path
+
+    # Media files
+    if uri.startswith(settings.MEDIA_URL):
+        path = os.path.join(
+            settings.MEDIA_ROOT,
+            uri.replace(settings.MEDIA_URL, "")
+        )
+        if os.path.isfile(path):
+            return path
+
+    return uri
+
+
+def download_ec_details(request):
+    import os, base64
+    from django.conf import settings
+
+    ec_reference_no = request.GET.get('ec_reference_no')
+    ca_authority    = request.GET.get('ca_authority')
+
+    if not ec_reference_no:
+        return HttpResponse("EC Reference Number is required.", status=400)
+
+    # ── Competent Authority ───────────────────────────────────────────────────
     competent_authority = t_competant_authority_master.objects.filter(
         competent_authority_id=ca_authority
     ).first()
     ca_name = competent_authority.remarks if competent_authority else None
 
-    # Retrieve t_ec_application_t1 objects with ec_reference_no=ec_reference_no and service_type="Main Activity"
-    application_details = t_ec_t1.objects.filter(ec_reference_no=ec_reference_no, service_type="Main Activity")
+    # ── EC Records ────────────────────────────────────────────────────────────
+    application_details = t_ec_t1.objects.filter(
+        ec_reference_no=ec_reference_no,
+        service_type="Main Activity"
+    )
 
-    # Retrieve t_ec_application_t2 objects with ec_reference_no=ec_reference_no
-    ec_details = t_ec_t2.objects.filter(ec_reference_no=ec_reference_no).order_by('order')
+    if not application_details.exists():
+        return HttpResponse("EC Record not found.", status=404)
 
+    # ── EC Terms ──────────────────────────────────────────────────────────────
+    ec_details = t_ec_t2.objects.filter(
+        ec_reference_no=ec_reference_no
+    ).order_by('order')
+
+    # ── QR Code → Save as .png inside static/ folder ─────────────────────────
+    app          = application_details.first()
+    qr_url       = None   # URL path for template  e.g /static/qr_EC-2026-0009.png
+    qr_file_path = None   # Absolute path for cleanup
+
+    if app and app.qr_code:
+        raw = app.qr_code
+
+        # Strip "data:image/png;base64," prefix
+        if "," in raw:
+            raw = raw.split(",", 1)[1]
+
+        qr_bytes     = base64.b64decode(raw)
+        qr_filename  = f"qr_{ec_reference_no}.png"
+
+        # ✅ Save into static/ (STATICFILES_DIRS[0]) — NOT assets/ (STATIC_ROOT)
+        static_dir   = settings.STATICFILES_DIRS[0]
+        qr_file_path = os.path.join(static_dir, qr_filename)
+
+        with open(qr_file_path, "wb") as f:
+            f.write(qr_bytes)
+
+        # URL that link_callback will resolve back to the absolute path
+        qr_url = f"{settings.STATIC_URL}{qr_filename}"
+
+    # ── Render Template ───────────────────────────────────────────────────────
     context = {
         'application_details': application_details,
-        'ec_details': ec_details,
-        'competent_authority': ca_name}
+        'ec_details'         : ec_details,
+        'competent_authority': ca_name,
+        'qr_url'             : qr_url,   # ✅ e.g. /static/qr_EC-2026-0009.png
+    }
 
     template = get_template('EC/pdf_ec.html')
-    html = template.render(context)
+    html     = template.render(context)
 
+    # ── Generate PDF ──────────────────────────────────────────────────────────
     result = BytesIO()
-
-    pdf = pisa.pisaDocument(
+    pdf    = pisa.pisaDocument(
         BytesIO(html.encode("UTF-8")),
         result,
         link_callback=link_callback
     )
 
+    # ── Cleanup QR file after PDF is generated ────────────────────────────────
+    if qr_file_path and os.path.exists(qr_file_path):
+        os.remove(qr_file_path)
+
+    # ── Return PDF ────────────────────────────────────────────────────────────
     if pdf.err:
-        return HttpResponse("PDF Error", status=500)
+        return HttpResponse("PDF generation failed.", status=500)
 
-    response = HttpResponse(
-        result.getvalue(),
-        content_type='application/pdf'
-    )
-
-    response['Content-Disposition'] = (
-        f'attachment; filename="EC_{ec_reference_no}.pdf"'
-    )
-
+    response = HttpResponse(result.getvalue(), content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="EC_{ec_reference_no}.pdf"'
     return response
-
 
 # DOWNLOAD EC END
 

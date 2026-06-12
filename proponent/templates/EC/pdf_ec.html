@@ -4,43 +4,16 @@
 <head>
     <meta charset="utf-8">
     <style>
-        @page {
-            size: A4;
-            margin: 18mm;
+        body{
+            font-family: Arial;
+            font-size: 12px;
         }
-        body {
-            font-family: Arial, sans-serif;
-            font-size: 13px;
-            color: #000;
-            margin: 0;
-            padding: 0;
-            background: #f5f5f5;
+        table{
+            width:100%;
+            border-collapse: collapse;
         }
-        /* VIEW MODE */
-        .page-wrapper {
-            width: 210mm;
-            margin: 15px auto;
-        }
-        /* PRINT AREA */
-        #print {
-            background: #fff;
-            border: 3px double #000;
-            padding: 22px;
-            position: relative;
-            min-height: 260mm;
-        }
-        /* PRINT BUTTON */
-        .print-btn {
-            width: 210mm;
-            margin: 10px auto;
-            text-align: right;
-        }
-        .print-btn button {
-            padding: 7px 16px;
-            border: 1px solid #000;
-            background: #fff;
-            cursor: pointer;
-            font-size: 13px;
+        td, th{
+            padding:6px;
         }
         /* WATERMARK */
         .watermark {
@@ -119,10 +92,12 @@
             text-align: justify;
             line-height: 1.6;
         }
-        /* DIVIDER */
-        .divider {
-            border-bottom: 1px solid #000;
+        /* --- DIVIDER FIX --- */
+        hr.divider {
+            border: none;
+            border-top: 1px solid #000;
             margin: 15px 0;
+            height: 0;
         }
         /* FOOTER SECTION */
         .bottom-section {
@@ -147,37 +122,12 @@
         .expiry-text {
             font-size: 13px;
         }
-        /* PRINT SETTINGS */
-        @media print {
-            body {
-                background: #fff;
-            }
-            .print-btn {
-                display: none;
-            }
-            .page-wrapper {
-                width: 100%;
-                margin: 0;
-            }
-            #print {
-                border: 3px double #000;
-                box-shadow: none;
-            }
-        }
     </style>
 </head>
 <body>
-<div class="print-btn">
-    <button onclick="window.print()">
-        Print / Save PDF
-    </button>
-</div>
 <div class="page-wrapper">
     <div id="print">
-        <!-- WATERMARK -->
-        <div class="watermark">
-            <img src="{% static 'assets/images/decc_seal.png' %}">
-        </div>
+      <!-- WATERMARK -->
         <div class="content-wrapper">
             <!-- HEADER -->
             <div class="header">
@@ -215,8 +165,7 @@
                     {% endif %}
                 {% endfor %}
             </div>
-            <div class="divider"></div>
-
+            <hr class="divider">
             <!-- TERMS -->
             <div class="terms-section">
                 {% for ec_details in ec_details %}
@@ -228,7 +177,7 @@
                         <div class="term-content">
                         {{ec_details.ec_terms | safe}}
                         </div>
-                        <div class="divider"></div>
+                        <hr class="divider">
                     </div>
                     {% endif %}
                 {% endfor %}
@@ -252,16 +201,9 @@
 
                         <!-- CENTER: QR Code -->
                         <td style="width:25%; text-align:center; vertical-align:bottom;">
-                            {% for app in application_details %}
-                                {% if app.qr_code %}
-                                    <img
-                                        src="{{ app.qr_code }}"
-                                        alt="QR Code - {{ app.ec_reference_no }}"
-                                        width="100"
-                                        height="100"
-                                    />
-                                {% endif %}
-                            {% endfor %}
+                            {% if qr_url %}
+                                <img src="{{ qr_url }}" alt="QR Code" width="100" height="100"/>
+                            {% endif %}
                         </td>
 
                         <!-- RIGHT: Expiry Date -->
